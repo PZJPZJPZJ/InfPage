@@ -1,0 +1,11 @@
+# Editor directories and files
+.git
+.idea
+.vscode
+
+# local env files
+node_modules
+
+# Binaries and temps
+.cache
+.temp

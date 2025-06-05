@@ -1,0 +1,9 @@
+# Everything:文件搜索工具
+## 官方网站
+- <https://www.voidtools.com/>
+## 文件说明
+- Everything.ini：设置项存储
+- Everything.db：索引结果目录数据库
+- Everything.lng：软件语言文件
+## 索引在线目录
+- 工具-选项-索引-文件夹-添加SMB目录
