@@ -1,4 +1,4 @@
-# Windows:微软系统安装流程
+# Windows:微软系统安装
 ## 安装步骤
 ### 1. 下载镜像
 - 推荐使用浏览器直接从[微软官网](https://www.microsoft.com/zh-cn/software-download)直链下载
@@ -111,7 +111,8 @@ irm https://get.activated.win | iex
 - [360驱动大师网卡版Part1](https://www.lanzouu.com/iZ1tI1k0ue9a)[360驱动大师网卡版Part2](https://www.lanzouu.com/iyvls1k0uhji)
 ### 调节工具
 - [Intel XTU](https://www.intel.cn/content/www/cn/zh/download/17881/intel-extreme-tuning-utility-intel-xtu.html)
-- [Razer Synapse雷云](https://cn.razerzone.com/synapse-4)
+- [G-Helper](https://github.com/seerge/g-helper)
+- [Razer Synapse](https://cn.razerzone.com/synapse-4)
 
 ## 运行库安装
 ### [Visual C++](https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170)
