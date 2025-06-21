@@ -236,3 +236,8 @@ reg delete "HKEY_CURRENT_USER\Control Panel\Desktop" /v AutoEndTasks /f
 # 关闭等待
 reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v AutoEndTasks /t REG_DWORD /d 1 /f
 ```
+
+## 常见问题
+### BitLocker驱动器加密
+当 BitLocker 无法在 Windows 中自动解锁加密驱动器时，需要 BitLocker 恢复密钥。 此密钥是一个 48 位数字，用于重新获得对驱动器的访问权限。
+- 如果 BitLocker 恢复密钥已备份到 Microsoft 帐户：访问[微软账户-设备](https://aka.ms/myrecoverykey)，根据ID找到对应密钥

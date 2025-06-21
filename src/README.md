@@ -46,17 +46,6 @@ const sites = ref([
       { name: 'YouTube', url: 'https://youtube.com' },
     ]
   },
-    {
-    category: '人工智能',
-    items: [
-      { name: 'DeepSeek', url: 'https://www.deepseek.com/' },
-      { name: 'ChatGPT', url: 'https://chatgpt.com/' },
-      { name: 'Claude', url: 'https://claude.ai/' },
-      { name: 'Gemini', url: 'https://gemini.google.com/' },
-      { name: 'Grok', url: 'https://grok.com/' },
-
-    ]
-  },
 ])
 
 const getFavicon = (url) => {

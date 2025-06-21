@@ -1,7 +1,8 @@
 # Stable Diffusion:图像生成AI模型
-## 下载地址
+## 网站
 - [StabilityAI官网](https://stability.ai)
 - [OneThingAI云部署平台](https://console.onethingai.com/)
+- [Midjourney](https://www.midjourney.com/)
 
 ## 安装教程
 ### WebUI(模块化)
