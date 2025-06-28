@@ -5,3 +5,4 @@
 
 ## 相关网站
 - [CPUMonkey对比](https://www.cpu-monkey.com)
+- [SOCPK移动芯片排行](https://www.socpk.com)

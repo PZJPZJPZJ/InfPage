@@ -70,7 +70,7 @@
     - 无法Import时进入虚拟环境执行`ComfyUI\.venv\Scripts\python -m pip install --upgrade setuptools`
 
 - [Inspire Pack](https://github.com/ltdrdata/ComfyUI-Inspire-Pack)
-    - A1111WebUI兼容性支持
+    - [A1111WebUI兼容性支持](https://www.bilibili.com/opus/833787077856329745)
         - KSampler(Inspire):ComfyUI使用CPU生成随机噪声，而A1111使用GPU
             - 配合[Advanced CLIP Text Encode](https://github.com/BlenderNeko/ComfyUI_ADV_CLIP_emb)的CLIP文本编码器(BNK)，权重插值选择A1111
 
