@@ -69,11 +69,13 @@ useUpdateDeviceStatus(
 
 <template>
   <header ref="navbar" class="vp-navbar" vp-navbar>
-    <div class="blur-layer" style="backdrop-filter: blur(10px); mask-image: linear-gradient(to bottom, #000 0%, #000 0%, #0000 20%);"></div>
-    <div class="blur-layer" style="backdrop-filter: blur(8px); mask-image: linear-gradient(to bottom,  #000 0%, #000 20%, #0000 40%);"></div>
-    <div class="blur-layer" style="backdrop-filter: blur(6px); mask-image: linear-gradient(to bottom,  #000 20%, #000 40%, #0000 60%);"></div>
-    <div class="blur-layer" style="backdrop-filter: blur(4px); mask-image: linear-gradient(to bottom,  #000 40%, #000 60%, #0000 80%);"></div>
-    <div class="blur-layer" style="backdrop-filter: blur(2px); mask-image: linear-gradient(to bottom,  #000 60%, #000 80%, #0000 100%);"></div>
+    <span class="navbar-blur">
+      <span class="blur-layer"></span>
+      <span class="blur-layer"></span>
+      <span class="blur-layer"></span>
+      <span class="blur-layer"></span>
+      <span class="blur-layer"></span>
+    </span>
 
     <VPToggleSidebarButton @toggle="$emit('toggleSidebar')" />
 
@@ -141,6 +143,30 @@ useUpdateDeviceStatus(
 .blur-layer{
   position: absolute;
   inset:0;
-  z-index: -1;
+}
+
+.blur-layer:nth-child(1){
+  backdrop-filter: blur(20px);
+  mask: linear-gradient(0deg, transparent 80%, black 100%);
+}
+
+.blur-layer:nth-child(2){
+  backdrop-filter: blur(10px);
+  mask: linear-gradient(0deg, transparent 60%, black 80%);
+}
+
+.blur-layer:nth-child(3){
+  backdrop-filter: blur(5px);
+  mask: linear-gradient(0deg, transparent 40%, black 60%);
+}
+
+.blur-layer:nth-child(4){
+  backdrop-filter: blur(3px);
+  mask: linear-gradient(0deg, transparent 20%, black 40%);
+}
+
+.blur-layer:nth-child(5){
+  backdrop-filter: blur(1px);
+  mask: linear-gradient(0deg, transparent 0%, black 20%);
 }
 </style>
