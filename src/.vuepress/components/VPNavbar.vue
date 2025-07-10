@@ -69,7 +69,7 @@ useUpdateDeviceStatus(
 
 <template>
   <header ref="navbar" class="vp-navbar" vp-navbar>
-    <span class="navbar-blur">
+    <span class="vp-navbar-blur">
       <span class="blur-layer"></span>
       <span class="blur-layer"></span>
       <span class="blur-layer"></span>
