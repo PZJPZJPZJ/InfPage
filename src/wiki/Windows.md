@@ -1,11 +1,11 @@
-# Windows:微软系统安装
+# Windows:微软操作系统
 ## 安装步骤
-### 1. 下载镜像
+### 下载镜像
 - 推荐使用浏览器直接从[微软官网](https://www.microsoft.com/zh-cn/software-download)直链下载
 - 推荐使用[qBittorrent](https://www.fosshub.com/qBittorrent.html)从[MSDN](https://next.itellyou.cn/)或[旧MSDN](https://msdn.itellyou.cn/)磁力链下载
-### 2. 写入镜像到存储设备
-> 若需要无损使用存储设备或单次安装使用以下方式写入(不进行格式化可不清空设备)
-#### 使用Windows写入(无损写入直接进行第三步)
+
+### 写入镜像到存储设备
+#### 使用Windows写入(无损写入不格式化直接进行第三步)
 1. 使用DiskGenius检查U盘(8G及以上)分区方案
    - 推荐转换为MBR分区
        - 仅支持Legacy启动的电脑（约2010年前）
@@ -26,7 +26,7 @@
         - 写入设备为硬盘
 3. 使用解压软件或自带文件管理解压ISO到U盘根目录
     - 确保EFI文件夹位于U盘根目录
-#### 使用Android写入(无损写入直接进行第三步)
+#### 使用Android写入(无损写入不格式化直接进行第三步)
 1. 使用OTG转接头将U盘(8G及以上)插入手机
 2. 检查分区格式(可尝试跳过避免格式化清空)
     - FAT32为默认安卓格式化格式
@@ -38,8 +38,7 @@
 3. 使用解压软件或自带文件管理解压ISO到U盘根目录
     - 确保EFI文件夹位于U盘根目录
     - 安卓设备写入会使用缓存，确保解压完成后下拉状态栏进行安全弹出
-> 若此存储设备需要专用于系统维护使用以下方式写入
-#### 使用WinPE辅助维护和安装
+#### 使用WinPE辅助维护和安装（需要格式化专用于系统维护）
 1. 下载[微PE](https://www.wepe.com.cn/download.html)或[FirPE](https://www.firpe.cn/)运行并插入存储设备
 2. 制作启动盘
    - 清空存储设备制作:根据工具指引直接制作
@@ -47,10 +46,9 @@
    - 制作完成后可使用[QEMU](https://pzjpzjpzj.lanzoum.com/ii13M2uhan3g)测试启动盘
 3. 将ISO文件放入非启动分区内(通常为ExFAT格式或最大分区)
 
-### 3. 进入BIOS引导存储设备启动
-
-
-### 4. 执行安装
+### 执行安装
+- [硬件茶谈-系统安装教程](https://www.bilibili.com/video/BV1DJ411D79y)
+- [硬件茶谈-硬件组装教程](https://www.bilibili.com/video/BV1BG4y137mG)
 
 ## 下载链接
 ### Windows 11
