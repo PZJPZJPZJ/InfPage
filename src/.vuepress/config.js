@@ -20,7 +20,6 @@ export default defineUserConfig({
   dest: 'docs/',
   head: [
     ['script', { type: 'text/javascript' }, clarityScript],
-    ['meta', { name: 'msvalidate.01', content: '988938DE60E20025E035A14D20877665' }],
     ['link', { rel: 'icon', href: 'https://infinityicon.infinitynewtab.com/assets/logo-pro.png' }],
   ],
   theme: defaultTheme({
