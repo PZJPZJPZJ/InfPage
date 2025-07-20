@@ -77,15 +77,27 @@
 
 ## 激活系统
 ### Microsoft Activation Scripts
-#### 官方地址
-- <https://github.com/massgravel/Microsoft-Activation-Scripts>
-#### PowerShell命令获取
-```shell
-irm https://get.activated.win | iex
-```
+1. 获取激活脚本
+   - **Windows8及更高**：打开PowerShell（Win+X选择终端），粘贴下列代码，按`Enter`执行
+      ```shell
+      irm https://get.activated.win | iex
+      ```
+   - **WindowsVista及更高**：使用浏览器访问下列链接下载，解压`master.zip`文件，打开`All-In-One-Version`文件夹，运行`MAS_AIO.cmd`脚本
+     - [Github仓库](https://github.com/massgravel/Microsoft-Activation-Scripts)
+     - [仓库直链](https://github.com/massgravel/Microsoft-Activation-Scripts/archive/refs/heads/master.zip)
+     - [官网直链](https://git.activated.win/massgrave/Microsoft-Activation-Scripts/archive/master.zip)
+   
+2. 按照终端说明进行激活
+   ![MAS界面](https://massgrave.dev/assets/images/MAS_AIO-97ec1fa241d2b6ac4acf28047058b80e.png)
+   - Windows激活输入`1`，等待图示激活完成
+     ![Windows完成激活](https://massgrave.dev/assets/images/MAS_HWID-a9c4253a385cf95c6969c8c58c553a14.png)
+   - Office激活输入`2`，等待图示激活完成
+     ![Office完成激活](https://massgrave.dev/assets/images/MAS_Ohook-4938af47f633897c06bd3304bb73162b.png)
+   - 若无法激活输入`4`进行KMS38激活（激活有效期至2038年）
+
 ### HEU KMS Activator
-#### 官方地址
-- <https://github.com/zbezj/HEU_KMS_Activator/releases>
+1. 访问[Github](https://github.com/zbezj/HEU_KMS_Activator/releases)下载激活工具
+2. 按照工具提示进行激活
 
 ## 驱动安装
 ### Intel显卡驱动
@@ -108,9 +120,9 @@ irm https://get.activated.win | iex
 - [360驱动大师](https://www.lanzouu.com/iP2mQ1k0yrra)
 - [360驱动大师网卡版Part1](https://www.lanzouu.com/iZ1tI1k0ue9a)[360驱动大师网卡版Part2](https://www.lanzouu.com/iyvls1k0uhji)
 ### 调节工具
-- [Intel XTU](https://www.intel.cn/content/www/cn/zh/download/17881/intel-extreme-tuning-utility-intel-xtu.html)
-- [G-Helper](https://github.com/seerge/g-helper)
-- [Razer Synapse](https://cn.razerzone.com/synapse-4)
+- [IntelXTU英特尔调节工具](https://www.intel.cn/content/www/cn/zh/download/17881/intel-extreme-tuning-utility-intel-xtu.html)
+- [G-Helper华硕开源控制工具](https://github.com/seerge/g-helper)
+- [RazerSynapse雷蛇雷云](https://cn.razerzone.com/synapse-4)
 
 ## 运行库安装
 ### [Visual C++](https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170)
@@ -238,4 +250,6 @@ reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v AutoEndTasks /t REG_DWORD /
 ## 常见问题
 ### BitLocker驱动器加密
 当 BitLocker 无法在 Windows 中自动解锁加密驱动器时，需要 BitLocker 恢复密钥。 此密钥是一个 48 位数字，用于重新获得对驱动器的访问权限。
+![输入恢复密钥提示](https://support.microsoft.com/images/zh-cn/70d2ab07-0b73-4c82-b439-15c6f4235f96)
 - 如果 BitLocker 恢复密钥已备份到 Microsoft 帐户：访问[微软账户-设备](https://aka.ms/myrecoverykey)，根据ID找到对应密钥
+   ![帐户存储密钥](https://support.microsoft.com/images/zh-cn/6ef3ec86-2ab8-49fb-95cd-bb1e5a64af2d)
