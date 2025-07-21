@@ -1,4 +1,9 @@
 # WordPress:建站平台
+## PHP部署
+1. 访问[WordPress官网](https://wordpress.org/download/)下载[WordPress](https://wordpress.org/latest.zip)
+2. 根据下列教程进行安装
+   - [1Panel安装教程](https://oyouoo.com/1panel-build-wordpress-for-beginners/)
+
 ## DockerCompose部署
 ```yaml
 services:
@@ -32,17 +37,8 @@ services:
       - WORDPRESS_DB_PASSWORD=wordpress
       - WORDPRESS_DB_NAME=wordpress
 ```
-## 插件
-### [Elementor页面编辑](https://www.miaoroom.com/)
-- [Unlimited Elements for Elementor自定义组件](https://maichuguo.com/wordpress-plugins/)
-### WooCommerce(上传商品)
-- YITH WooCommerce Ajax Product Filter(商品分类筛选)
-### YoastSEO(SEO优化)
-### WPForms(第三方表单)
-### WPRocket(速度优化)
-### GTranslate(多语言)
 
-## 搜索引擎优化技巧
+## 相关网站
 ### 网站分析
 - [Google Analytics谷歌分析](https://analytics.google.com/)
 - [Google Search Console谷歌网站控制台](https://search.google.com/search-console/welcome)
@@ -52,7 +48,7 @@ services:
 - [Google Tag Manager谷歌代码跟踪](https://tagmanager.google.com/)
 - [Microsoft Clarity微软分析](https://clarity.microsoft.com/)
 - [Hotjar访客录制](https://www.hotjar.com/)
-### 相关教程
+### SEO教程
 - [Backlinko教程](https://backlinko.com)
 - [黑帽SEO论坛](https://www.blackhatworld.com)
 ### 相关工具
@@ -60,3 +56,17 @@ services:
 - [海外客](https://www.hiwaike.com/)
 - [SEO Club](https://dash.seogroup.club/)
 - [M123](https://www.m123.com)
+- [破解插件](https://maichuguo.com/wordpress-plugins/)
+### 相关插件
+- 页面编辑
+  - Elementor
+  - Unlimited Elements for Elementor
+- 在线商城
+  - WooCommerce
+- SEO优化
+  - YoastSEO
+  - RankMath
+- 速度优化
+  - WPRocket
+- 语言翻译
+  - GTranslate
