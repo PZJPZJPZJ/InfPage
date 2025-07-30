@@ -36,3 +36,7 @@
 - 序列号:`C6YV2-6CKK8-VF7JB-JJCFM-HXJ2D`
 ### Office 365
 - [Office 365 ProPlus](https://officecdn.microsoft.com/sg/492350f6-3a01-4f97-b9c0-c7c6ddf67d60/media/zh-CN/O365ProPlusRetail.img)
+
+## 相关软件
+- [WPS Office](https://www.wps.cn/)
+- [微信输入法](https://z.weixin.qq.com/)

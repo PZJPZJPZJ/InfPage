@@ -1,6 +1,7 @@
 # PSP Infinity:PSP所有机型自制固件完美固化
 ## 下载地址
-- <https://infinity.lolhax.org/>
+- [官网](https://infinity.lolhax.org/)
+- [网盘下载](https://pzjpzjpzj.lanzoum.com/i3g73327ldeb)
 ## 破解教程
 1. 将660OFF文件夹内容复制到记忆棒的根目录，运行PSP升级版本6.60程序，根据屏幕提示确定升级并重启
 2. 将INFINITY文件夹内容复制到记忆棒的根目录,并修改对应机型的文件名为EBOOT.PBP，运行Infinity程序后，按X键安装，安装完成后会自动重启

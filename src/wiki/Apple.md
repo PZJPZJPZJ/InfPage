@@ -8,3 +8,6 @@
 
 ## Apple Music
 - 访问[微软商店历史版本](https://store.rg-adguard.net/)选择ProductId搜索`9PFHDD62MXS1`
+
+## 爱思助手
+- [官网](https://www.i4.cn/)

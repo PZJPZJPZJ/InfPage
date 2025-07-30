@@ -39,24 +39,44 @@ services:
 ```
 
 ## 相关网站
-### 网站分析
+### 数据分析
 - [Google Analytics谷歌分析](https://analytics.google.com/)
 - [Google Search Console谷歌网站控制台](https://search.google.com/search-console/welcome)
-- [Google PageSpeed Insights网站测速](https://pagespeed.web.dev/)
-- [Google Search Status谷歌更新面版](https://status.search.google.com/)
 - [Google Ads谷歌广告](https://ads.google.com/)
 - [Google Tag Manager谷歌代码跟踪](https://tagmanager.google.com/)
 - [Microsoft Clarity微软分析](https://clarity.microsoft.com/)
 - [Hotjar访客录制](https://www.hotjar.com/)
+
+### 速度测试
+- [Google PageSpeed Insights](https://pagespeed.web.dev/)
+- [SpeedVitals](https://speedvitals.com/)
+
+### 最新资讯
+- [Google Search Status谷歌更新面版](https://status.search.google.com/)
+
 ### SEO教程
 - [Backlinko教程](https://backlinko.com)
 - [黑帽SEO论坛](https://www.blackhatworld.com)
+
 ### 相关工具
 - [图片格式转换](https://github.com/renzhezhilu/webp2jpg-online)
 - [海外客](https://www.hiwaike.com/)
 - [SEO Club](https://dash.seogroup.club/)
 - [M123](https://www.m123.com)
 - [破解插件](https://maichuguo.com/wordpress-plugins/)
+
+### 内容分发网络
+- [Cloudflare](https://www.cloudflare.com/)
+
+### 云主机
+- [Hostinger](https://www.hostinger.com/)
+- [Bandwagonhost](https://bandwagonhost.com/)
+- [Amazon Web Services](https://aws.amazon.com/)
+- [Oracle](https://www.oracle.com/cloud/free/)
+- [CloudCone](https://cloudcone.com/)
+- [Vultr](https://www.vultr.com/)
+- [RackNerd](https://www.racknerd.com/)
+
 ### 相关插件
 - 页面编辑
   - Elementor

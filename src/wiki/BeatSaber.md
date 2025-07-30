@@ -1,6 +1,7 @@
 # BeatSaber:节奏光剑
 ## 通用教程
 - <https://bs.wdsky.top/>
+- [BSMG Wiki](https://bsmg.wiki/)
 
 ## Quest版
 ### BMBF方案安装教程
@@ -9,6 +10,7 @@
    - ADB安装命令`adb install com.beatgames.beatsaber.apk`
    - 可使用[File Manager](https://www.apkmirror.com/apk/file-manager-plus/file-manager-7/)进行文件管理和安装
 3. 同时使用ADB安装[BMBF](https://bmbf.dev/stable)模组安装程序
+   - [BMBF网盘下载](https://pzjpzjpzj.lanzoum.com/iJPWf327h8xg)
 4. 打开BMBF授权文件访问权限，然后点击Continue>Uninstall>Patch进行游戏修补
     - Quest需要在正常国际网络下完成
 5. 在Quest上打开BMBF进入Tools界面查看管理地址，并在其他设备浏览器中访问

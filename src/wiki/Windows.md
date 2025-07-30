@@ -247,6 +247,12 @@ reg delete "HKEY_CURRENT_USER\Control Panel\Desktop" /v AutoEndTasks /f
 reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v AutoEndTasks /t REG_DWORD /d 1 /f
 ```
 
+### 跳过Win11联网激活
+```shell
+# 联网界面按Shift+F10
+start ms-cxh:localonly
+```
+
 ## 常见问题
 ### BitLocker驱动器加密
 当 BitLocker 无法在 Windows 中自动解锁加密驱动器时，需要 BitLocker 恢复密钥。 此密钥是一个 48 位数字，用于重新获得对驱动器的访问权限。
