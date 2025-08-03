@@ -19,6 +19,7 @@ services:
 - [NATMap](https://github.com/heiher/natmap)
 - [N4](https://github.com/MikeWang000000/n4)
 - [DDNS Go](https://github.com/jeessy2/ddns-go)
+- [EasyTier](https://github.com/EasyTier/EasyTier)
 
 ## 相关论坛
 - [V2EX](https://www.v2ex.com/)
