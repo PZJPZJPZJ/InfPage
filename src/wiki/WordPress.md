@@ -5,14 +5,14 @@
 
 ## 数据分析
 ### Google
-- [Google Analytics谷歌分析](https://analytics.google.com/)
-- [Google Search Console谷歌网站控制台](https://search.google.com/search-console/welcome)
-- [Google Ads谷歌广告](https://ads.google.com/)
-- [Google Cloud API谷歌云接口](https://console.cloud.google.com/)
-- [Google Tag Manager谷歌代码跟踪](https://tagmanager.google.com/)
-# Microsoft
-- [Bing Webmaster Tools必应网站管理员工具](https://www.bing.com/webmasters/about)
-- [Microsoft Clarity微软分析](https://clarity.microsoft.com/)
+- [Google Analytics(谷歌分析)](https://analytics.google.com/)
+- [Google Search Console(谷歌网站控制台)](https://search.google.com/search-console/welcome)
+- [Google Ads(谷歌广告)](https://ads.google.com/)
+- [Google Cloud API(谷歌云接口)](https://console.cloud.google.com/)
+- [Google Tag Manager(谷歌代码跟踪)](https://tagmanager.google.com/)
+### Microsoft
+- [Bing Webmaster Tools(必应网站管理员工具)](https://www.bing.com/webmasters/about)
+- [Microsoft Clarity(微软分析)](https://clarity.microsoft.com/)
 
 ## 速度优化
 ### 页面加载速度
@@ -46,19 +46,21 @@
 - [黑帽SEO论坛](https://www.blackhatworld.com)
 
 ### 关键词研究
-#### [Ahrefs](https://ahrefs.com/)
-
 #### [Semrush](https://www.semrush.com/)
-- [海外客](https://www.hiwaike.com/)
 - [SEO Club](https://dash.seogroup.club/)
+#### [Ahrefs](https://ahrefs.com/)
+- [海外客](https://www.hiwaike.com/)
+#### 跨境工具
 - [M123](https://www.m123.com)
 
 ## 界面优化(UI)
-### Elementor
-- [Unlimited Elements for Elementor](https://unlimited-elements.com/)
-- [破解插件](https://maichuguo.com/wordpress-plugins/)
-- [网站技术框架分析](https://www.wappalyzer.com/lookup/)
-- [WordPress主题检测器](https://www.wpthemedetector.com/)
+### Elementor编辑器
+- [Unlimited Elements(无限自定义组件)](https://unlimited-elements.com/)
+- [MaiChuGuo(破解插件)](https://maichuguo.com/wordpress-plugins/)
+
+### 网站检测工具
+- [Wappalyzer(框架检测器)](https://www.wappalyzer.com/lookup/)
+- [WPThemeDetector(主题检测器)](https://www.wpthemedetector.com/)
 
 ## 服务器优化
 ### 云主机
@@ -71,11 +73,17 @@
 - [RackNerd](https://www.racknerd.com/)
 ### 管理面板
 #### [1Panel](https://1panel.cn/)
-- 安装脚本：`bash -c "$(curl -sSL https://resource.fit2cloud.com/1panel/package/v2/quick_start.sh)"`
-- [1Panel安装教程](https://oyouoo.com/1panel-build-wordpress-for-beginners/)
+- 安装脚本
+```shell
+bash -c "$(curl -sSL https://resource.fit2cloud.com/1panel/package/v2/quick_start.sh)"
+```
+- [网站部署教程](https://oyouoo.com/1panel-build-wordpress-for-beginners/)
 - [Nginx反向代理启用资源HTTPS](https://zahui.fan/posts/990b6b62/)
 #### [FastPanel](https://fastpanel.direct/)
-- 安装脚本：`wget https://repo.fastpanel.direct/install_fastpanel.sh -O - | bash -`
+- 安装脚本
+```shell
+wget https://repo.fastpanel.direct/install_fastpanel.sh -O - | bash -
+```
 #### [Portainer](https://www.portainer.io/)
 - DockerCompose部署
 ```yaml

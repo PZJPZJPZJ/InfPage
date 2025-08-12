@@ -1,0 +1,1 @@
+import{_ as e,c as o,h as a,i as n,o as c}from"./app-G2O8SSYQ.js";const i={};function l(r,s){const t=n("Catalog");return c(),o("div",null,[a(t)])}const m=e(i,[["render",l]]),p=JSON.parse('{"path":"/wiki/","title":"Wiki","lang":"zh-CN","frontmatter":{"title":"Wiki"},"git":{},"filePathRelative":null}');export{m as comp,p as data};
