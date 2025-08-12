@@ -1,17 +1,87 @@
-# WordPress:建站平台
-## PHP部署
-1. 访问[WordPress官网](https://wordpress.org/download/)下载[WordPress](https://wordpress.org/latest.zip)
-2. 根据下列教程进行安装
-   - [1Panel安装教程](https://oyouoo.com/1panel-build-wordpress-for-beginners/)
+# WordPress:开源内容管理系统
+## 官方地址
+- [官网](https://wordpress.org/)
+- [WordPress下载](https://wordpress.org/latest.zip)
 
-## DockerCompose部署
+## 数据分析
+### Google
+- [Google Analytics谷歌分析](https://analytics.google.com/)
+- [Google Search Console谷歌网站控制台](https://search.google.com/search-console/welcome)
+- [Google Ads谷歌广告](https://ads.google.com/)
+- [Google Cloud API谷歌云接口](https://console.cloud.google.com/)
+- [Google Tag Manager谷歌代码跟踪](https://tagmanager.google.com/)
+# Microsoft
+- [Bing Webmaster Tools必应网站管理员工具](https://www.bing.com/webmasters/about)
+- [Microsoft Clarity微软分析](https://clarity.microsoft.com/)
+
+## 速度优化
+### 页面加载速度
+- 使用[Google PageSpeed Insights](https://pagespeed.web.dev/)测试页面存在问题
+- 使用[Webp2jpg](https://github.com/renzhezhilu/webp2jpg-online)转换格式再进行上传
+  - [Webp2jpg-Online](https://imagestool.com/webp2jpg-online/)
+- 安装WPRocket插件
+
+### 服务器响应速度
+- [SpeedVitals](https://speedvitals.com/)
+
+### 内容分发网络
+- [Cloudflare](https://www.cloudflare.com/)
+  - 缓存>Cache Rules
+    - 缓存所有内容：所有传入请求、缓存资格（符合缓存条件）、边缘 TTL（忽略缓存控制标头，使用此 TTL，1天）
+    - 绕过登录状态缓存：自定义筛选表达式`(http.cookie contains "wordpress_logged_in") or (http.request.uri contains "/wp-admin/")`、缓存资格（绕过缓存）、浏览器 TTL（绕过缓存）
+  - 安全性>安全规则
+    - 后台登录验证：当传入请求匹配时`(http.request.uri contains "/wp-login.php")`、然后采取措施（托管质询）
+    - 限制xmlrpc.php：当传入请求匹配时`(http.request.uri.path contains "/xmlrpc.php")`、然后采取措施（托管质询）
+  - 规则>页面规则
+    - 子域跳转www：URL`https://example.com/*`、则设置将为（转发URL、301永久重定向）、目标URL`https://www.example.com/$1`
+
+## 搜索引擎优化(SEO)
+### SEO插件RankMath
+
+### 翻译插件GTranslate/TranslatePress
+
+### 搜索引擎规则
+- [Google Search Status谷歌更新面版](https://status.search.google.com/)
+- [Backlinko教程](https://backlinko.com)
+- [黑帽SEO论坛](https://www.blackhatworld.com)
+
+### 关键词研究
+#### [Ahrefs](https://ahrefs.com/)
+
+#### [Semrush](https://www.semrush.com/)
+- [海外客](https://www.hiwaike.com/)
+- [SEO Club](https://dash.seogroup.club/)
+- [M123](https://www.m123.com)
+
+## 界面优化(UI)
+### Elementor
+- [Unlimited Elements for Elementor](https://unlimited-elements.com/)
+- [破解插件](https://maichuguo.com/wordpress-plugins/)
+- [网站技术框架分析](https://www.wappalyzer.com/lookup/)
+- [WordPress主题检测器](https://www.wpthemedetector.com/)
+
+## 服务器优化
+### 云主机
+- [Hostinger](https://www.hostinger.com/)
+- [Bandwagonhost](https://bandwagonhost.com/)
+- [Amazon Web Services](https://aws.amazon.com/)
+- [Oracle](https://www.oracle.com/cloud/free/)
+- [CloudCone](https://cloudcone.com/)
+- [Vultr](https://www.vultr.com/)
+- [RackNerd](https://www.racknerd.com/)
+### 管理面板
+#### [1Panel](https://1panel.cn/)
+- 安装脚本：`bash -c "$(curl -sSL https://resource.fit2cloud.com/1panel/package/v2/quick_start.sh)"`
+- [1Panel安装教程](https://oyouoo.com/1panel-build-wordpress-for-beginners/)
+- [Nginx反向代理启用资源HTTPS](https://zahui.fan/posts/990b6b62/)
+#### [FastPanel](https://fastpanel.direct/)
+- 安装脚本：`wget https://repo.fastpanel.direct/install_fastpanel.sh -O - | bash -`
+#### [Portainer](https://www.portainer.io/)
+- DockerCompose部署
 ```yaml
 services:
   database:
-    # We use a mariadb image which supports both amd64 & arm64 architecture
-    image: mariadb:10.6.4-focal
-    # If you really want to use MySQL, uncomment the following line
-    #image: mysql:8.0.27
+    image: mysql:8.0.27
     command: '--default-authentication-plugin=mysql_native_password'
     volumes:
       - ./db_data:/var/lib/mysql
@@ -37,56 +107,3 @@ services:
       - WORDPRESS_DB_PASSWORD=wordpress
       - WORDPRESS_DB_NAME=wordpress
 ```
-
-## 相关网站
-### 数据分析
-- [Google Analytics谷歌分析](https://analytics.google.com/)
-- [Google Search Console谷歌网站控制台](https://search.google.com/search-console/welcome)
-- [Google Ads谷歌广告](https://ads.google.com/)
-- [Google Tag Manager谷歌代码跟踪](https://tagmanager.google.com/)
-- [Microsoft Clarity微软分析](https://clarity.microsoft.com/)
-- [Hotjar访客录制](https://www.hotjar.com/)
-
-### 速度测试
-- [Google PageSpeed Insights](https://pagespeed.web.dev/)
-- [SpeedVitals](https://speedvitals.com/)
-
-### 最新资讯
-- [Google Search Status谷歌更新面版](https://status.search.google.com/)
-
-### SEO教程
-- [Backlinko教程](https://backlinko.com)
-- [黑帽SEO论坛](https://www.blackhatworld.com)
-
-### 相关工具
-- [图片格式转换](https://github.com/renzhezhilu/webp2jpg-online)
-- [海外客](https://www.hiwaike.com/)
-- [SEO Club](https://dash.seogroup.club/)
-- [M123](https://www.m123.com)
-- [破解插件](https://maichuguo.com/wordpress-plugins/)
-
-### 内容分发网络
-- [Cloudflare](https://www.cloudflare.com/)
-
-### 云主机
-- [Hostinger](https://www.hostinger.com/)
-- [Bandwagonhost](https://bandwagonhost.com/)
-- [Amazon Web Services](https://aws.amazon.com/)
-- [Oracle](https://www.oracle.com/cloud/free/)
-- [CloudCone](https://cloudcone.com/)
-- [Vultr](https://www.vultr.com/)
-- [RackNerd](https://www.racknerd.com/)
-
-### 相关插件
-- 页面编辑
-  - Elementor
-  - Unlimited Elements for Elementor
-- 在线商城
-  - WooCommerce
-- SEO优化
-  - YoastSEO
-  - RankMath
-- 速度优化
-  - WPRocket
-- 语言翻译
-  - GTranslate
