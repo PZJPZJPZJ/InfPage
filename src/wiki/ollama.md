@@ -1,0 +1,16 @@
+# Ollama:大语言模型部署工具
+## 下载地址
+- [Ollama-官网](https://ollama.com/)
+- [Ollama-Windows](https://ollama.com/download/OllamaSetup.exe)
+- [Ollama-macOS](https://ollama.com/download/Ollama-darwin.zip)
+
+## 在线模型接口
+- [OpenRouter](https://openrouter.ai/)
+
+## 在线大语言模型
+- [DeepSeek](https://www.deepseek.com/)
+- [ChatGPT](https://chatgpt.com/)
+- [Claude](https://claude.ai/)
+- [Gemini](https://gemini.google.com/)
+- [Grok](https://grok.com/)
+- [Copilot](https://copilot.microsoft.com/)

@@ -1,0 +1,13 @@
+# Yuzu:Switch模拟器
+## Windows版安装步骤
+1. 访问[EmuYuzu](https://emuyuzu.com/download/)下载[Yuzu](https://usc1.contabostorage.com/b14312a874cd4fb8812c5c8860564d3a:downloads/yuzu-1734.zip)并解压
+2. 访问<https://prodkeys.net/>下载密钥[ProdkKeys](https://prodkeys.net/yuzu-prod-keys-v3/)与固件[Firmware](https://prodkeys.net/latest-switch-firmwares-v3/)
+3. 打开软件菜单
+   - 便携模式则先在软件根目录创建user文件夹
+4. 选择工具菜单安装密钥文件与固件文件
+5. 选择游戏文件读取即可
+## Android版安装步骤
+1. 访问[EmuYuzu](https://emuyuzu.com/download/)下载[Yuzu](https://usc1.contabostorage.com/b14312a874cd4fb8812c5c8860564d3a:downloads/yuzu-emulator-d590cfb9d.apk)
+2. 访问<https://prodkeys.net/>下载密钥[ProdkKeys](https://prodkeys.net/yuzu-android-prod-keys-v1/)
+3. 打开APP在引导界面选择密钥文件
+4. 选择游戏文件读取即可
