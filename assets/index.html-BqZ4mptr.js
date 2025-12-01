@@ -1,0 +1,1 @@
+import{_ as e,c as a,m as o,q as n,a as c}from"./app-ADcj1_ey.js";const i={};function l(r,s){const t=n("Catalog");return c(),a("div",null,[o(t)])}const m=e(i,[["render",l]]),p=JSON.parse('{"path":"/wiki/","title":"Wiki","lang":"zh-CN","frontmatter":{"title":"Wiki"},"git":{},"filePathRelative":null}');export{m as comp,p as data};
