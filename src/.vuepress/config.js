@@ -33,6 +33,10 @@ export default defineUserConfig({
       {
         text: 'Tool',
         link: '/tool/',
+      },
+      {
+        text: 'Note',
+        link: '/note/',
       }
     ],
     sidebarDepth: 5,
