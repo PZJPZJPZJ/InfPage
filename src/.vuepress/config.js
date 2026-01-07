@@ -42,8 +42,9 @@ export default defineUserConfig({
     sidebarDepth: 5,
   }),
   alias: {
-    '@theme/VPHome.vue': path.resolve(__dirname,'./components/VPHome.vue'),
     '@theme/VPNavbar.vue': path.resolve(__dirname,'./components/VPNavbar.vue'),
+    '@theme/VPHome.vue': path.resolve(__dirname,'./components/VPHome.vue'),
+    '@theme/VPHomeFeatures.vue': path.resolve(__dirname,'./components/VPHomeFeatures.vue'),
   },
   bundler: viteBundler(),
   plugins: [
