@@ -1,0 +1,1 @@
+import{_ as e,c as o,m as a,q as n,o as l}from"./app-BPr07F46.js";const r={};function c(s,_){const t=n("Catalog");return l(),o("div",null,[a(t)])}const m=e(r,[["render",c]]),p=JSON.parse('{"path":"/note/flutter/","title":"Flutter","lang":"zh-CN","frontmatter":{"title":"Flutter"},"git":{},"filePathRelative":null}');export{m as comp,p as data};
