@@ -70,6 +70,7 @@ const features = computed(() => frontmatter.value.features ?? [])
   overflow: hidden;
   background-size: cover;
   background-position: center;
+  background-attachment: fixed;
   background-repeat: no-repeat;
   position: relative;
 
@@ -81,7 +82,7 @@ const features = computed(() => frontmatter.value.features ?? [])
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(240, 240, 240, 0.25);
     z-index: 0;
   }
 
@@ -97,10 +98,13 @@ const features = computed(() => frontmatter.value.features ?? [])
 .vp-feature-section-inner {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 2rem;
   padding: 2rem;
   position: relative;
   z-index: 1;
+  max-width: var(--homepage-width);
+  margin: 0 auto;
 
   @media (max-width: $MQMobile) {
     flex-direction: column;
@@ -182,6 +186,18 @@ const features = computed(() => frontmatter.value.features ?? [])
   }
 }
 
+// 功能项图标
+.vp-feature-icon {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  color: var(--vp-c-brand);
+  line-height: 1.5rem;
+}
+
 // 可点击链接样式
 .vp-feature-link {
   display: block;
@@ -192,8 +208,8 @@ const features = computed(() => frontmatter.value.features ?? [])
   transition: 0.2s ease;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(10px) saturate(150%);
+    background-color: rgba(240, 240, 240, 0.5);
+    backdrop-filter: blur(10px) saturate(200%);
     h3 {
       color: var(--vp-c-brand);
     }

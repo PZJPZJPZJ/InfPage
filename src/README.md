@@ -1,7 +1,7 @@
 ---
 home: true
 heroText: InfPage
-tagline: 无限可能的个人知识库
+tagline: 无限可能的知识库
 heroImage: https://theme-hope.vuejs.press/assets/image/box.svg
 actions:
   - text: 文档目录
@@ -16,76 +16,60 @@ features:
   - header: 装机必备与系统工具
     description: 涵盖系统安装、引导制作、分区管理及常用维护工具。
     image: https://theme-hope.vuejs.press/assets/image/advanced.svg
-    bgImage: https://theme-hope-assets.vuejs.press/bg/6-light.svg
+    bgImage: https://theme-reco.vuejs.press/bg.svg
     items:
       - title: Windows
-        icon: fa-brands fa-windows
         details: 微软 Windows 系统镜像与工具
         link: /wiki/windows.html
       - title: macOS
-        icon: fa-brands fa-apple
         details: 苹果 macOS 系统相关
         link: /wiki/macos.html
       - title: Ventoy
-        icon: compact-disc
         details: 新一代多系统启动盘制作工具
         link: /wiki/ventoy.html
       - title: BalenaEtcher
-        icon: compact-disc
         details: 跨平台镜像写入工具
         link: /wiki/balena-etcher.html
       - title: DiskGenius
-        icon: hard-drive
         details: 强大的硬盘分区与数据恢复工具
         link: /wiki/disk-genius.html
       - title: Dism++
-        icon: toolbox
         details: Windows 系统管理优化工具
         link: /wiki/dism.html
       - title: VMware
-        icon: server
         details: 强大的虚拟机软件
         link: /wiki/vmware.html
       - title: Bootice
-        icon: terminal
         details: 引导扇区维护与编辑工具
         link: /wiki/bootice.html
 
   - header: 硬件测试与跑分工具
     description: 显卡、CPU、内存、硬盘等硬件性能测试与稳定性检测工具。
-    image: https://theme-hope.vuejs.press/assets/image/markdown.svg
-    bgImage: https://theme-hope-assets.vuejs.press/bg/6-light.svg
+    image: https://theme-hope.vuejs.press/assets/image/ui.svg
+    bgImage: https://theme-reco.vuejs.press/bg.svg
     items:
       - title: AIDA64
-        icon: microchip
         details: 全能硬件检测与烤机工具
         link: /wiki/aida64.html
       - title: 3DMark
-        icon: chart-area
         details: 显卡与游戏性能基准测试
         link: /wiki/3d-mark.html
       - title: Cinebench
-        icon: film
         details: CPU 渲染能力基准测试
         link: /wiki/cinebench.html
       - title: FurMark
-        icon: fire
         details: 显卡稳定性压力测试(甜甜圈)
         link: /wiki/furmark.html
       - title: CrystalDiskInfo
-        icon: hard-drive
         details: 硬盘健康状态检测
         link: /wiki/crystal-disk.html
       - title: AS SSD
-        icon: stopwatch
         details: 固态硬盘读写速度测试
         link: /wiki/as-ssd-benchmark.html
       - title: MemTest
-        icon: memory
         details: 内存稳定性与可靠性测试
         link: /wiki/memtest-pro.html
       - title: HD Tune
-        icon: wave-square
         details: 硬盘坏道检测与性能测试
         link: /wiki/hd-tune-pro.html
 
