@@ -89,7 +89,7 @@ const features = computed(() => frontmatter.value.features ?? [])
   // 深色模式下的遮罩
   [data-theme='dark'] & {
     &::before {
-      background: rgba(0, 0, 0, 0.75);
+      background: rgba(10, 10, 10, 0.25);
     }
   }
 }
@@ -212,6 +212,11 @@ const features = computed(() => frontmatter.value.features ?? [])
     backdrop-filter: blur(10px) saturate(200%);
     h3 {
       color: var(--vp-c-brand);
+    }
+  }
+  [data-theme='dark'] & {
+    &:hover {
+      background-color: rgba(50, 50, 50, 0.5);
     }
   }
 }

@@ -78,16 +78,14 @@
       irm https://get.activated.win | iex
       ```
    - **WindowsVista及更高**：使用浏览器访问下列链接下载，解压`master.zip`文件，打开`All-In-One-Version`文件夹，运行`MAS_AIO.cmd`脚本
-     - [Github仓库](https://github.com/massgravel/Microsoft-Activation-Scripts)
+     - [官网](https://massgrave.dev/)
+     - [Github](https://github.com/massgravel/Microsoft-Activation-Scripts)
      - [仓库直链](https://github.com/massgravel/Microsoft-Activation-Scripts/archive/refs/heads/master.zip)
      - [官网直链](https://git.activated.win/massgrave/Microsoft-Activation-Scripts/archive/master.zip)
    
 2. 按照终端说明进行激活
-   ![MAS界面](https://massgrave.dev/assets/images/MAS_AIO-97ec1fa241d2b6ac4acf28047058b80e.png)
    - Windows激活输入`1`，等待图示激活完成
-     ![Windows完成激活](https://massgrave.dev/assets/images/MAS_HWID-a9c4253a385cf95c6969c8c58c553a14.png)
    - Office激活输入`2`，等待图示激活完成
-     ![Office完成激活](https://massgrave.dev/assets/images/MAS_Ohook-4938af47f633897c06bd3304bb73162b.png)
    - 若无法激活输入`4`进行KMS38激活（激活有效期至2038年）
 
 ### HEU KMS Activator

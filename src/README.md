@@ -13,16 +13,16 @@ actions:
     type: secondary
 
 features:
-  - header: 装机必备与系统工具
-    description: 涵盖系统安装、引导制作、分区管理及常用维护工具。
-    image: https://theme-hope.vuejs.press/assets/image/advanced.svg
+  - header: 装机系统工具
+    description: 系统安装、引导制作、分区管理及常用维护工具
+    image: null
     bgImage: https://theme-reco.vuejs.press/bg.svg
     items:
       - title: Windows
-        details: 微软 Windows 系统镜像与工具
+        details: 微软系统镜像与工具
         link: /wiki/windows.html
       - title: macOS
-        details: 苹果 macOS 系统相关
+        details: 黑苹果安装教程与工具
         link: /wiki/macos.html
       - title: Ventoy
         details: 新一代多系统启动盘制作工具
@@ -34,18 +34,18 @@ features:
         details: 强大的硬盘分区与数据恢复工具
         link: /wiki/disk-genius.html
       - title: Dism++
-        details: Windows 系统管理优化工具
+        details: Windows系统管理优化工具
         link: /wiki/dism.html
-      - title: VMware
-        details: 强大的虚拟机软件
-        link: /wiki/vmware.html
       - title: Bootice
         details: 引导扇区维护与编辑工具
         link: /wiki/bootice.html
+      - title: Office Tool Plus
+        details: Office安装工具
+        link: /wiki/office-tool-plus.html
 
   - header: 硬件测试与跑分工具
-    description: 显卡、CPU、内存、硬盘等硬件性能测试与稳定性检测工具。
-    image: https://theme-hope.vuejs.press/assets/image/ui.svg
+    description: 显卡、CPU、内存、硬盘等硬件性能测试与稳定性检测工具
+    image: null
     bgImage: https://theme-reco.vuejs.press/bg.svg
     items:
       - title: AIDA64
