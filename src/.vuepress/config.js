@@ -16,10 +16,8 @@ export default defineUserConfig({
   lang: 'zh-CN',
   title: 'InfPage',
   description: 'InfinityPage',
-  // 部署URL前缀
-  base: '/InfPage/',
-  // 编译输出目录
-  dest: 'docs/',
+  base: '/InfPage/',  // 部署URL前缀
+  dest: 'docs/',  // 编译输出目录
   head: [
     ['script', { type: 'text/javascript' }, clarityScript],
     ['link', { rel: 'icon', href: 'https://infinityicon.infinitynewtab.com/assets/logo-pro.png' }],
@@ -42,9 +40,10 @@ export default defineUserConfig({
     sidebarDepth: 5,
   }),
   alias: {
-    '@theme/VPNavbar.vue': path.resolve(__dirname,'./components/VPNavbar.vue'),
-    '@theme/VPHome.vue': path.resolve(__dirname,'./components/VPHome.vue'),
-    '@theme/VPHomeFeatures.vue': path.resolve(__dirname,'./components/VPHomeFeatures.vue'),
+    '@theme/VPNavbar.vue': path.resolve(__dirname, './components/VPNavbar.vue'),
+    '@theme/VPHome.vue': path.resolve(__dirname, './components/VPHome.vue'),
+    '@theme/VPHomeHero.vue': path.resolve(__dirname, './components/VPHomeHero.vue'),
+    '@theme/VPHomeFeatures.vue': path.resolve(__dirname, './components/VPHomeFeatures.vue'),
   },
   bundler: viteBundler(),
   plugins: [

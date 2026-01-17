@@ -267,37 +267,37 @@ proxy-groups:
 
   - name: 香港
     type: url-test
-    use: [proxy]
+    include-all: true
     filter: "(?i)香港"
     tolerance: 100
 
   - name: 台湾
     type: url-test
-    use: [proxy]
+    include-all: true
     filter: "(?i)台湾"
     tolerance: 100
 
   - name: 新加坡
     type: url-test
-    use: [proxy]
+    include-all: true
     filter: "(?i)新加坡"
     tolerance: 100
 
   - name: 美国
     type: url-test
-    use: [proxy]
+    include-all: true
     filter: "(?i)美国"
     tolerance: 100
 
   - name: 日本
     type: url-test
-    use: [proxy]
+    include-all: true
     filter: "(?i)日本"
     tolerance: 100
 
   - name: 韩国
     type: url-test
-    use: [proxy]
+    include-all: true
     filter: "(?i)韩国"
     tolerance: 100
 

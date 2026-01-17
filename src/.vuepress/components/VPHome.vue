@@ -21,12 +21,12 @@ import { Content } from 'vuepress/client'
 
 .vp-home {
   display: block;
-  max-width: var(--homepage-width);
+  // max-width: var(--homepage-width);
   margin: 0 auto;
   padding: var(--navbar-height) 2rem 0;
 
   @media (max-width: $MQMobileNarrow) {
-    padding-inline: 1.5rem;
+    padding-inline: 1rem;
   }
 
   [vp-content] {
