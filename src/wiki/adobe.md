@@ -44,7 +44,7 @@
 
 | 软件               | 描述         | 下载地址                                                                     |
 | ------------------ | ------------ | ---------------------------------------------------------------------------- |
-| Acrobat            | PDF编辑器    | [2024-磁力][Adobe-Acrobat-2025-BT] [2025-云盘][Adobe-Acrobat-2025-123yun]    |
+| Acrobat            | PDF编辑器    | [2024-磁力][Adobe-Acrobat-2024-BT] [2025-云盘][Adobe-Acrobat-2025-123yun]    |
 | After Effects      | 视频后期处理 | [2025-磁力][Adobe-After-Effects-2025-BT]                                     |
 | Animate            | 动画制作     | [2024-磁力][Adobe-Animate-2024-BT]                                           |
 | Audition           | 音频编辑     | [2025-磁力][Adobe-Audition-2025-BT]                                          |
