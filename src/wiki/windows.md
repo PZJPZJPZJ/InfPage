@@ -54,18 +54,18 @@
 [WinXP-SP3-x86]: ed2k://%7Cfile%7Czh-hans_windows_xp_professional_with_service_pack_3_x86_cd_x14-80404.iso%7C630239232%7CCD0900AFA058ACB6345761969CBCBFF4%7C/
 [Win2000-SP4-x86]: ed2k://%7Cfile%7CZRMPSEL_CN.iso%7C402690048%7C00D1BDA0F057EDB8DA0B29CF5E188788%7C/
 
-| System        | Version | x64                       | arm64                  | x86                       |
-| ------------- | ------- | ------------------------- | ---------------------- | ------------------------- |
-| Windows 11    | 25H2    | [BT][Win11-25H2-x64]      |                        |                           |
-| Windows 11    | 24H2    | [BT][Win11-24H2-x64]      | [BT][Win11-24H2-arm64] |                           |
-| Windows 11    | 23H2    | [BT][Win11-23H2-x64]      | [BT][Win11-23H2-arm64] |                           |
-| Windows 10    | 22H2    | [BT][Win10-22H2-x64]      | [BT][Win10-22H2-arm64] | [BT][Win10-22H2-x86]      |
-| Windows 8.1   | Update  | [ED2K][Win8.1-Update-x64] |                        | [ED2K][Win8.1-Update-x86] |
-| Windows 8     | RTM     | [ED2K][Win8-RTM-x64]      |                        | [ED2K][Win8-RTM-x86]      |
-| Windows 7     | SP1     | [BT][Win7-SP1-x64]        |                        | [BT][Win7-SP1-x86]        |
-| Windows Vista | SP2     | [ED2K][WinVista-SP2-x64]  |                        | [ED2K][WinVista-SP2-x86]  |
-| Windows XP    | SP3     |                           |                        | [ED2K][WinXP-SP3-x86]     |
-| Windows 2000  | SP4     |                           |                        | [ED2K][Win2000-SP4-x86]   |
+| 系统          | 版本   | x64                       | arm64                  | x86                       |
+| ------------- | ------ | ------------------------- | ---------------------- | ------------------------- |
+| Windows 11    | 25H2   | [BT][Win11-25H2-x64]      |                        |                           |
+| Windows 11    | 24H2   | [BT][Win11-24H2-x64]      | [BT][Win11-24H2-arm64] |                           |
+| Windows 11    | 23H2   | [BT][Win11-23H2-x64]      | [BT][Win11-23H2-arm64] |                           |
+| Windows 10    | 22H2   | [BT][Win10-22H2-x64]      | [BT][Win10-22H2-arm64] | [BT][Win10-22H2-x86]      |
+| Windows 8.1   | Update | [ED2K][Win8.1-Update-x64] |                        | [ED2K][Win8.1-Update-x86] |
+| Windows 8     | RTM    | [ED2K][Win8-RTM-x64]      |                        | [ED2K][Win8-RTM-x86]      |
+| Windows 7     | SP1    | [BT][Win7-SP1-x64]        |                        | [BT][Win7-SP1-x86]        |
+| Windows Vista | SP2    | [ED2K][WinVista-SP2-x64]  |                        | [ED2K][WinVista-SP2-x86]  |
+| Windows XP    | SP3    |                           |                        | [ED2K][WinXP-SP3-x86]     |
+| Windows 2000  | SP4    |                           |                        | [ED2K][Win2000-SP4-x86]   |
 
 - BT:需要使用[qBittorrent](/wiki/qbittorrent.md)或类似软件从[MSDN](https://next.itellyou.cn/)下载
 - ED2K:需要使用[eMule](https://www.emule-project.com/)或类似软件从[旧MSDN](https://msdn.itellyou.cn/)下载
@@ -111,7 +111,6 @@
 - [Network Interface Controllers](https://www.realtek.com/Download/Index?cate_id=194&menu_id=368)
 ### 驱动工具
 - [360驱动大师](https://www.lanzouu.com/iP2mQ1k0yrra)
-- [360驱动大师网卡版Part1](https://www.lanzouu.com/iZ1tI1k0ue9a)[360驱动大师网卡版Part2](https://www.lanzouu.com/iyvls1k0uhji)
 
 ## 调节工具
 ### 系统调节
