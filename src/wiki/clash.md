@@ -250,7 +250,7 @@ proxy-groups:
     type: select
     include-all: true
     exclude-filter: "(?i)订阅|官网|网站" # 可修改屏蔽节点
-    proxies: [美国,日本,韩国,故障转移,DIRECT]
+    proxies: [美国,日本,韩国,DIRECT]
 
   - name: 国内代理
     type: select
