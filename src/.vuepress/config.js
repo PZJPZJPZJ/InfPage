@@ -2,6 +2,7 @@ import { defaultTheme } from '@vuepress/theme-default'
 import { defineUserConfig } from 'vuepress/cli'
 import { viteBundler } from '@vuepress/bundler-vite'
 import { catalogPlugin } from '@vuepress/plugin-catalog'
+import { shikiPlugin } from '@vuepress/plugin-shiki'
 import path from 'path'
 
 const clarityScript = `
@@ -38,6 +39,9 @@ export default defineUserConfig({
       }
     ],
     sidebarDepth: 5,
+    themePlugins: {
+      prismjs: false, // 禁用默认主题的代码块解析，使用shiki代替
+    },
   }),
   alias: {
     '@theme/VPNavbar.vue': path.resolve(__dirname, './components/VPNavbar.vue'),
@@ -49,6 +53,12 @@ export default defineUserConfig({
   plugins: [
     catalogPlugin({
       level: 3,
+    }),
+    shikiPlugin({
+      themes: {
+        light: 'light-plus',
+        dark: 'dark-plus',
+      },
     }),
   ],
 })
