@@ -41,8 +41,8 @@
 ### 在线面板
 - [ZashBoard](https://board.zash.run.place/)
 - [MetaCubeXD](https://metacubex.github.io/metacubexd/)
-### DockerCompose(代理服务器模式)
-```yaml
+### 代理服务器模式
+```yaml title="Docker Compose"
 services:
   mihomo:
     container_name: mihomo
@@ -51,8 +51,8 @@ services:
     volumes:
       - ./config:/root/.config/mihomo #config.yaml配置文件目录
 ```
-### DockerCompose(旁路网关模式)
-```yaml
+### 旁路网关模式
+```yaml title="Docker Compose"
 services:
    mihomo:
       container_name: mihomo
@@ -87,10 +87,10 @@ networks:
 2. 修改`%USERPROFILE%\.config\mihomo\config.yaml`默认配置
 #### 后台启动
 1. 在`mihomo.exe`程序所在目录创建`mihomo.vbs`输入指令保存，右键`mihomo.exe`进入属性>兼容性>勾选以管理员身份运行此程序
-    ```vb
-    set ws=WScript.CreateObject("WScript.Shell")
-    ws.run "mihomo.exe",0
-    ```
+  ```vb title="mihomo.vbs"
+  set ws=WScript.CreateObject("WScript.Shell")
+  ws.run "mihomo.exe",0
+  ```
 2. 双击运行或创建快捷方式到启动文件夹开机自动执行
    - 用户开机启动文件夹:`%USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup`
    - 系统开机启动文件夹:`C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp`
@@ -142,7 +142,7 @@ networks:
 - [Mihomo Wiki](https://wiki.metacubex.one/)
 - [Mihomo GitHub](https://github.com/MetaCubeX/mihomo/blob/Alpha/docs/config.yaml)
 #### 常用配置
-```yaml
+```yaml title=".config\mihomo\config.yaml"
 port: 7890
 socks-port: 7891
 mixed-port: 7892
