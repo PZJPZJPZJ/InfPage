@@ -87,7 +87,7 @@ networks:
 2. 修改`%USERPROFILE%\.config\mihomo\config.yaml`默认配置
 #### 后台启动
 1. 在`mihomo.exe`程序所在目录创建`mihomo.vbs`输入指令保存，右键`mihomo.exe`进入属性>兼容性>勾选以管理员身份运行此程序
-    ```vbs
+    ```vb
     set ws=WScript.CreateObject("WScript.Shell")
     ws.run "mihomo.exe",0
     ```

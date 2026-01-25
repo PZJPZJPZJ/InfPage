@@ -70,7 +70,7 @@ py macrecovery.py -b Mac-937A206F2EE63C01 -m 00000000000000000 download
 ### Itlwm(Intel无线网卡驱动)
 编辑`/EFI/OC/Kexts/itlwm.kext/Contents/Info.plist`文件，找到`WiFiConfig`相关配置进行修改
 
-```plist
+```xml
 <key>WiFiConfig</key>
 <dict>
   <key>WiFi_1</key>

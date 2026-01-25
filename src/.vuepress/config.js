@@ -3,6 +3,7 @@ import { defineUserConfig } from 'vuepress/cli'
 import { viteBundler } from '@vuepress/bundler-vite'
 import { catalogPlugin } from '@vuepress/plugin-catalog'
 import { shikiPlugin } from '@vuepress/plugin-shiki'
+import { copyCodePlugin } from '@vuepress/plugin-copy-code'
 import path from 'path'
 
 const clarityScript = `
@@ -59,6 +60,10 @@ export default defineUserConfig({
         light: 'light-plus',
         dark: 'dark-plus',
       },
+      collapsedLines: true, // 折叠代码块
+    }),
+    copyCodePlugin({
+      showInMobile: true, // 移动端设备上显示代码复制按钮
     }),
   ],
 })
