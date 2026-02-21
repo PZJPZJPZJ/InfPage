@@ -7,7 +7,8 @@
         v-model="snString"
         @input="pwdString = calculate(snString)"
     />
-    <div class="pwdBox">{{ pwdString }}</div>
+    <div class="txtBox">SSH/Telnet密码:</div>
+    <div class="resultBox">{{ pwdString }}</div>
 </div>
 
 <script setup>
@@ -162,7 +163,7 @@ function calculate(sn) {
 .container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.6rem;
 }
 .inputBox {
   padding: 0.75rem;
@@ -170,7 +171,11 @@ function calculate(sn) {
   border-radius: 10px;
   font-size: 1rem;
 }
-.pwdBox {
+.txtBox {
+  font-size: 1rem;
+  font-weight: normal;
+}
+.resultBox {
   font-size: 2rem;
   font-weight: bold;
 }

@@ -9,8 +9,10 @@
     <option value="6">6位验证码</option>
     <option value="8">8位验证码</option>
 </select>
-<div class="otp">{{ otp }}</div>
-<div class="timer">剩余时间: {{ remain }} 秒</div>
+<div class="txtBox">验证码:</div>
+<div class="resultBox">{{ otp }}</div>
+<div class="txtBox">剩余时间:</div>
+<div class="resultBox">{{ remain }} 秒</div>
 </div>
 
 <script setup>
@@ -109,7 +111,7 @@ onUnmounted(() => {
 .container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.6rem;
 }
 .inputBox {
   padding: 0.75rem;
@@ -117,12 +119,12 @@ onUnmounted(() => {
   border-radius: 10px;
   font-size: 1rem;
 }
-.otp {
-  font-size: 2rem;
-  font-weight: bold;
-}
-.timer {
+.txtBox {
   font-size: 1rem;
   font-weight: normal;
+}
+.resultBox {
+  font-size: 2rem;
+  font-weight: bold;
 }
 </style>
