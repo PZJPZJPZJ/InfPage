@@ -1,1 +1,0 @@
-import{_ as t,c as o,m as n,q as a,o as c}from"./app-XWbdhIlT.js";const s={};function l(r,_){const e=a("Catalog");return c(),o("div",null,[n(e)])}const m=t(s,[["render",l]]),d=JSON.parse('{"path":"/note/nodejs/","title":"Nodejs","lang":"zh-CN","frontmatter":{"title":"Nodejs"},"git":{},"filePathRelative":null}');export{m as comp,d as data};
