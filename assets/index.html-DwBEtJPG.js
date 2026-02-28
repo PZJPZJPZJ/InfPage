@@ -1,1 +1,0 @@
-import{_ as o,c as e,m as a,q as n,o as l}from"./app-DHaGmeq-.js";const c={};function r(s,_){const t=n("Catalog");return l(),e("div",null,[a(t)])}const m=o(c,[["render",r]]),p=JSON.parse('{"path":"/tool/","title":"Tool","lang":"zh-CN","frontmatter":{"title":"Tool"},"git":{},"filePathRelative":null}');export{m as comp,p as data};
