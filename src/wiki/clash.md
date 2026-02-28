@@ -41,8 +41,23 @@
 ### 在线面板
 - [ZashBoard](https://board.zash.run.place/)
 - [MetaCubeXD](https://metacubex.github.io/metacubexd/)
-### 代理服务器模式
-```yaml title="Docker Compose"
+### Docker部署
+```yaml title="DockerCompose容器内部模式"
+services:
+  mihomo:
+    container_name: mihomo
+    image: metacubex/mihomo:latest
+    volumes:
+      - ./config:/root/.config/mihomo
+    networks:
+      internal: # 可与旁路网关模式结合使用(容器间通讯无需映射端口)
+    restart: unless-stopped
+networks:
+  internal:
+    name: internal # 接口名称
+    driver: bridge # 声明接口类型
+```
+```yaml title="DockerCompose代理服务器模式"
 services:
   mihomo:
     container_name: mihomo
@@ -52,13 +67,11 @@ services:
     network_mode: host
     restart: unless-stopped
 ```
-### 旁路网关模式
-```yaml title="Docker Compose"
+```yaml title="DockerCompose旁路网关模式"
 services:
   mihomo:
     container_name: mihomo
     image: metacubex/mihomo:latest
-    restart: unless-stopped
     dns:
       - 127.0.0.1 # fake-ip一定要声明为容器的dns(避免docker容器dns干扰)
     cap_add:
@@ -68,15 +81,12 @@ services:
     volumes:
       - ./config:/root/.config/mihomo
     networks:
-      internal:
       macvlan:
         ipv4_address: 192.168.0.2 # 本容器固定地址
     sysctls:
       net.ipv4.ip_forward: 1
+    restart: unless-stopped
 networks:
-  internal:
-    name: internal # bridge名称
-    driver: bridge # 可通过容器名相互通信(无需映射端口)
   macvlan:
     name: macvlan # macvlan名称
     driver: macvlan

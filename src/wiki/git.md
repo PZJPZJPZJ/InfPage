@@ -16,16 +16,18 @@
 ```shell
 # 查看配置和存储位置
 git config --list --show-origin
-# 在项目目录下运行，配置单个项目用户信息
-git config user.name "用户名"
-git config user.email "邮箱"
-# 配置全局用户信息
+# 仅配置当前项目：在项目目录下，删除"--global"并运行命令
+# 配置用户信息(GitHub禁止账户邮箱提交，访问Github > Setting > Email > NoReplyEmail中查看匿名邮箱配置)
 git config --global user.name "用户名"
 git config --global user.email "邮箱"
 # 开启文件名大小写敏感
 git config --global core.ignorecase false
+# 配置网络代理
+git config --global http.proxy http://127.0.0.1:7890
+git config --global https.proxy http://127.0.0.1:7890
+git config --global http.proxy socks5://127.0.0.1:7890
+git config --global https.proxy socks5://127.0.0.1:7890
 ```
-> GitHub禁止账户邮箱提交：访问Github>Setting>Email>NoReplyEmail中查看匿名邮箱配置
 
 ## 提交规范
 - fix：bug 修复
