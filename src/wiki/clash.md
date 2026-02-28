@@ -47,9 +47,10 @@ services:
   mihomo:
     container_name: mihomo
     image: metacubex/mihomo:latest
-    restart: always
     volumes:
       - ./config:/root/.config/mihomo #config.yaml配置文件目录
+    network_mode: host
+    restart: unless-stopped
 ```
 ### 旁路网关模式
 ```yaml title="Docker Compose"

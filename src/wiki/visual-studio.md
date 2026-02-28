@@ -8,15 +8,8 @@
 - [Windows Arm64](https://code.visualstudio.com/docs/?dv=win32arm64setup)
 - [macOS Universal](https://code.visualstudio.com/sha/download?build=stable&os=darwin-universal)
 
-## Cursor
-- [Cursor-官网](https://www.cursor.com)
-
-## Google Antigravity
-- [Antigravity-官网](https://antigravity.google/)
-- [Antigravity-Manager代理](https://github.com/lbjlaq/Antigravity-Manager)
-
-## 插件
-- [Claude Code for VS Code](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code)
+### VSCode插件
+- [Claude Code](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code)
 ```json title="VSCode > setting.json"
 "claudeCode.disableLoginPrompt": true,
 "claudeCode.environmentVariables": [
@@ -42,3 +35,27 @@
     },
 ],
 ```
+
+## Google Antigravity
+- [Antigravity-官网](https://antigravity.google/)
+
+### Antigravity工具
+- [Antigravity-Manager代理](https://github.com/lbjlaq/Antigravity-Manager)
+```yaml title="Docker Compose"
+services:
+  antigravity-manager:
+    image: lbjlaq/antigravity-manager:latest
+    container_name: antigravity-manager
+    ports:
+      - "8045:8045"
+    environment:
+      - API_KEY=sk-your-api-key
+      - WEB_PASSWORD=your-login-password
+      - ABV_MAX_BODY_SIZE=104857600
+    volumes:
+      - ./antigravity_tools:/root/.antigravity_tools
+    restart: unless-stopped
+```
+
+## Cursor
+- [Cursor-官网](https://www.cursor.com)
