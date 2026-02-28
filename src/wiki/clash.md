@@ -31,7 +31,7 @@
 - [OpenClash](https://github.com/vernesong/OpenClash)
 - [PassWall](https://github.com/xiaorouji/openwrt-passwall)
 
-## 核心安装教程
+## 核心客户端
 ### 核心下载
 - [Mihomo](https://github.com/MetaCubeX/mihomo)
   - [Windows x64镜像下载](https://gh-proxy.com/github.com/MetaCubeX/mihomo/releases/download/v1.19.13/mihomo-windows-amd64-v2-v1.19.13.zip)
@@ -41,8 +41,8 @@
 ### 在线面板
 - [ZashBoard](https://board.zash.run.place/)
 - [MetaCubeXD](https://metacubex.github.io/metacubexd/)
-### Docker部署
-```yaml title="DockerCompose容器内部模式"
+### 容器部署
+```yaml title="DockerCompose(容器内部模式)"
 services:
   mihomo:
     container_name: mihomo
@@ -53,11 +53,11 @@ services:
       internal: # 可与旁路网关模式结合使用(容器间通讯无需映射端口)
     restart: unless-stopped
 networks:
-  internal:
-    name: internal # 接口名称
-    driver: bridge # 声明接口类型
+  internal: # 创建接口(使用前必须先声明或创建)
+    name: internal # 接口名称(与其他容器共用)
+    driver: bridge
 ```
-```yaml title="DockerCompose代理服务器模式"
+```yaml title="DockerCompose(代理服务器模式)"
 services:
   mihomo:
     container_name: mihomo
@@ -67,7 +67,7 @@ services:
     network_mode: host
     restart: unless-stopped
 ```
-```yaml title="DockerCompose旁路网关模式"
+```yaml title="DockerCompose(旁路网关模式)"
 services:
   mihomo:
     container_name: mihomo
@@ -321,9 +321,9 @@ proxy-groups:
 rules:
   - GEOIP,private,DIRECT,no-resolve
   - GEOSITE,category-ai-chat-!cn,人工智能
-  - GEOSITE,github,国际代理
   - GEOSITE,google,国际代理
   - GEOSITE,bing,国际代理
+  - GEOSITE,github,国际代理
   - GEOSITE,cloudflare,国际代理
   - GEOSITE,twitter,国际代理
   - GEOSITE,telegram,国际代理
