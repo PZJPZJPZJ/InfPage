@@ -48,39 +48,44 @@ services:
     container_name: mihomo
     image: metacubex/mihomo:latest
     volumes:
-      - ./config:/root/.config/mihomo #config.yaml配置文件目录
+      - ./config:/root/.config/mihomo
     network_mode: host
     restart: unless-stopped
 ```
 ### 旁路网关模式
 ```yaml title="Docker Compose"
 services:
-   mihomo:
-      container_name: mihomo
-      image: metacubex/mihomo:latest
-      restart: unless-stopped
-      dns:
-         - 127.0.0.1 # 启用fake-ip则这里一定要声明为容器本身的dns(避免docker容器dns干扰)
-      cap_add:
-         - NET_ADMIN
-      devices:
-         - /dev/net/tun:/dev/net/tun
-      volumes:
-         - ./config:/root/.config/mihomo #config.yaml配置文件目录
-      networks:
-         macvlan:
-            ipv4_address: 192.168.0.2 #本容器分配地址
-      sysctls:
-         net.ipv4.ip_forward: 1
+  mihomo:
+    container_name: mihomo
+    image: metacubex/mihomo:latest
+    restart: unless-stopped
+    dns:
+      - 127.0.0.1 # fake-ip一定要声明为容器的dns(避免docker容器dns干扰)
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      - ./config:/root/.config/mihomo
+    networks:
+      internal:
+      macvlan:
+        ipv4_address: 192.168.0.2 # 本容器固定地址
+    sysctls:
+      net.ipv4.ip_forward: 1
 networks:
-   macvlan:
-      driver: macvlan
-      driver_opts:
-         parent: enp1s0 #本机出口网卡
-      ipam:
-         config:
-            - subnet: 192.168.0.0/24 #局域网子网
-              gateway: 192.168.0.1 #局域网关
+  internal:
+    name: internal # bridge名称
+    driver: bridge # 可通过容器名相互通信(无需映射端口)
+  macvlan:
+    name: macvlan # macvlan名称
+    driver: macvlan
+    driver_opts:
+      parent: enp1s0 # 本机出口网卡
+    ipam:
+      config:
+        - subnet: 192.168.0.0/24 # 局域网子网
+          gateway: 192.168.0.1 # 局域网关
 ```
 ### Windows(本地运行模式)
 #### 直接启动
@@ -158,6 +163,7 @@ lan-disallowed-ips:
 unified-delay: true
 tcp-concurrent: true
 external-controller: 127.0.0.1:9090 # 监听任意地址修改为0.0.0.0:9090
+external-ui: ui # Web面板地址为http://127.0.0.1:9090/ui
 external-ui-url: "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip"
 
 geodata-mode: true
@@ -251,7 +257,7 @@ proxy-groups:
     type: select
     include-all: true
     exclude-filter: "(?i)订阅|官网|网站" # 可修改屏蔽节点
-    proxies: [美国,日本,韩国,DIRECT]
+    proxies: [美国,DIRECT]
 
   - name: 国内代理
     type: select

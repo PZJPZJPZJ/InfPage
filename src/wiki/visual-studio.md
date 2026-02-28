@@ -46,15 +46,20 @@ services:
   antigravity-manager:
     image: lbjlaq/antigravity-manager:latest
     container_name: antigravity-manager
+    networks:
+      - internal # 使用容器自动创建的bridge网络(不使用代理可删除)
     ports:
-      - "8045:8045"
+      - "8045:8045" # 对外映射端口
     environment:
-      - API_KEY=sk-your-api-key
-      - WEB_PASSWORD=your-login-password
+      - API_KEY=sk-your-api-key # 自定义APIKey
+      - WEB_PASSWORD=your-login-password # 自定义Web登陆密码(删除可使用APIKey登录)
       - ABV_MAX_BODY_SIZE=104857600
     volumes:
       - ./antigravity_tools:/root/.antigravity_tools
     restart: unless-stopped
+networks:
+  internal:
+    external: true # 使用已创建的网络(可使用容器名连接代理使用)
 ```
 
 ## Cursor
