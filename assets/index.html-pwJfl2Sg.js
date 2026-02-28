@@ -1,1 +1,0 @@
-import{_ as e,c as o,e as a,r as n,o as c}from"./app-BB_mhFYe.js";const r={};function l(s,p){const t=n("Catalog");return c(),o("div",null,[a(t)])}const i=e(r,[["render",l]]),m=JSON.parse('{"path":"/note/php/","title":"Php","lang":"zh-CN","frontmatter":{"title":"Php"},"git":{},"filePathRelative":null}');export{i as comp,m as data};
