@@ -64,7 +64,7 @@ services:
     image: metacubex/mihomo:latest
     volumes:
       - ./config:/root/.config/mihomo
-    network_mode: host
+    network_mode: host # 使用宿主机网络(共用宿主机端口和IPv6)
     restart: unless-stopped
 ```
 ```yaml title="DockerCompose(旁路网关模式)"
