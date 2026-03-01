@@ -1,9 +1,15 @@
-# 小米路由器密码计算器
+# Xiaomi:小米相关工具
+## HyperOS:澎湃OS
+- [系统/应用更新下载-Telegram](https://t.me/VoyagerMIUIUpdate)
+
+## MiWiFi:小米路由器
+### 密码计算器
+先访问[路由器后台](http://miwifi.com/)，在首页`SN`处复制序列号(如`12345/A1B2C3D4E`)。
 <div class="container">
     <input
         class="inputBox"
         type="text"
-        placeholder="输入小米路由器SN(如12345/A1B2C3D4E)"
+        placeholder="输入小米路由器SN"
         v-model="snString"
         @input="pwdString = calculate(snString)"
     />
@@ -11,11 +17,39 @@
     <div class="resultBox">{{ pwdString }}</div>
 </div>
 
+### 固件下载器
+先访问[官网下载页](https://www.miwifi.com/miwifi_download.html)，找到对应型号固件下载按钮，在下载链接的文件名中找到它的型号代号(如miwifi_rc01_firmware_5a1e1_1.1.56.bin中的`RC01`)。
+<div class="container">
+    <input
+        class="inputBox"
+        type="text"
+        placeholder="输入路由器型号"
+        v-model="routerCode"
+    />
+    <select class="inputBox" v-model="firmwareType">
+      <option value="STA">稳定版 (STA)</option>
+      <option value="DEV">开发版 (DEV)</option>
+    </select>
+    <div class="txtBox">API 链接:</div>
+    <div v-if="routerCode" class="resultBox" style="font-size: 1.2rem; word-break: break-all;">
+      <a :href="`https://api.miwifi.com/upgrade/log/list?typeList=${routerCode}${firmwareType}`" target="_blank">https://api.miwifi.com/upgrade/log/list?typeList={{ routerCode }}{{ firmwareType }}</a>
+    </div>
+    <div v-else class="resultBox">--------</div>
+    <div v-if="routerCode">
+      点击上述链接访问数据，找到对应版本的 <code>url</code> 字段即可下载固件。
+    </div>
+</div>
+
+
+
 <script setup>
 import { ref } from "vue";
 
 const snString = ref("");
 const pwdString = ref("--------");
+
+const routerCode = ref("");
+const firmwareType = ref("STA");
 
 function calculate(sn) {
   const r1d_salt = "A2E371B0-B34B-48A5-8C40-A7133F3B5D88";
@@ -163,7 +197,7 @@ function calculate(sn) {
 .container {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.8rem;
 }
 .inputBox {
   padding: 0.75rem;
@@ -176,7 +210,7 @@ function calculate(sn) {
   font-weight: normal;
 }
 .resultBox {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: bold;
 }
 </style>

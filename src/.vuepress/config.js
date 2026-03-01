@@ -31,10 +31,6 @@ export default defineUserConfig({
         link: '/wiki/',
       },
       {
-        text: 'Tool',
-        link: '/tool/',
-      },
-      {
         text: 'Note',
         link: '/note/',
       }
