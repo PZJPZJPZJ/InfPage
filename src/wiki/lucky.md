@@ -17,7 +17,6 @@ services:
 ## 相关仓库
 - [Natter](https://github.com/MikeWang000000/Natter)
 - [NATMap](https://github.com/heiher/natmap)
-- [N4](https://github.com/MikeWang000000/n4)
 - [DDNS Go](https://github.com/jeessy2/ddns-go)
 - [EasyTier](https://github.com/EasyTier/EasyTier)
 
@@ -26,11 +25,12 @@ services:
 - [恩山无线论坛](https://www.right.com.cn/forum/)
 
 ## 打洞端口查询工具
+手动输入或读取URL参数name，解析含SRV/TXT/IP4P(AAAA)端口记录的域名，自动获取打洞端口链接
 <div class="container">
   <input
       class="inputBox"
       type="text"
-      placeholder="输入需要查询的域名(Enter)(读取URL参数name)"
+      placeholder="输入需要查询的域名(Enter)"
       v-model="name"
       @keyup.enter="updateResults"
   />

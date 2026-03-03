@@ -3,14 +3,6 @@ home: true
 heroText: InfPage
 tagline: 无限可能的文档库
 heroImage: https://theme-hope.vuejs.press/assets/image/box.svg
-actions:
-  - text: 文档目录
-    link: /wiki/
-    type: primary
-
-  - text: 小工具
-    link: /tool/
-    type: secondary
 
 features:
   - header: 系统装机工具
