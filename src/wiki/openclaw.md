@@ -1,4 +1,4 @@
-# OpenClaw
+# OpenClaw:AI智能体网关
 ## 官网地址
 - [OpenClaw-官网](https://openclaw.ai/)
 - [OpenClaw-Github](https://github.com/openclaw/openclaw)
@@ -47,18 +47,26 @@ networks:
 
 ```json title="openclaw.json"
 {
-  "commands": {
-    "native": "auto",
-    "nativeSkills": "auto",
-    "restart": true,
-    "ownerDisplay": "raw"
-  },
-  "agents": {
-    "defaults": {
-      "model": {
-        "primary": "custom/gpt-5" // 填写设置的提供商名称和模型代号
-      },
-      "userTimezone": "Asia/Shanghai"
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "custom": { // 模型提供商名称(任意设置)
+        "baseUrl": "https://api.openai.com/v1", // 填写API地址
+        "apiKey": "sk-...", // 填写API Key
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "gpt-5", // 填写模型代号
+            "name": "GPT 5", // 模型名称(任意设置)
+            "input": [
+              "text",
+              "image"
+            ],
+            "contextWindow": 128000,
+            "maxTokens": 4096
+          }
+        ]
+      }
     }
   },
   "browser": {
@@ -68,42 +76,37 @@ networks:
     "headless": true,
     "noSandbox": true
   },
-  "gateway": {
-    "auth": {
-      "mode": "token",
-      "token": "YOUR_OPENCLAW_TOKEN" // OpenClaw 后台访问 Token
-    },
-    "bind": "lan",
-    "controlUi": {
-      "dangerouslyAllowHostHeaderOriginFallback": true,
-      "dangerouslyDisableDeviceAuth": true
-    },
-    "mode": "local",
-    "port": 18789
-  },
-  "models": {
-    "mode": "merge",
-    "providers": {
-      "custom": { // 模型提供商名称(任意设置)
-        "api": "openai-completions",
-        "apiKey": "sk-...", // 填写API Key
-        "baseUrl": "https://api.openai.com/v1", // 填写API基础地址
-        "models": [
-          {
-            "id": "gpt-5", // 填写模型代号
-            "name": "GPT 5", // 模型名称(任意设置)
-            "contextWindow": 128000,
-            "maxTokens": 4096,
-            "input": ["text", "image"]
-          }
-        ]
-      }
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "custom/gpt-5" // 填写设置的提供商名称和模型代号
+      },
+      "userTimezone": "Asia/Shanghai"
     }
   },
   "tools": {
     "profile": "full",
     "sessions": {
       "visibility": "all"
+    }
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "lan",
+    "controlUi": {
+      "dangerouslyAllowHostHeaderOriginFallback": true,
+      "dangerouslyDisableDeviceAuth": true
+    },
+    "auth": {
+      "mode": "token",
+      "token": "YOUR_OPENCLAW_TOKEN" // OpenClaw 后台访问 Token
     }
   }
 }
