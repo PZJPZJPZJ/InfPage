@@ -42,7 +42,7 @@
 - [ZashBoard](https://board.zash.run.place/)
 - [MetaCubeXD](https://metacubex.github.io/metacubexd/)
 ### 容器部署
-```yaml title="DockerCompose(容器内部模式)"
+```yaml title="DockerCompose(容器间通信模式)"
 services:
   mihomo:
     container_name: mihomo
