@@ -1,6 +1,6 @@
 # Visual Studio:微软集成开发环境
 ## Visual Studio
-- [VisualStudio-官网](https://visualstudio.microsoft.com)
+- [Visual Studio-官网](https://visualstudio.microsoft.com)
 
 ## Visual Studio Code
 - [VSCode-官网](https://code.visualstudio.com/Download)
@@ -41,7 +41,7 @@
 
 ### Antigravity工具
 - [Antigravity-Manager代理](https://github.com/lbjlaq/Antigravity-Manager)
-```yaml title="Docker Compose"
+```yaml title="Docker Compose(内部桥接共享代理)"
 services:
   antigravity-manager:
     image: lbjlaq/antigravity-manager:latest
@@ -59,7 +59,21 @@ services:
     restart: unless-stopped
 networks:
   internal:
-    external: true # 使用已创建的网络(可使用容器名连接代理使用)
+    external: true # 使用已创建的网络(可使用容器名连接代理如`http://mihomo:7890`)
+```
+```yaml title="Docker Compose(复用其他容器网络)"
+services:
+  antigravity-manager:
+    image: lbjlaq/antigravity-manager:latest
+    container_name: antigravity-manager
+    network_mode: container:mihomo # 复用其他容器macvlan(同Compose则使用`network_mode: service:mihomo`)
+    environment:
+      - API_KEY=sk-your-api-key # 自定义APIKey
+      - WEB_PASSWORD=your-login-password # 自定义Web登陆密码(删除可使用APIKey登录)
+      - ABV_MAX_BODY_SIZE=104857600
+    volumes:
+      - ./antigravity_tools:/root/.antigravity_tools
+    restart: unless-stopped
 ```
 
 ## Cursor

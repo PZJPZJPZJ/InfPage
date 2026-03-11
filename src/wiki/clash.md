@@ -92,6 +92,7 @@ networks:
     driver: macvlan
     driver_opts:
       parent: enp1s0 # 本机出口网卡
+    enable_ipv6: true # 开启IPv6
     ipam:
       config:
         - subnet: 192.168.0.0/24 # 局域网子网
@@ -172,8 +173,8 @@ lan-disallowed-ips:
   - ::/0
 unified-delay: true
 tcp-concurrent: true
-external-controller: 127.0.0.1:9090 # 监听任意地址修改为0.0.0.0:9090
-external-ui: ui # Web面板地址为http://127.0.0.1:9090/ui
+external-controller: 127.0.0.1:9090 # 监听任意地址修改为`0.0.0.0:9090`
+external-ui: ui # Web面板地址路径为`/ui`
 external-ui-url: "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip"
 
 geodata-mode: true
