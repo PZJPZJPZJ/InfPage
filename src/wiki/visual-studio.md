@@ -49,7 +49,7 @@ services:
     networks:
       - internal # 使用容器自动创建的bridge网络(不使用代理可删除)
     ports:
-      - "8045:8045" # 对外映射端口
+      - 8045:8045 # 对外映射端口
     environment:
       - API_KEY=sk-your-api-key # 自定义APIKey
       - WEB_PASSWORD=your-login-password # 自定义Web登陆密码(删除可使用APIKey登录)
@@ -59,7 +59,7 @@ services:
     restart: unless-stopped
 networks:
   internal:
-    external: true # 使用已创建的网络(可使用容器名连接代理如`http://mihomo:7890`)
+    external: true # 使用已创建的网络
 ```
 ```yaml title="Docker Compose(复用其他容器网络)"
 services:

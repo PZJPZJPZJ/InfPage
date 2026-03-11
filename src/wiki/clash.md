@@ -50,7 +50,10 @@ services:
     volumes:
       - ./config:/root/.config/mihomo
     networks:
-      internal: # 可与旁路网关模式结合使用(容器间通讯无需映射端口)
+      internal: # 可与旁路网关模式结合使用
+    ports: # 仅容器间通讯可删除无需映射(使用容器名代替IP/Domain)
+      - 7892:7892
+      - 9090:9090
     restart: unless-stopped
 networks:
   internal: # 创建接口(使用前必须先声明或创建)
