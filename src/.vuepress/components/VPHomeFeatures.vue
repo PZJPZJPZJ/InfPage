@@ -4,9 +4,22 @@ import { useData } from '@theme/useData'
 import { computed } from 'vue'
 import type { DefaultThemeHomePageFrontmatter } from '@vuepress/theme-default/lib/shared/index.js'
 
+interface FeatureSection {
+  header?: string
+  description?: string
+  items?: FeatureItem[]
+}
+
+interface FeatureItem {
+  title: string
+  details: string
+  link?: string
+  icon?: string
+}
+
 const { frontmatter } = useData<DefaultThemeHomePageFrontmatter>()
 
-const features = computed(() => frontmatter.value.features ?? [])
+const features = computed(() => frontmatter.value.features as FeatureSection[] ?? [])
 </script>
 
 <template>
@@ -16,15 +29,9 @@ const features = computed(() => frontmatter.value.features ?? [])
       v-for="(section, sectionIndex) in features" 
       :key="sectionIndex" 
       class="vp-feature-section"
-      :style="section.bgImage ? { backgroundImage: `url(${section.bgImage})` } : {}"
     >
       <div class="vp-feature-section-inner">
-        <!-- 左侧：图片 -->
-        <div class="vp-feature-image" v-if="section.image">
-          <img :src="section.image" :alt="section.header || 'feature image'" />
-        </div>
-        
-        <!-- 右侧：内容区域 -->
+        <!-- 内容区域 -->
         <div class="vp-feature-content">
           <!-- 板块头部 -->
           <div class="vp-feature-section-header">
@@ -34,14 +41,20 @@ const features = computed(() => frontmatter.value.features ?? [])
           <!-- 板块内的功能项 -->
           <div v-if="section.items && section.items.length" class="vp-feature-items">
             <div v-for="item in section.items" :key="item.title" class="vp-feature">
-              <VPAutoLink v-if="item.link" :config="{ link: item.link, text: '' }" class="vp-feature-link">
-                <h3>{{ item.title }}</h3>
-                <p>{{ item.details }}</p>
+              <VPAutoLink :config="{ link: item.link ?? '', text: '' }" class="vp-feature-link">
+                <img 
+                  v-if="item.icon"
+                  :src="item.icon.startsWith('https') ? item.icon : `https://favicon.im/${item.icon}`"
+                  :alt="item.title"
+                  class="vp-feature-icon"
+                  @error="($event: Event) => (($event.target as HTMLImageElement).style.visibility = 'hidden')"
+                  loading="lazy"
+                  />
+                <div class="vp-feature-text">
+                  <h3>{{ item.title }}</h3>
+                  <p>{{ item.details }}</p>
+                </div>
               </VPAutoLink>
-              <div v-else class="vp-feature-link">
-                <h3>{{ item.title }}</h3>
-                <p>{{ item.details }}</p>
-              </div>
             </div>
           </div>
         </div>
@@ -66,76 +79,18 @@ const features = computed(() => frontmatter.value.features ?? [])
 // 每个板块
 .vp-feature-section {
   width: 100%;
-  border-radius: 10px;
-  overflow: hidden;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  position: relative;
-
-  // 背景遮罩，提高文字可读性
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(240, 240, 240, 0.25);
-    z-index: 0;
-  }
-
-  // 深色模式下的遮罩
-  [data-theme='dark'] & {
-    &::before {
-      background: rgba(10, 10, 10, 0.25);
-    }
-  }
 }
 
-// 板块内部容器 - 左右布局
+// 板块内部容器
 .vp-feature-section-inner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  padding: 2rem;
-  position: relative;
-  z-index: 1;
+  padding: 0;
   max-width: var(--homepage-width);
   margin: 0 auto;
-
-  @media (max-width: $MQMobile) {
-    flex-direction: column;
-    padding: 1.5rem;
-  }
 }
 
-// 左侧：图片区域
-.vp-feature-image {
-  flex: 0 0 auto;
-  width: 20%;
-  max-width: 200px; // 限制最大宽度，防止超宽屏上图片过大
-
-  img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    object-fit: cover;
-  }
-
-  @media (max-width: $MQMobile) {
-    width: 50%;
-    max-width: 150px;
-    margin: 0 auto;
-  }
-}
-
-// 右侧：内容区域
+// 内容区域
 .vp-feature-content {
-  flex: 1;
-  min-width: 0;
+  width: 100%;
 }
 
 // 板块头部
@@ -170,37 +125,41 @@ const features = computed(() => frontmatter.value.features ?? [])
 
 // 单个功能项
 .vp-feature {
+  // 文本区域
+  .vp-feature-text {
+    flex: 1;
+    min-width: 0;
+  }
 
   h3 {
     padding-bottom: 0;
     border-bottom: none;
     font-weight: 500;
     font-size: 1.1rem;
-    margin-bottom: 0.25rem;
+    margin: 0.25rem;
   }
 
   p {
     color: var(--vp-c-text-mute);
-    margin: 0;
+    margin: 0.25rem;
     font-size: 0.9rem;
   }
 }
 
 // 功能项图标
 .vp-feature-icon {
-  display: inline-block;
+  flex-shrink: 0;
   width: 1.5rem;
   height: 1.5rem;
-  margin-right: 0.5rem;
-  margin-bottom: 0.5rem;
-  font-size: 1.5rem;
-  color: var(--vp-c-brand);
-  line-height: 1.5rem;
+  margin-right: 0.75rem;
+  border-radius: 4px;
+  object-fit: contain;
 }
 
 // 可点击链接样式
 .vp-feature-link {
-  display: block;
+  display: flex;
+  align-items: flex-start;
   text-decoration: none;
   color: inherit;
   padding: 0.75rem;

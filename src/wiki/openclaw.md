@@ -20,40 +20,22 @@ services:
       internal: # 使用已创建的网络
     ports:
       - 18789:18789
-      - 18790:18790
     restart: unless-stopped
 networks:
   internal:
     external: true
 ```
-```yaml title="DockerCompose(官方仓库)"
-services:
-  openclaw:
-    container_name: openclaw
-    image: ghcr.io/openclaw/openclaw:latest
-    volumes:
-      - ./openclaw:/home/node/.openclaw
-    networks:
-      internal: # 使用已创建的网络
-    ports:
-      - 18789:18789
-      - 18790:18790
-    restart: unless-stopped
-networks:
-  internal:
-    external: true
-```
-打开映射目录`./openclaw`编辑配置文件
+打开映射目录编辑配置文件
 
-```json title="openclaw.json"
+```json title="./openclaw/openclaw.json"
 {
   "models": {
     "mode": "merge",
     "providers": {
       "custom": { // 模型提供商名称(任意设置)
-        "baseUrl": "https://api.openai.com/v1", // 填写API地址
-        "apiKey": "sk-...", // 填写API Key
-        "api": "openai-completions",
+        "baseUrl": "https://api.openai.com/v1", // 填写模型API地址
+        "apiKey": "sk-...", // 填写模型APIKey
+        "api": "openai-completions", //填写模型请求类型
         "models": [
           {
             "id": "gpt-5", // 填写模型代号
@@ -105,10 +87,9 @@ networks:
       "dangerouslyDisableDeviceAuth": true
     },
     "auth": {
-      "mode": "token",
+      "mode": "token", // 使用`http://YOUR_IP_OR_DOMAIN:18789/?token=YOUR_OPENCLAW_TOKEN`访问面板
       "token": "YOUR_OPENCLAW_TOKEN" // OpenClaw 后台访问 Token
     }
   }
 }
 ```
-使用<http://YOUR_IP_OR_DOMAIN:18789/?token=YOUR_OPENCLAW_TOKEN>访问面板

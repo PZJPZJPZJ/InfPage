@@ -38,6 +38,7 @@ export default defineUserConfig({
     sidebarDepth: 5,
     themePlugins: {
       prismjs: false, // 禁用默认主题的代码块解析，使用shiki代替
+      copyCode: false, // 禁用默认主题的代码复制插件，使用手动配置的版本
     },
   }),
   alias: {
