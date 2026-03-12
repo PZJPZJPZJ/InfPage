@@ -260,10 +260,10 @@ features:
         details: SSH终端客户端
         link: /wiki/putty.html
         icon: putty.org
-      - title: Android Debug Bridge
-        details: Android开发调试工具
-        link: /wiki/android-debug-bridge.html
-        icon: developer.android.com
+      - title: Android相关工具
+        details: 安卓工具与资讯
+        link: /wiki/android.html
+        icon: developer.android.google.cn
       - title: Unity
         details: 游戏引擎与开发平台
         link: /wiki/unity.html

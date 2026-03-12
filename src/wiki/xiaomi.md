@@ -1,7 +1,4 @@
-# Xiaomi:小米相关工具
-## HyperOS:澎湃OS
-- [系统/应用更新下载-Telegram](https://t.me/VoyagerMIUIUpdate)
-
+# Xiaomi:小米生态链工具
 ## MiWiFi:小米路由器
 ### 密码计算器
 先访问[路由器后台](http://miwifi.com/)，在首页`SN`处复制序列号(如`12345/A1B2C3D4E`)。
