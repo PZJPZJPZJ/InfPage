@@ -103,14 +103,15 @@ const presetServers = [
   "stun:stun.qq.com:3478",
   "stun:stun.miwifi.com:3478",
   "stun:stun.syncthing.net:3478",
+  "stun:stun.stunprotocol.org:3478",
+  "stun:stun.stun.hot-chilli.net:3478",
+  "stun:stun.internetcalls.com:3478",
+  "stun:stun.cloudflare.com:3478",
   "stun:stun.l.google.com:19302",
   "stun:stun1.l.google.com:19302",
   "stun:stun2.l.google.com:19302",
   "stun:stun3.l.google.com:19302",
   "stun:stun4.l.google.com:19302",
-  "stun:stun.stunprotocol.org:3478",
-  "stun:stun.twilio.com:3478",
-  "stun:stun.cloudflare.com:3478",
 ];
 
 const selectedServer = ref("stun:stun.qq.com:3478");
@@ -571,7 +572,6 @@ async function startTest() {
 .result-title {
   font-weight: 600;
   color: var(--vp-c-accent);
-  font-size: 1.1rem;
 }
 
 .result-item {
@@ -615,14 +615,9 @@ async function startTest() {
   margin: 0;
 }
 
-.log-section {
-  margin-top: 1rem;
-}
-
 .log-section h3 {
   margin-bottom: 0.5rem;
   color: var(--vp-c-text-2);
-  font-size: 0.9rem;
 }
 
 .log-box {
