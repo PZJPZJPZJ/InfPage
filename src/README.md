@@ -51,11 +51,7 @@ features:
       - title: Dism++
         details: Windows系统管理优化工具
         link: /wiki/dism.html
-        icon: chuyu.me
-      - title: DISM
-        details: Windows系统部署维护工具
-        link: /wiki/dism.html
-        icon: microsoft.com
+        icon: https://raw.githubusercontent.com/Chuyu-Team/Dism-Multi-language/refs/heads/master/www.chuyu.me/images/logo.png
       - title: Bootice
         details: 引导扇区维护与编辑工具
         link: /wiki/bootice.html
@@ -143,7 +139,7 @@ features:
       - title: fnOS
         details: 飞牛NAS系统
         link: /wiki/fnos.html
-        icon: fnos.com
+        icon: www.fnnas.com
       - title: OpenWrt
         details: 路由器固件系统
         link: /wiki/open-wrt.html
@@ -156,10 +152,6 @@ features:
         details: 开源照片与视频管理
         link: /wiki/immich.html
         icon: immich.app
-      - title: Vaultwarden
-        details: 密码管理服务
-        link: /wiki/open-media-vault.html
-        icon: vaultwarden.com
       - title: VMware
         details: 虚拟化软件
         link: /wiki/vmware.html
@@ -179,7 +171,7 @@ features:
       - title: SoftEther VPN
         details: 虚拟私有网络软件
         link: /wiki/softether-vpn.html
-        icon: softether.org
+        icon: www.softether.org
       - title: Tail Scale
         details: 点到点VPN网络
         link: /wiki/tail-scale.html
@@ -224,10 +216,6 @@ features:
         details: 开源种子下载工具
         link: /wiki/qbittorrent.html
         icon: qbittorrent.org
-      - title: UPnP Helper
-        details: UPnP设备辅助工具
-        link: /wiki/open-list.html
-        icon: openlist.top
 
   - header: 开发工具
     description: IDE、版本控制、数据库、编程及框架工具
@@ -241,9 +229,9 @@ features:
         link: /wiki/jetbrains.html
         icon: jetbrains.com
       - title: Visual Studio
-        details: 微soft开发环境
+        details: 微软开发工具
         link: /wiki/visual-studio.html
-        icon: microsoft.com
+        icon: code.visualstudio.com
       - title: MySQL
         details: 开源关系型数据库
         link: /wiki/mysql.html
@@ -275,7 +263,7 @@ features:
       - title: VuePress
         details: Vue驱动的静态网站生成器
         link: /wiki/vue-press.html
-        icon: vuepress.vuejs.org
+        icon: https://vuepress.vuejs.org/images/hero.png
 
   - header: 多媒体编辑
     description: 视频剪辑、音频编辑、设计与创意工具
@@ -337,7 +325,7 @@ features:
         link: /wiki/sovits.html
         icon: github.com
       - title: Audio Tuner
-        details: 音频调试与优化工具
+        details: 声音频率检测器
         link: /wiki/audio-tuner.html
         icon: audiotuner.io
 
@@ -375,11 +363,11 @@ features:
       - title: Ryujinx
         details: Nintendo Switch模拟器
         link: /wiki/ryujinx.html
-        icon: ryujinx.org
+        icon: ryujinx-emulator.com
       - title: Yuzu
         details: Nintendo Switch模拟器
         link: /wiki/yuzu.html
-        icon: yuzu-emu.org
+        icon: emuyuzu.com
       - title: PSP Infinity
         details: PSP终极破解工具
         link: /wiki/psp-infinity.html
@@ -472,10 +460,10 @@ features:
         details: Android屏幕投影工具
         link: /wiki/scrcpy.html
         icon: github.com
-      - title: Deskreen
-        details: 屏幕分享工具
+      - title: OpenList
+        details: 网盘挂载工具
         link: /wiki/open-list.html
-        icon: deskreen.com
+        icon: doc.oplist.org
 
   - header: 压缩与备份
     description: 文件压缩、备份与转换工具
@@ -544,6 +532,10 @@ features:
         details: AI应用开发平台
         link: /wiki/dify.html
         icon: dify.ai
+      - title: OpenClaw
+        details: AI智能体网关
+        link: /wiki/openclaw.html
+        icon: openclaw.ai
       - title: Stable Diffusion
         details: 开源图像生成模型
         link: /wiki/stable-diffusion.html
@@ -560,7 +552,7 @@ features:
         details: iOS越狱工具
         link: /wiki/checkra1n.html
         icon: checkra.in
-      - title: Mobile Transfer Tool
+      - title: MT Manager
         details: MT管理器
         link: /wiki/mt-manager.html
         icon: github.com
@@ -625,7 +617,7 @@ features:
         link: /wiki/vlmcsd.html
         icon: github.com
       - title: Analiti
-        details: 数据分析工具
+        details: WiFi分析工具
         link: /wiki/analiti.html
         icon: github.com
 footer: MIT Licensed | Copyright PZJ
