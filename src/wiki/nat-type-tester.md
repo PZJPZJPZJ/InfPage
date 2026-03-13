@@ -1,11 +1,11 @@
 # NatTypeTester:网络地址转换类型测试
 ## 下载地址
-- <https://github.com/HMBSbige/NatTypeTester>
+- [NatTypeTester-Github](https://github.com/HMBSbige/NatTypeTester)
 
 ## 在线检测器
 <div class="container">
   <div class="config-section">
-    <h3>STUN 服务器</h3>
+    <span>STUN 服务器</span>
     <div class="server-select">
       <select v-model="selectedServer" @change="onServerChange" class="select-box">
         <option v-for="server in presetServers" :key="server" :value="server">
@@ -28,7 +28,7 @@
   </button>
 
   <div class="result-section">
-    <h3>检测结果</h3>
+    <span>检测结果</span>
     <div class="result-grid">
       <div class="result-card">
         <div class="result-header">
@@ -88,7 +88,7 @@
   </div>
 
   <div class="log-section">
-    <h3>检测日志</h3>
+    <span>检测日志</span>
     <div class="log-box">
       <p v-if="log.length === 0" class="log-item log-placeholder">点击"开始检测"按钮开始检测...</p>
       <p v-for="(item, index) in log" :key="index" class="log-item">{{ item }}</p>
@@ -478,11 +478,6 @@ async function startTest() {
   gap: 0.5rem;
 }
 
-.label {
-  font-weight: 600;
-  color: var(--vp-c-text-1);
-}
-
 .server-select {
   display: flex;
   gap: 0.5rem;
@@ -523,16 +518,12 @@ async function startTest() {
 }
 
 .test-btn {
-  margin: 20px 0;
   padding: 10px 20px;
   border: 1px solid var(--vp-c-text);
   border-radius: 6px;
   color: var(--vp-c-text);
   cursor: pointer;
   font-size: 14px;
-  min-width: 120px;
-  background: transparent;
-  transition: all 0.2s;
 }
 
 .test-btn:hover:not(:disabled) {
@@ -545,8 +536,13 @@ async function startTest() {
   cursor: not-allowed;
 }
 
-.result-section h3 {
-  margin-bottom: 0.75rem;
+.config-section > span,
+.result-section > span,
+.log-section > span {
+  display: block;
+  font-weight: 600;
+  font-size: 1.2rem;
+  padding: 0.5rem 0;
   color: var(--vp-c-text-1);
 }
 
@@ -587,11 +583,16 @@ async function startTest() {
 
 .result-label {
   color: var(--vp-c-text-2);
+  font-size: 0.9rem;
 }
 
 .result-value {
   font-weight: 600;
   color: var(--vp-c-text-1);
+  word-break: break-all;
+  text-align: right;
+  margin-left: 10px;
+  font-size: 1rem;
 }
 
 .nat-open { color: #10b981; }
@@ -613,11 +614,6 @@ async function startTest() {
 .error-msg {
   color: #ef4444;
   margin: 0;
-}
-
-.log-section h3 {
-  margin-bottom: 0.5rem;
-  color: var(--vp-c-text-2);
 }
 
 .log-box {
