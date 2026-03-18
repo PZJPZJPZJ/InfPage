@@ -8,7 +8,7 @@ graph TD
     Root[便携程序根目录] --> App
     App --> AppInfo
     AppInfo --> Launcher
-    Launcher --> App.ini[App.ini（按照实际AppID更改）]
+    Launcher --> App.ini[App.ini（按照实际AppID更改文件名）]
     AppInfo --> appicon.ico
     AppInfo --> appinfo.ini
     App --> Others[程序文件夹...]

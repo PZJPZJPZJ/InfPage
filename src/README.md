@@ -488,6 +488,10 @@ features:
         details: 自解压文件生成工具
         link: /wiki/sfx-builder.html
         icon: github.com
+      - title: PortableApps
+        details: 便携应用制作器
+        link: /wiki/portable-apps.html
+        icon: portableapps.com
       - title: Duplicati
         details: 加密备份与恢复
         link: /wiki/duplicati.html
