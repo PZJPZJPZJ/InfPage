@@ -1,1 +1,0 @@
-import{_ as e,c as o,h as a,i as n,o as c}from"./app-BlLQlVlO.js";const l={};function r(s,_){const t=n("Catalog");return c(),o("div",null,[a(t)])}const m=e(l,[["render",r]]),p=JSON.parse('{"path":"/note/","title":"Note","lang":"zh-CN","frontmatter":{"title":"Note"},"git":{},"filePathRelative":null}');export{m as comp,p as data};
