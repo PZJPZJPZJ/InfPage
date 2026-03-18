@@ -4,6 +4,7 @@ import { viteBundler } from '@vuepress/bundler-vite'
 import { catalogPlugin } from '@vuepress/plugin-catalog'
 import { shikiPlugin } from '@vuepress/plugin-shiki'
 import { copyCodePlugin } from '@vuepress/plugin-copy-code'
+import { markdownChartPlugin } from '@vuepress/plugin-markdown-chart'
 import path from 'path'
 
 const clarityScript = `
@@ -61,6 +62,9 @@ export default defineUserConfig({
     }),
     copyCodePlugin({
       showInMobile: true, // 移动端设备上显示代码复制按钮
+    }),
+    markdownChartPlugin({
+      mermaid: true, // 启用 Mermaid 图表支持
     }),
   ],
 })
