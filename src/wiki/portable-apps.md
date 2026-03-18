@@ -8,7 +8,7 @@ graph TD
     Root[便携程序根目录] --> App
     App --> AppInfo
     AppInfo --> Launcher
-    Launcher --> App.ini
+    Launcher --> App.ini[App.ini（按照实际AppID更改）]
     AppInfo --> appicon.ico
     AppInfo --> appinfo.ini
     App --> Others[程序文件夹...]
@@ -16,24 +16,19 @@ graph TD
 
 将`PortableApps.comLauncher.paf.exe`安装在任意位置，打开`PortableApps.comLauncherGenerator.exe`，选择整个便携程序根目录，根据指示完成启动器生成
 
-## 启动器配置模板(appinfo.ini)
+## 配置模板
+### Adobe Audition
 ```ini title="appinfo.ini"
 [Details]
-; 任意配置程序名
-Name=PortableApp
-; 可修改启动器编号，`App`需与应用配置模板(App.ini)文件名的`App`保持一致
-AppID=App
+Name=Adobe Audition
+AppID=AuditionPortable
 
 [Control]
 Icons=1
-; 可修改启动器文件名，`App`需与应用配置模板(App.ini)文件名的`App`保持一致
-Start=App.exe
+Start=AuditionPortable.exe
 ```
-
-## 应用配置模板(App.ini)
-```ini title="Adobe Audition"
+```ini title="AuditionPortable.ini"
 [Launch]
-; 应用主程序路径
 ProgramExecutable=Adobe Audition 2026\Adobe Audition.exe
 SinglePortableAppInstance=true
 DirectoryMoveOK=yes
@@ -87,14 +82,27 @@ Roaming\Microsoft\SystemCertificates\My\Certificates=%APPDATA%\Microsoft\SystemC
 12=%PAL:DataDir%\Local\Adobe
 13=%PAL:DataDir%\Local
 ```
----
-```ini title="Adobe Photoshop"
+### Adobe Photoshop
+```ini title="appinfo.ini"
+[Details]
+Name=Adobe Photoshop
+AppID=PhotoshopPortable
+
+[Control]
+Icons=1
+Start=PhotoshopPortable.exe
+```
+```ini title="PhotoshopPortable.ini"
 [Launch]
-; 应用主程序路径
 ProgramExecutable=Program Files\Adobe\Adobe Photoshop 2025\Photoshop.exe
 SinglePortableAppInstance=true
 RunAsAdmin=compile-force
 DirectoryMoveOK=yes
+
+[Environment]
+CommonProgramFiles=%PAL:AppDir%\Program Files\Common Files
+CommonProgramFiles(x86)=%PAL:AppDir%\Program Files (x86)\Common Files
+CommonProgramW6432=%PAL:AppDir%\Program Files\Common Files
 
 [Activate]    
 Registry=true
