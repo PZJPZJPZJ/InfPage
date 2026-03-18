@@ -29,7 +29,7 @@ Start=AuditionPortable.exe
 ```
 ```ini title="AuditionPortable.ini"
 [Launch]
-ProgramExecutable=Adobe Audition 2026\Adobe Audition.exe
+ProgramExecutable=Program Files\Adobe\Adobe Audition 2026\Adobe Audition.exe
 SinglePortableAppInstance=true
 DirectoryMoveOK=yes
 
