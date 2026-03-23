@@ -78,3 +78,33 @@ services:
 
 ## Cursor
 - [Cursor-官网](https://www.cursor.com)
+
+## Code Server
+- [code-server-Github](https://www.cursor.com)
+```yaml title="Docker Compose"
+services:
+  code-server:
+    image: codercom/code-server:latest
+    container_name: code-server
+    ports:
+      - 8080:8080
+    volumes:
+      - ./local:/home/coder/.local
+      - ./config:/home/coder/.config
+      - ./home:/home/coder/project
+    restart: unless-stopped
+```
+### 接入官方插件市场
+```yaml title="/usr/lib/code-server/lib/vscode/product.json"
+"linkProtectionTrustedDomains": [
+  "https://open-vsx.org",
+  "https://marketplace.visualstudio.com"
+],
+"extensionsGallery": {
+  "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery",
+  "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index",
+  "itemUrl": "https://marketplace.visualstudio.com/items",
+  "controlUrl": "",
+  "recommendationsUrl": ""
+},
+```
