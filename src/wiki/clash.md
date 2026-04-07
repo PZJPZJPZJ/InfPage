@@ -214,7 +214,7 @@ tun:
     - "any:53"
     - "tcp://any:53"
   auto-route: true
-  auto-redirect: true # tun接管所有流量可使用false
+  auto-redirect: true # 旁路模式可使用false，使tun接管所有流量
   auto-detect-interface: true
 
 dns:
@@ -223,7 +223,7 @@ dns:
   listen: 0.0.0.0:53
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
-  fake-ip-range6: fdfe:dcba:9876::1/64
+  fake-ip-range6: fdfe:dcba:9876::1/64 # IPv6FakeIP段，旁路模式建议删除该项
   fake-ip-filter-mode: rule
   fake-ip-filter:
     - GEOSITE,private,real-ip
@@ -254,7 +254,7 @@ proxy-providers:
       url: https://www.gstatic.com/generate_204
       interval: 60
       lazy: false
-    override: # 建议删除所有节点覆盖项，连接异常可适当调整
+    override:
       skip-cert-verify: false # 强制跳过证书验证使用true
       udp: true # 强制启用节点UDP使用true
 
