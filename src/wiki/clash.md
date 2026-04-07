@@ -223,7 +223,7 @@ dns:
   listen: 0.0.0.0:53
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
-  fake-ip-range6: fdfe:dcba:9876::1/64 # IPv6FakeIP段，旁路模式建议删除该项
+  fake-ip-range6: fdfe:dcba:9876::1/64 # 可删除该项禁用IPv6FakeIP段
   fake-ip-filter-mode: rule
   fake-ip-filter:
     - GEOSITE,private,real-ip
@@ -255,8 +255,8 @@ proxy-providers:
       interval: 60
       lazy: false
     override:
-      skip-cert-verify: false # 强制跳过证书验证使用true
       udp: true # 强制启用节点UDP使用true
+      skip-cert-verify: false # 强制跳过证书验证使用true
 
 proxy-groups:
   - name: 国际代理
