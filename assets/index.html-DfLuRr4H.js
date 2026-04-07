@@ -1,0 +1,1 @@
+import{_ as e,c as o,e as n,r as a,o as r}from"./app-ApdsOw__.js";const c={};function l(s,_){const t=a("Catalog");return r(),o("div",null,[n(t)])}const m=e(c,[["render",l]]),p=JSON.parse('{"path":"/note/network/","title":"Network","lang":"zh-CN","frontmatter":{"title":"Network"},"git":{},"filePathRelative":null}');export{m as comp,p as data};
