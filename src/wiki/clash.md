@@ -17,16 +17,13 @@
 - [Android Universal](https://github.com/hiddify/hiddify-next/releases/latest/download/Hiddify-Android-universal.apk)
 - [iOS Universal](https://apps.apple.com/us/app/hiddify-proxy-vpn/id6596777532)
 
-### Android相关客户端
-- [Clash Meta for Android](https://github.com/MetaCubeX/ClashMetaForAndroid)
-
-### iOS相关客户端
+### iOS客户端
 - [Shadowrocket](https://apps.apple.com/us/app/shadowrocket/id932747118)
 - [QuantumultX](https://apps.apple.com/us/app/quantumult-x/id1443988620)
 - [Stash](https://apps.apple.com/us/app/stash-rule-based-proxy/id1596063349)
 - [Surge](https://apps.apple.com/us/app/surge-5/id1442620678)
 
-### OpenWRT相关插件
+### OpenWRT插件
 - [ShellCrash](https://github.com/juewuy/ShellCrash)
 - [OpenClash](https://github.com/vernesong/OpenClash)
 - [PassWall](https://github.com/xiaorouji/openwrt-passwall)
@@ -176,16 +173,18 @@ lan-disallowed-ips:
   - ::/0
 unified-delay: true
 tcp-concurrent: true
-external-controller: 127.0.0.1:9090 # 监听任意地址修改为`0.0.0.0:9090`
-external-ui: ui # Web面板地址路径为`/ui`
+external-controller: 127.0.0.1:9090 # 监听任意地址修改为0.0.0.0:9090
+external-ui: ui # Web面板地址为http://127.0.0.1:9090/ui
 external-ui-url: "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip"
 
 geodata-mode: true
 geox-url:
-  geoip: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat"
-  geosite: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
-  mmdb: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb"
-  asn: "https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb"
+  geoip: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip-lite.dat"
+  geosite: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
+  mmdb: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country-lite.mmdb"
+  asn: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/GeoLite2-ASN.mmdb"
+geo-auto-update: true
+geo-update-interval: 24
 
 find-process-mode: strict
 global-client-fingerprint: chrome
@@ -210,28 +209,26 @@ sniffer:
 
 tun:
   enable: true
-  stack: gvisor # Windows建议使用gvisor，Linux建议使用mixed，防火墙放行可使用system
+  stack: gvisor # gvisor兼容性最强，mixed性能较好，system性能最佳需防火墙放行
   dns-hijack:
     - "any:53"
     - "tcp://any:53"
   auto-route: true
-  auto-redirect: true # 旁路网关模式可使用false，即tun接管所有流量
+  auto-redirect: true # tun接管所有流量可使用false
   auto-detect-interface: true
 
 dns:
   enable: true
   ipv6: true
   listen: 0.0.0.0:53
-  respect-rules: true
   enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-range6: fdfe:dcba:9876::1/64
+  fake-ip-filter-mode: rule
   fake-ip-filter:
-    - "*"
-    - "+.lan"
-    - "+.local"
-    - '+.stun.*.*'
-    - '+.stun.*.*.*'
-    - '+.stun.*.*.*.*'
-    - '+.stun.*.*.*.*.*'
+    - GEOSITE,private,real-ip
+    - GEOSITE,CN,real-ip
+    - MATCH,fake-ip
   nameserver:
     - "https://223.5.5.5/dns-query"
     - "https://120.53.53.53/dns-query"
@@ -245,6 +242,7 @@ dns:
     "geosite:geolocation-!cn":
       - "https://dns.cloudflare.com/dns-query"
       - "https://dns.google/dns-query"
+  respect-rules: true
 
 proxy-providers:
   proxy:
@@ -271,7 +269,7 @@ proxy-groups:
     type: select
     include-all: true
     exclude-filter: "(?i)订阅|官网|网站" # 可修改屏蔽节点
-    proxies: [美国,DIRECT]
+    proxies: [美国,日本,韩国,故障转移,DIRECT]
 
   - name: 国内代理
     type: select
@@ -324,10 +322,11 @@ proxy-groups:
 
 rules:
   - GEOIP,private,DIRECT,no-resolve
+  - GEOSITE,private,DIRECT
   - GEOSITE,category-ai-chat-!cn,人工智能
+  - GEOSITE,github,国际代理
   - GEOSITE,google,国际代理
   - GEOSITE,bing,国际代理
-  - GEOSITE,github,国际代理
   - GEOSITE,cloudflare,国际代理
   - GEOSITE,twitter,国际代理
   - GEOSITE,telegram,国际代理
