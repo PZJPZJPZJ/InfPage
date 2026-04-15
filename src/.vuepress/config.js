@@ -5,15 +5,8 @@ import { catalogPlugin } from '@vuepress/plugin-catalog'
 import { shikiPlugin } from '@vuepress/plugin-shiki'
 import { copyCodePlugin } from '@vuepress/plugin-copy-code'
 import { markdownChartPlugin } from '@vuepress/plugin-markdown-chart'
+import { googleTagManagerPlugin } from '@vuepress/plugin-google-tag-manager'
 import path from 'path'
-
-const clarityScript = `
-(function(c,l,a,r,i,t,y){
-    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-})(window, document, "clarity", "script", "rur8p5yygl");
-`
 
 export default defineUserConfig({
   lang: 'zh-CN',
@@ -22,8 +15,7 @@ export default defineUserConfig({
   base: '/InfPage/',  // 部署URL前缀
   dest: 'docs/',  // 编译输出目录
   head: [
-    ['script', { type: 'text/javascript' }, clarityScript],
-    ['link', { rel: 'icon', href: 'https://infinityicon.infinitynewtab.com/assets/logo-pro.png' }],
+    ['link', { rel: 'icon', href: 'https://infinityicon.infinitynewtab.com/assets/logo-pro.png' }, null],
   ],
   theme: defaultTheme({
     navbar: [
@@ -66,6 +58,9 @@ export default defineUserConfig({
     }),
     markdownChartPlugin({
       mermaid: true, // 启用 Mermaid 图表支持
+    }),
+    googleTagManagerPlugin({
+      id: 'GTM-MWP63S78', // 谷歌跟踪代码管理器 ID
     }),
   ],
 })

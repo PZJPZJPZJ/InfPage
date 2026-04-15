@@ -19,6 +19,7 @@
     "@vuepress/plugin-catalog": "2.0.0-rc.112",
     "@vuepress/plugin-shiki": "2.0.0-rc.112",
     "@vuepress/plugin-markdown-chart": "2.0.0-rc.112",
+    "@vuepress/plugin-google-tag-manager": "2.0.0-rc.112",
     "mermaid": "^11.0.0"
   }
 }
