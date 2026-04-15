@@ -36,7 +36,7 @@ defineSlots<{
   width: var(--sidebar-width);
   margin: 0;
   padding: var(--navbar-height) 0 0 0;
-  border: 1px solid var(--vp-c-border);
+  border-inline-end: 1px solid var(--vp-c-border);
 
   background-color: var(--vp-sidebar-c-bg);
   backdrop-filter: blur(8px) saturate(180%);
