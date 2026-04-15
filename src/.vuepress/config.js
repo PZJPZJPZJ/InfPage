@@ -47,6 +47,7 @@ export default defineUserConfig({
     '@theme/VPHome.vue': path.resolve(__dirname, './components/VPHome.vue'),
     '@theme/VPHomeHero.vue': path.resolve(__dirname, './components/VPHomeHero.vue'),
     '@theme/VPHomeFeatures.vue': path.resolve(__dirname, './components/VPHomeFeatures.vue'),
+    '@theme/VPSidebar.vue': path.resolve(__dirname, './components/VPSidebar.vue'),
   },
   bundler: viteBundler(),
   plugins: [
