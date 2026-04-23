@@ -1,1 +1,0 @@
-import{_ as e,c as o,e as a,r as n,o as c}from"./app-C0Gr5_OZ.js";const r={};function l(s,i){const t=n("Catalog");return c(),o("div",null,[a(t)])}const m=e(r,[["render",l]]),p=JSON.parse('{"path":"/note/ai/","title":"Ai","lang":"zh-CN","frontmatter":{"title":"Ai"},"git":{},"filePathRelative":null}');export{m as comp,p as data};
