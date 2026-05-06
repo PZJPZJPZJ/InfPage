@@ -173,8 +173,8 @@ lan-disallowed-ips:
   - ::/0
 unified-delay: true
 tcp-concurrent: true
-external-controller: 127.0.0.1:9090 # 监听任意地址修改为0.0.0.0:9090
-external-ui: ui # Web面板地址为http://127.0.0.1:9090/ui
+external-controller: 0.0.0.0:9090
+external-ui: ui # 面板URL路径
 external-ui-url: "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip"
 
 geodata-mode: true
@@ -209,12 +209,12 @@ sniffer:
 
 tun:
   enable: true
-  stack: gvisor # gvisor兼容性最强，mixed性能较好，system性能最佳需防火墙放行
+  stack: gvisor # gvisor:兼容性最强;mixed:性能较好;system:性能最佳需防火墙放行
   dns-hijack:
     - "any:53"
     - "tcp://any:53"
   auto-route: true
-  auto-redirect: true # 旁路模式可使用false，使tun接管所有流量
+  auto-redirect: true # false:旁路模式使tun接管所有流量
   auto-detect-interface: true
 
 dns:
@@ -223,7 +223,7 @@ dns:
   listen: 0.0.0.0:53
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
-  fake-ip-range6: fdfe:dcba:9876::1/64 # 可删除该项禁用IPv6FakeIP段
+  fake-ip-range6: fdfe:dcba:9876::1/64
   fake-ip-filter-mode: rule
   fake-ip-filter:
     - GEOSITE,private,real-ip
@@ -251,12 +251,9 @@ proxy-providers:
     interval: 86400
     health-check:
       enable: true
-      url: https://www.gstatic.com/generate_204
+      url: https://cp.cloudflare.com/generate_204
       interval: 60
       lazy: false
-    override:
-      udp: true # 强制启用节点UDP使用true
-      skip-cert-verify: false # 强制跳过证书验证使用true
 
 proxy-groups:
   - name: 国际代理
@@ -269,7 +266,7 @@ proxy-groups:
     type: select
     include-all: true
     exclude-filter: "(?i)订阅|官网|网站" # 可修改屏蔽节点
-    proxies: [美国,日本,韩国,故障转移,DIRECT]
+    proxies: [美国,DIRECT]
 
   - name: 国内代理
     type: select
@@ -282,7 +279,6 @@ proxy-groups:
     proxies: [香港,台湾,新加坡,美国,日本,韩国,DIRECT]
     url: https://cp.cloudflare.com/generate_204
     interval: 60
-    lazy: false
 
   - name: 香港
     type: url-test
@@ -345,4 +341,21 @@ rules:
   - GEOIP,netflix,国际代理
   - GEOIP,CN,国内代理
   - MATCH,国际代理
+```
+
+#### 配置片段
+```yaml title="覆盖订阅配置"
+proxy-providers:
+  proxy:
+    type: http
+    url: https://example.com?clash=1
+    interval: 86400
+    health-check:
+      enable: true
+      url: https://cp.cloudflare.com/generate_204
+      interval: 60
+      lazy: false
+    override:
+      udp: true # true:强制启用节点UDP
+      skip-cert-verify: false # true:强制跳过证书验证
 ```
