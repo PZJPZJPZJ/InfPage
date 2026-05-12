@@ -596,6 +596,10 @@ features:
         details: 双因素认证生成器
         link: /wiki/totp-generator.html
         icon: github.com
+      - title: Speed Tester
+        details: G值检测与零百加速计时器
+        link: /wiki/speed-tester.html
+        icon: github.com
       - title: PDF Patcher
         details: PDF修改与合并工具
         link: /wiki/pdf-patcher.html
