@@ -1,11 +1,10 @@
-# Speed Tester:G值检测与零百加速计时器
+# Speed Tester:定位加速度测量工具
 
 <div class="container">
   <!-- GPS Status -->
   <div class="statusBar">
     <span :class="['statusDot', gpsStatus ? 'active' : '']"></span>
     <span class="statusText">{{ gpsStatus ? '定位服务已连接' : '定位服务未连接' }}</span>
-    <span v-if="accelAvail" class="accelBadge">ACC</span>
     <span v-if="gpsStatus && accuracy" class="accText">±{{ accuracy }}m</span>
   </div>
 
@@ -19,9 +18,11 @@
       <div class="gLabel">GPS G值</div>
       <div :class="['gValue', gForceColor]">{{ gForce >= 0 ? '+' : '' }}{{ gForce.toFixed(3) }}</div>
     </div>
-    <div class="gForceBox">
+    <div class="gForceBox" :class="{ clickable: !accelAvail && isIOS }">
       <div class="gLabel">ACC G值</div>
-      <div :class="['gValue', accGColor]">{{ accelG >= 0 ? '+' : '' }}{{ accelG.toFixed(3) }}</div>
+      <div v-if="accelAvail" :class="['gValue', accGColor]">{{ accelG >= 0 ? '+' : '' }}{{ accelG.toFixed(3) }}</div>
+      <div v-else-if="isIOS" class="gValue gDisabled" @click="requestAccelPermission">点击启用</div>
+      <div v-else class="gValue gDisabled">不可用</div>
     </div>
   </div>
 
@@ -56,7 +57,7 @@
   <div class="sectionCard">
     <div class="sectionTitle">零百加速计时</div>
     <div class="timerBox">
-      <div class="timerValue">{{ zeroToHundredTime > 0 ? zeroToHundredTime.toFixed(3) : '---' }}</div>
+      <div class="timerValue">{{ zeroToHundredTime > 0 ? zeroToHundredTime.toFixed(3) : '---' }}<small v-if="estimatedError" class="errorEstimate">{{ estimatedError }}</small></div>
       <div class="timerUnit">秒</div>
     </div>
     <div class="timerStatus" :class="timerStatusClass">{{ zeroHundredStatus }}</div>
@@ -120,7 +121,6 @@
       <div class="debugItem"><span class="debugLabel">海拔</span><span class="debugValue">{{ debug.altitude ?? '---' }}m</span></div>
       <div class="debugItem"><span class="debugLabel">方向角</span><span class="debugValue">{{ debug.heading ?? '---' }}°</span></div>
       <div class="debugItem"><span class="debugLabel">GPS原始速度</span><span class="debugValue">{{ debug.rawSpeed ?? '---' }} m/s</span></div>
-      <div class="debugItem"><span class="debugLabel">加速度传感器</span><span class="debugValue">{{ accelAvail ? '可用' : '不可用' }}</span></div>
       <div class="debugItem"><span class="debugLabel">ACC X</span><span class="debugValue">{{ debug.accX ?? '---' }} m/s²</span></div>
       <div class="debugItem"><span class="debugLabel">ACC Y</span><span class="debugValue">{{ debug.accY ?? '---' }} m/s²</span></div>
       <div class="debugItem"><span class="debugLabel">ACC Z</span><span class="debugValue">{{ debug.accZ ?? '---' }} m/s²</span></div>
@@ -156,6 +156,9 @@ const peakAccG = ref(0);
 const maxSpeed = ref(0);
 const gForce = ref(0);
 const accelG = ref(0);
+let lastThresholdSpeed = 0;   // km/h, for speed threshold interpolation
+let lastThresholdTime = 0;    // ms, for speed threshold interpolation
+const gpsInterval = ref(1000); // ms, GPS update interval for error estimation
 let lastSpeed = 0;
 let lastTime = 0;
 
@@ -205,6 +208,18 @@ const accGColor = computed(() => {
 });
 
 const gBarWidth = computed(() => Math.min(Math.abs(gForce.value) / 1.5 * 100, 100));
+
+const isIOS = computed(() =>
+  typeof DeviceMotionEvent !== 'undefined' &&
+  typeof DeviceMotionEvent.requestPermission === 'function'
+);
+
+const estimatedError = computed(() => {
+  if (zeroToHundredTime.value > 0 && gpsInterval.value > 0) {
+    return `±~${(gpsInterval.value / 2000).toFixed(2)}s`;
+  }
+  return '';
+});
 
 const timerStatusClass = computed(() => {
   if (zeroHundredStandby.value) return 'statusStandby';
@@ -268,6 +283,7 @@ function handlePosition(position) {
   const ts = now.getTime();
   if (lastTime > 0 && speedMs >= 0) {
     const dt = (ts - lastTime) / 1000;
+    gpsInterval.value = ts - lastTime; // Track actual GPS interval
     if (dt > 0.01 && dt < 3) {
       const accel = (speedMs - lastSpeed) / dt;
       gForce.value = accel / 9.80665;
@@ -313,23 +329,35 @@ function handlePosition(position) {
 
   // Check speed thresholds for segments
   if (zeroHundredRunning.value) {
-    checkThreshold(speed.value);
+    checkThreshold(speed.value, lastThresholdSpeed, lastThresholdTime);
   }
+
+  // Update interpolation tracking for next GPS callback
+  lastThresholdSpeed = speed.value;
+  lastThresholdTime = ts;
 }
 
-function checkThreshold(currentSpeed) {
+function checkThreshold(currentSpeedKmh, prevSpeedKmh, prevTimeMs) {
   const nextThresholdIdx = currentThresholdIdx + 1;
   if (nextThresholdIdx > 10) return;
 
   const threshold = speedThresholds[nextThresholdIdx];
-  if (currentSpeed >= threshold) {
+  if (currentSpeedKmh >= threshold) {
     const now = Date.now();
     const segIdx = nextThresholdIdx - 1;
 
+    // Linear interpolation: estimate exact time when speed == threshold
+    // Uses the previous GPS sample and current sample to find the crossing point
+    let timeAtThreshold = now;
+    if (prevTimeMs > 0 && prevSpeedKmh < threshold && currentSpeedKmh > prevSpeedKmh) {
+      const ratio = (threshold - prevSpeedKmh) / (currentSpeedKmh - prevSpeedKmh);
+      timeAtThreshold = prevTimeMs + ratio * (now - prevTimeMs);
+    }
+
     // Finalize current segment
     const seg = accelSegments.value[segIdx];
-    seg.segTime = (now - segStartTime) / 1000;
-    seg.cumTime = (now - zeroHundredStartTime.value) / 1000;
+    seg.segTime = (timeAtThreshold - segStartTime) / 1000;
+    seg.cumTime = (timeAtThreshold - zeroHundredStartTime.value) / 1000;
     seg.gpsG = segPeakGpsG;
     seg.accG = segPeakAccG;
     seg.reached = true;
@@ -337,7 +365,7 @@ function checkThreshold(currentSpeed) {
 
     // Move to next threshold
     currentThresholdIdx = nextThresholdIdx;
-    segStartTime = now;
+    segStartTime = timeAtThreshold;
     segPeakGpsG = 0;
     segPeakAccG = 0;
 
@@ -348,7 +376,7 @@ function checkThreshold(currentSpeed) {
 
     // Check if we've reached 100 km/h (threshold 10)
     if (currentThresholdIdx === 10) {
-      const elapsed = (now - zeroHundredStartTime.value) / 1000;
+      const elapsed = (timeAtThreshold - zeroHundredStartTime.value) / 1000;
       zeroToHundredTime.value = elapsed;
       zeroHundredRunning.value = false;
       zeroHundredComplete.value = true;
@@ -445,6 +473,20 @@ function stopAccelerometer() {
   }
 }
 
+function requestAccelPermission() {
+  if (typeof DeviceMotionEvent?.requestPermission === 'function') {
+    DeviceMotionEvent.requestPermission().then(state => {
+      if (state === 'granted') {
+        startAccelerometer();
+      } else {
+        alert('加速度传感器授权被拒绝，ACC G值不可用');
+      }
+    }).catch(() => {
+      alert('请求加速度传感器授权失败，请在浏览器设置中允许');
+    });
+  }
+}
+
 // 0-100 controls
 function startZeroHundred() {
   if (!gpsStatus.value) {
@@ -476,6 +518,8 @@ function startZeroHundred() {
   segStartTime = 0;
   segPeakGpsG = 0;
   segPeakAccG = 0;
+  lastThresholdSpeed = 0;
+  lastThresholdTime = 0;
 
   zeroHundredStatus.value = '等待起步... 车辆开始移动后自动计时';
 }
@@ -488,6 +532,8 @@ function resetZeroHundred() {
   zeroHundredComplete.value = false;
   zeroHundredStatus.value = '已重置';
   resetSegments();
+  lastThresholdSpeed = 0;
+  lastThresholdTime = 0;
   if (zeroHundredIntId) {
     clearInterval(zeroHundredIntId);
     zeroHundredIntId = null;
@@ -503,6 +549,8 @@ function resetAll() {
   accelG.value = 0;
   lastSpeed = 0;
   lastTime = 0;
+  lastThresholdSpeed = 0;
+  lastThresholdTime = 0;
   runHistory.value = [];
   speed.value = 0;
   zeroHundredStatus.value = '就绪 — 点击"开始"';
@@ -618,6 +666,9 @@ onUnmounted(() => {
 .gLow { color: #4caf50; }
 .gMedium { color: #ff9800; }
 .gHigh { color: #f44336; }
+.gDisabled { color: var(--vp-c-text-3); font-size: 0.85rem; }
+.clickable { cursor: pointer; }
+.clickable:hover { opacity: 0.8; }
 
 /* Stats */
 .statsRow {
@@ -711,6 +762,12 @@ onUnmounted(() => {
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   color: var(--vp-c-brand);
+}
+.timerValue .errorEstimate {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--vp-c-text-3);
+  margin-left: 0.3rem;
 }
 
 .timerUnit {
