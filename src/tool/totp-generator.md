@@ -1,4 +1,4 @@
-# TOTP Generator:动态验证码生成器
+# 动态验证码生成器
 <div class="container">
 <input
     v-model="secret"

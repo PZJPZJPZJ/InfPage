@@ -20,11 +20,15 @@ export default defineUserConfig({
   theme: defaultTheme({
     navbar: [
       {
-        text: 'Wiki',
+        text: '百科',
         link: '/wiki/',
       },
       {
-        text: 'Note',
+        text: '工具',
+        link: '/tool/',
+      },
+      {
+        text: '笔记',
         link: '/note/',
       }
     ],

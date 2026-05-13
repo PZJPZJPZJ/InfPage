@@ -1,4 +1,4 @@
-# Speed Tester:定位加速度测量工具
+# 加速度测量工具
 
 <div class="container">
   <!-- GPS Status -->

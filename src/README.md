@@ -326,7 +326,7 @@ features:
         icon: github.com
       - title: Audio Tuner
         details: 声音频率检测器
-        link: /wiki/audio-tuner.html
+        link: /tool/audio-tuner.html
         icon: audiotuner.io
 
   - header: 游戏工具与模拟器
@@ -580,9 +580,9 @@ features:
         details: Apple开发相关工具
         link: /wiki/apple.html
         icon: apple.com
-      - title: Xiaomi
-        details: 小米设备工具
-        link: /wiki/xiaomi.html
+      - title: 小米路由器工具
+        details: 固件下载与密码计算
+        link: /tool/miwifi-router.html
         icon: mi.com
       - title: Termux
         details: Android终端模拟器
@@ -594,7 +594,7 @@ features:
     items:
       - title: TOTP Generator
         details: 双因素认证生成器
-        link: /wiki/totp-generator.html
+        link: /tool/totp-generator.html
         icon: github.com
       - title: Speed Tester
         details: G值检测与零百加速计时器
