@@ -40,9 +40,12 @@
   </button>
 </div>
 </div>
+<div v-if="isListening" class="tuner_chart_wrapper">
+  <canvas ref="pitchCanvas" class="tuner_chart"></canvas>
+</div>
 
 <script setup>
-  import { ref, onUnmounted } from 'vue'
+  import { ref, onUnmounted, nextTick } from 'vue'
 
   const isListening = ref(false)
   const detectedFrequency = ref(0)
@@ -50,6 +53,9 @@
   const deviationPosition = ref(50)
   const currentPitch = ref('-')
   const surroundingNotes = ref([])
+  const pitchCanvas = ref(null)
+  const pitchHistory = ref([])
+  let animFrameId = null
 
   let audioContext = null
   let analyser = null
@@ -110,6 +116,8 @@
       javascriptNode.onaudioprocess = processAudio
 
       isListening.value = true
+      await nextTick()
+      startChartAnimation()
     } catch (error) {
       console.error(error)
       alert(error)
@@ -129,9 +137,152 @@
     }
 
     isListening.value = false
+    stopChartAnimation()
     detectedFrequency.value = 0
     currentPitch.value = '-'
     surroundingNotes.value = []
+    pitchHistory.value = []
+  }
+
+  // ===== 音高记录图 (Canvas) =====
+
+  const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+  const midiFreq = (m) => 440 * Math.pow(2, (m - 69) / 12)
+  const midiName = (m) => `${noteNames[m % 12]}${Math.floor(m / 12) - 1}`
+
+  const drawChart = () => {
+    const canvas = pitchCanvas.value
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    const dpr = window.devicePixelRatio || 1
+    const rect = canvas.getBoundingClientRect()
+    if (rect.width === 0 || rect.height === 0) { animFrameId = requestAnimationFrame(drawChart); return }
+    canvas.width = rect.width * dpr
+    canvas.height = rect.height * dpr
+    ctx.scale(dpr, dpr)
+
+    const W = rect.width, H = rect.height
+    const pad = { top: 16, right: 16, bottom: 28, left: 48 }
+    const pW = W - pad.left - pad.right, pH = H - pad.top - pad.bottom
+
+    // ---- 计算动态 Y 轴范围 ----
+    const data = pitchHistory.value
+    const cutoff = Date.now() - 30000
+    const visible = data.filter(p => p.t >= cutoff)
+
+    ctx.clearRect(0, 0, W, H)
+
+    // 背景
+    ctx.fillStyle = 'rgba(0,0,0,0.03)'
+    ctx.fillRect(0, 0, W, H)
+
+    // 边框
+    ctx.strokeStyle = 'rgba(128,128,128,0.15)'
+    ctx.lineWidth = 1
+    ctx.strokeRect(0.5, 0.5, W - 1, H - 1)
+
+    if (visible.length === 0) {
+      ctx.fillStyle = '#aaa'
+      ctx.font = '13px sans-serif'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText('等待音频数据...', W / 2, H / 2)
+      animFrameId = requestAnimationFrame(drawChart)
+      return
+    }
+
+    let minFreq = Infinity, maxFreq = 0
+    for (const p of visible) {
+      if (p.f < minFreq) minFreq = p.f
+      if (p.f > maxFreq) maxFreq = p.f
+    }
+    // 上下各扩展 4 个半音，让曲线不贴边
+    const expand = Math.pow(2, 4 / 12)
+    minFreq = Math.max(16.35, minFreq / expand)
+    maxFreq = Math.min(8000, maxFreq * expand)
+
+    // 计算范围内覆盖的半音
+    const midiMin = Math.max(0, Math.floor(12 * Math.log2(minFreq / 440) + 69))
+    const midiMax = Math.min(127, Math.ceil(12 * Math.log2(maxFreq / 440) + 69))
+
+    const logMin = Math.log2(minFreq), logMax = Math.log2(maxFreq)
+    const yP = (f) => pad.top + pH * (1 - (Math.log2(f) - logMin) / (logMax - logMin))
+    const xP = (t) => { const e = Date.now() - t; return pad.left + pW * Math.max(0, Math.min(1, 1 - e / 30000)) }
+
+    // ---- 半音网格线 ----
+    // 始终绘制所有半音格线，但仅当范围 >24 个半音时减少标签密度
+    const denseLabels = (midiMax - midiMin) <= 24
+    ctx.textBaseline = 'middle'
+    for (let m = midiMin; m <= midiMax; m++) {
+      const freq = midiFreq(m)
+      const y = yP(freq)
+      const isOctave = m % 12 === 0
+      // 标签规则：八度音始终标注；密集时每隔一个半音标注；稀疏时全部标注
+      const showLabel = isOctave || denseLabels || (m - midiMin) % 2 === 0
+
+      ctx.strokeStyle = isOctave ? 'rgba(128,128,128,0.35)' : 'rgba(128,128,128,0.12)'
+      ctx.lineWidth = isOctave ? 1.5 : 0.5
+      ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W - pad.right, y); ctx.stroke()
+
+      if (showLabel) {
+        ctx.fillStyle = isOctave ? '#666' : '#999'
+        ctx.font = isOctave ? 'bold 11px sans-serif' : '10px sans-serif'
+        ctx.textAlign = 'right'
+        ctx.fillText(midiName(m), pad.left - 4, y)
+      }
+    }
+
+    // ---- 时间垂直网格 (每5秒) ----
+    ctx.strokeStyle = 'rgba(128,128,128,0.12)'
+    ctx.fillStyle = '#999'
+    ctx.font = '10px sans-serif'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'top'
+    for (let t = 0; t <= 30000; t += 5000) {
+      const x = pad.left + pW * (1 - t / 30000)
+      ctx.beginPath(); ctx.moveTo(x, pad.top); ctx.lineTo(x, H - pad.bottom); ctx.stroke()
+      ctx.fillText(`-${t / 1000}s`, x, H - pad.bottom + 6)
+    }
+
+    // ---- 绘制音高曲线 ----
+    if (visible.length < 2) { animFrameId = requestAnimationFrame(drawChart); return }
+
+    // 填充区域
+    ctx.beginPath()
+    ctx.fillStyle = 'rgba(40,167,69,0.12)'
+    let started = false
+    for (const p of visible) {
+      const x = xP(p.t), y = yP(p.f)
+      if (!started) { ctx.moveTo(x, y); started = true } else ctx.lineTo(x, y)
+    }
+    if (started) {
+      ctx.lineTo(xP(visible[visible.length - 1].t), pad.top + pH)
+      ctx.lineTo(xP(visible[0].t), pad.top + pH)
+      ctx.closePath(); ctx.fill()
+    }
+
+    // 线条
+    ctx.beginPath()
+    ctx.strokeStyle = '#28a745'
+    ctx.lineWidth = 2
+    ctx.lineJoin = 'round'
+    ctx.lineCap = 'round'
+    started = false
+    for (const p of visible) {
+      const x = xP(p.t), y = yP(p.f)
+      if (!started) { ctx.moveTo(x, y); started = true } else ctx.lineTo(x, y)
+    }
+    ctx.stroke()
+
+    animFrameId = requestAnimationFrame(drawChart)
+  }
+
+  const startChartAnimation = () => {
+    drawChart()
+  }
+
+  const stopChartAnimation = () => {
+    if (animFrameId) { cancelAnimationFrame(animFrameId); animFrameId = null }
   }
 
   const processAudio = () => {
@@ -172,6 +323,12 @@
     if (maxValue > -70 && frequency >= 20 && frequency <= 20000) { // 调整阈值
       detectedFrequency.value = frequency
       detectPitch(frequency)
+      pitchHistory.value.push({ f: frequency, t: Date.now() })
+      // 裁剪30秒以外的旧数据
+      const cutoff = Date.now() - 30000
+      while (pitchHistory.value.length && pitchHistory.value[0].t < cutoff) {
+        pitchHistory.value.shift()
+      }
     }
   }
 
@@ -225,6 +382,7 @@
 
   onUnmounted(() => {
     stopListening()
+    stopChartAnimation()
   })
 </script>
 
@@ -327,5 +485,18 @@
     transition: left 0.1s;
     border-radius: 2px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  }
+
+  .tuner_chart_wrapper {
+    margin-top: 24px;
+    width: 100%;
+  }
+
+  .tuner_chart {
+    display: block;
+    width: 100%;
+    height: 60vh;
+    border-radius: 8px;
+    background: var(--vp-c-bg-soft);
   }
 </style>
