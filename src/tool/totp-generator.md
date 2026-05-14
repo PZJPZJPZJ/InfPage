@@ -395,8 +395,9 @@ onUnmounted(() => {
 }
 
 .totp-otp {
-  font-size: 2.6rem;
+  font-size: clamp(1.4rem, 5.5vw, 2.6rem);
   font-weight: 800;
+  overflow-wrap: anywhere;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.1em;
   color: var(--vp-c-brand);
