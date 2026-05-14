@@ -182,11 +182,6 @@
     ctx.strokeRect(0.5, 0.5, W - 1, H - 1)
 
     if (visible.length === 0) {
-      ctx.fillStyle = '#aaa'
-      ctx.font = '13px sans-serif'
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
-      ctx.fillText('等待音频数据...', W / 2, H / 2)
       animFrameId = requestAnimationFrame(drawChart)
       return
     }
@@ -208,6 +203,19 @@
     const logMin = Math.log2(minFreq), logMax = Math.log2(maxFreq)
     const yP = (f) => pad.top + pH * (1 - (Math.log2(f) - logMin) / (logMax - logMin))
     const xP = (t) => { const e = Date.now() - t; return pad.left + pW * Math.max(0, Math.min(1, 1 - e / 30000)) }
+
+    // ---- 将数据按时间间隙分段（>1000ms 视为中断） ----
+    const GAP_MS = 1000
+    const segments = []
+    let cur = []
+    for (const p of visible) {
+      if (cur.length && p.t - cur[cur.length - 1].t > GAP_MS) {
+        segments.push(cur)
+        cur = []
+      }
+      cur.push(p)
+    }
+    if (cur.length) segments.push(cur)
 
     // ---- 半音网格线 ----
     // 始终绘制所有半音格线，但仅当范围 >24 个半音时减少标签密度
@@ -244,35 +252,34 @@
       ctx.fillText(`-${t / 1000}s`, x, H - pad.bottom + 6)
     }
 
-    // ---- 绘制音高曲线 ----
-    if (visible.length < 2) { animFrameId = requestAnimationFrame(drawChart); return }
-
-    // 填充区域
-    ctx.beginPath()
-    ctx.fillStyle = 'rgba(40,167,69,0.12)'
-    let started = false
-    for (const p of visible) {
-      const x = xP(p.t), y = yP(p.f)
-      if (!started) { ctx.moveTo(x, y); started = true } else ctx.lineTo(x, y)
-    }
-    if (started) {
-      ctx.lineTo(xP(visible[visible.length - 1].t), pad.top + pH)
-      ctx.lineTo(xP(visible[0].t), pad.top + pH)
-      ctx.closePath(); ctx.fill()
-    }
-
-    // 线条
-    ctx.beginPath()
-    ctx.strokeStyle = '#28a745'
-    ctx.lineWidth = 2
+    // ---- 按分段绘制音高（中断处断开） ----
     ctx.lineJoin = 'round'
     ctx.lineCap = 'round'
-    started = false
-    for (const p of visible) {
-      const x = xP(p.t), y = yP(p.f)
-      if (!started) { ctx.moveTo(x, y); started = true } else ctx.lineTo(x, y)
+
+    for (const seg of segments) {
+      if (seg.length < 2) continue
+
+      // 填充区域
+      ctx.beginPath()
+      ctx.fillStyle = 'rgba(40,167,69,0.12)'
+      ctx.moveTo(xP(seg[0].t), yP(seg[0].f))
+      for (let i = 1; i < seg.length; i++) {
+        ctx.lineTo(xP(seg[i].t), yP(seg[i].f))
+      }
+      ctx.lineTo(xP(seg[seg.length - 1].t), pad.top + pH)
+      ctx.lineTo(xP(seg[0].t), pad.top + pH)
+      ctx.closePath(); ctx.fill()
+
+      // 线条
+      ctx.beginPath()
+      ctx.strokeStyle = '#28a745'
+      ctx.lineWidth = 2
+      ctx.moveTo(xP(seg[0].t), yP(seg[0].f))
+      for (let i = 1; i < seg.length; i++) {
+        ctx.lineTo(xP(seg[i].t), yP(seg[i].f))
+      }
+      ctx.stroke()
     }
-    ctx.stroke()
 
     animFrameId = requestAnimationFrame(drawChart)
   }
