@@ -402,7 +402,6 @@ onUnmounted(() => {
   letter-spacing: 0.1em;
   color: var(--vp-c-brand);
   line-height: 1.2;
-  font-family: "SF Mono", "Cascadia Code", "Consolas", "JetBrains Mono", monospace;
   transition: color 0.3s;
 }
 .totp-otp--empty {
