@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Analiti
+  itemDesc: WiFi分析工具
+  itemIcon: github.com
+---
 # Analiti:WiFi分析工具
 ## 下载地址
 - [Google](https://play.google.com/store/apps/details?id=com.analiti.fastest.android)

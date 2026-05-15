@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: CHK Hash Tool
+  itemDesc: 文件校验工具
+  itemIcon: github.com
+---
 # CHK Hash Tool:文件校验工具
 ## 下载地址
 - [CompressMe官网](https://compressme.net/)

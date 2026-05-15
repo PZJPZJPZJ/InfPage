@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Rust Scan
+  itemDesc: 高速端口扫描器
+  itemIcon: rustscan.io
+---
 # RustScan:端口批量扫描工具
 ## 官方地址
 - [GitHub](https://github.com/RustScan/RustScan)

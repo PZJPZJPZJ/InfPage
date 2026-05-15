@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Aria2
+  itemDesc: 轻量级下载工具
+  itemIcon: aria2.github.io
+---
 # Aria2:开源下载工具
 ## 仓库地址
 - [Aira2](https://github.com/aria2/aria2)

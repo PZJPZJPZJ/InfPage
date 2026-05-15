@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Android相关工具
+  itemDesc: 安卓工具与资讯
+  itemIcon: developer.android.google.cn
+---
 # Android:安卓工具与资讯
 ## 系统资讯
 - [HyperOS(小米)更新资源-Telegram](https://t.me/VoyagerMIUIUpdate)

@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Office Tool Plus
+  itemDesc: Office安装工具
+  itemIcon: otp.landian.vip
+---
 # Office Tool Plus:Office安装工具
 ## 下载地址
 - [官网](https://otp.landian.vip/)

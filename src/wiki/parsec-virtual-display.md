@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Parsec Virtual Display
+  itemDesc: 虚拟显示器工具
+  itemIcon: parsec.app
+---
 # Parsec Virtual Display:开源虚拟显示器
 ## 安装教程
 1. 访问[Github](https://github.com/nomi-san/parsec-vdd/releases)下载最新安装程序

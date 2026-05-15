@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: AIDA64
+  itemDesc: 全能硬件检测与烤机工具
+  itemIcon: aida64.com
+---
 # AIDA64:系统检测工具
 ## 下载地址
 - [AIDA64 Extreme](https://www.lanzouw.com/i611X2diu6wh)

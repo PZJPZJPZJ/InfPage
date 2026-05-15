@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Bootice
+  itemDesc: 引导扇区维护与编辑工具
+  itemIcon: terabyteunlimited.com
+---
 # Bootice:启动引导编辑工具
 ## 下载地址
 - [Bootice](https://lon-01.dlo4d.com/files/bootice/BOOTICE_2016.06.17_v1.3.4.0.zip)

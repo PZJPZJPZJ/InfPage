@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: VMware
+  itemDesc: 虚拟化软件
+  itemIcon: vmware.com
+---
 # VMware:虚拟机系统平台
 ## 官网地址
 - [VMware官网](https://www.vmware.com/)

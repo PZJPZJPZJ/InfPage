@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Apple
+  itemDesc: Apple开发相关工具
+  itemIcon: apple.com
+---
 # Apple:苹果设备工具
 ## iTunes
 - [Win64](https://www.apple.com/itunes/download/win64)

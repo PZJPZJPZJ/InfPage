@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Yuzu
+  itemDesc: Nintendo Switch模拟器
+  itemIcon: emuyuzu.com
+---
 # Yuzu:Switch模拟器
 ## Windows版安装步骤
 1. 访问[EmuYuzu](https://emuyuzu.com/download/)下载[Yuzu](https://usc1.contabostorage.com/b14312a874cd4fb8812c5c8860564d3a:downloads/yuzu-1734.zip)并解压

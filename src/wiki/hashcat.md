@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Hashcat
+  itemDesc: GPU加速密码破解
+  itemIcon: hashcat.net
+---
 # Hashcat:哈希密码破解工具
 ## 官方地址
 - [官网](https://hashcat.net/)

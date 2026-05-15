@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Media Coder Pro
+  itemDesc: 多功能媒体编码转换
+  itemIcon: mediacoderhq.com
+---
 # MediaCoder Pro:媒体格式转换工具
 ## 官方地址
 - [官网](https://www.mediacoderhq.com/)

@@ -20,15 +20,15 @@ export default defineUserConfig({
   theme: defaultTheme({
     navbar: [
       {
-        text: '百科',
+        text: '软件文档',
         link: '/wiki/',
       },
       {
-        text: '工具',
+        text: '实用工具',
         link: '/tool/',
       },
       {
-        text: '笔记',
+        text: '笔记方案',
         link: '/note/',
       }
     ],
@@ -40,15 +40,13 @@ export default defineUserConfig({
   }),
   alias: {
     '@theme/VPNavbar.vue': path.resolve(__dirname, './components/VPNavbar.vue'),
-    '@theme/VPHome.vue': path.resolve(__dirname, './components/VPHome.vue'),
-    '@theme/VPHomeHero.vue': path.resolve(__dirname, './components/VPHomeHero.vue'),
-    '@theme/VPHomeFeatures.vue': path.resolve(__dirname, './components/VPHomeFeatures.vue'),
     '@theme/VPSidebar.vue': path.resolve(__dirname, './components/VPSidebar.vue'),
   },
   bundler: viteBundler(),
   plugins: [
     catalogPlugin({
       level: 3,
+      component: 'CustomCatalog',
     }),
     shikiPlugin({
       themes: {

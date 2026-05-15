@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: DiskStation Manager
+  itemDesc: 群晖NAS系统
+  itemIcon: synology.com
+---
 # DiskStation Manager:群晖系统
 ## 群晖系统引导
 1. 下载[RedpillRecovery-Github](https://github.com/RROrg/rr)并使用镜像工具将rr.img写入硬盘

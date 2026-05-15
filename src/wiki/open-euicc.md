@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Open EUICC
+  itemDesc: eSIM卡管理工具
+  itemIcon: github.com
+---
 # OpenEUICC:开源eSIM写入工具
 ## 官方地址
 - <https://gitea.angry.im/PeterCxy/OpenEUICC>

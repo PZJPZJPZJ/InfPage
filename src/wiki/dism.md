@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Dism++
+  itemDesc: Windows系统管理优化工具
+  itemIcon: 'https://raw.githubusercontent.com/Chuyu-Team/Dism-Multi-language/refs/heads/master/www.chuyu.me/images/logo.png'
+---
 # Dism:系统部署调节工具
 ## 下载地址
 - [Dism++ Github](https://github.com/Chuyu-Team/Dism-Multi-language)

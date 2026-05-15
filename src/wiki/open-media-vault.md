@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: OpenMediaVault
+  itemDesc: 开源NAS系统
+  itemIcon: openmediavault.com
+---
 # OpenMediaVault:开源网络附属存储系统
 ## 系统下载
 - [OpenMediaVault](https://www.openmediavault.org/download.html)

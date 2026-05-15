@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Microsoft Edge
+  itemDesc: 微软浏览器
+  itemIcon: microsoft-edge.en.softonic.com
+---
 # Microsoft Edge:微软浏览器
 ## 下载地址
 - [官网](https://www.microsoft.com/zh-cn/edge/download)

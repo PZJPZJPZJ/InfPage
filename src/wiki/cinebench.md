@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Cinebench
+  itemDesc: CPU 渲染能力基准测试
+  itemIcon: cinebench.com
+---
 # Cinebench:处理器跑分工具
 ## 下载地址
 - [Maxon官网](https://www.maxon.net/zh/downloads)

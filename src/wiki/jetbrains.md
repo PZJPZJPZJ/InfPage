@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: JetBrains IDE
+  itemDesc: 专业开发集成环境
+  itemIcon: jetbrains.com
+---
 # JetBrains:集成开发环境
 ## 安装与激活
 1. 访问[JetBrains](https://www.jetbrains.com)下载所需IDE

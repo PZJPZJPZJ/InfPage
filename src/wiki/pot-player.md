@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Pot Player
+  itemDesc: 高效能媒体播放器
+  itemIcon: potplayer.daum.net
+---
 # PotPlayer:全能播放器
 ## 下载地址
 - [官网](http://www.potplayercn.com/download/potplayer1-7-18958.html)

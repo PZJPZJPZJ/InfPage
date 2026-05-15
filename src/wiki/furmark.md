@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: FurMark
+  itemDesc: 显卡稳定性压力测试(甜甜圈)
+  itemIcon: geeks3d.com
+---
 # FurMark:显卡烤机工具
 ## 官方地址
 - [官网](https://geeks3d.com/furmark/)

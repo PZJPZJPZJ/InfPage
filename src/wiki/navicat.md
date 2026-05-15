@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Navicat
+  itemDesc: 数据库管理工具
+  itemIcon: navicat.com
+---
 # Navicat:数据库管理工具
 ## 安装教程
 1. 下载安装[Navicat](https://www.navicat.com/)，安装后不运行

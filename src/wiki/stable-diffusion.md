@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Stable Diffusion
+  itemDesc: 开源图像生成模型
+  itemIcon: stablediffusionweb.com
+---
 # Stable Diffusion:图像生成AI模型
 ## 网站
 - [StabilityAI官网](https://stability.ai)

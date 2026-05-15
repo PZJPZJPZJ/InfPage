@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: CrystalDiskInfo
+  itemDesc: 硬盘健康状态检测
+  itemIcon: crystalmark.info
+---
 # CrystalDisk:硬盘工具
 ## CrystalDiskInfo信息检测
 - [CrystalDiskInfo官网](https://crystalmark.info/en/software/crystaldiskinfo/)

@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: fnOS
+  itemDesc: 飞牛NAS系统
+  itemIcon: www.fnnas.com
+---
 # fnOS:飞牛私有云NAS系统
 ## 下载地址
 - [官网下载](https://www.fnnas.com/)

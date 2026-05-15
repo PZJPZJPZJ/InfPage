@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Unlock Music
+  itemDesc: 音乐去除DRM保护
+  itemIcon: github.com
+---
 # Unlock Music:解锁音乐
 ## 下载地址
 - [Github](https://github.com/ipid/unlock-music)

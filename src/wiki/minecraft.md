@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Minecraft
+  itemDesc: 沙盒游戏与模组
+  itemIcon: minecraft.net
+---
 # Minecraft:我的世界
 ## Windows端Java版
 ### 启动器

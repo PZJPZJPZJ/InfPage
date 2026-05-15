@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: SoftEther VPN
+  itemDesc: 虚拟私有网络软件
+  itemIcon: www.softether.org
+---
 # SoftEther VPN:虚拟局域网搭建工具
 ## 下载地址
 - [官网](https://www.softether.org/)

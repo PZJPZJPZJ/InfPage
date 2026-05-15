@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: iPerf
+  itemDesc: 网络带宽测试工具
+  itemIcon: iperf.fr
+---
 # iPerf:测速工具
 ## 下载地址
 - [官网](https://iperf.fr/)

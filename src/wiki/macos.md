@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: macOS
+  itemDesc: 黑苹果安装教程与工具
+  itemIcon: apple.com
+---
 # macOS:苹果系统
 ## 安装教程
 ### 创建启动程序

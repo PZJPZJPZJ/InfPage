@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: TVBox
+  itemDesc: 安卓电视盒应用
+  itemIcon: tvbox.live
+---
 # TVBox:安卓电视工具
 ## 配置教程
 1. 通过USB或ADB安装[TVBox空壳](#空壳下载)

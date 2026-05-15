@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: So-VITS-SVC
+  itemDesc: 歌声合成与转换
+  itemIcon: github.com
+---
 # SoVITS:歌声转换训练模型
 ## 仓库地址
 - [官方仓库](https://github.com/svc-develop-team/so-vits-svc)

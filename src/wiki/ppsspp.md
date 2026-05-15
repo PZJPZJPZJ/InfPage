@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: PPSSPP
+  itemDesc: PSP游戏模拟器
+  itemIcon: ppsspp.org
+---
 # PPSSPP:PSP模拟器
 ## 下载地址
 - [官网](https://www.ppsspp.org/)

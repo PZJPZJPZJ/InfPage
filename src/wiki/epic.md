@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Epic
+  itemDesc: Epic Games平台
+  itemIcon: epicgames.com
+---
 # Epic:游戏平台
 ## 官网地址
 - [Epic官网](https://store.epicgames.com/)

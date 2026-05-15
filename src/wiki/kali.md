@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Kali
+  itemDesc: Kali渗透测试Linux
+  itemIcon: kali.org
+---
 # Kali:网络渗透测试系统
 ## 下载地址
 - [Kali官网](https://www.kali.org/get-kali)

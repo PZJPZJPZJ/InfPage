@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: OpenWrt
+  itemDesc: 路由器固件系统
+  itemIcon: openwrt.org
+---
 # OpenWrt:路由系统
 ## 系统地址
 - [OpenWrt](https://openwrt.org/)

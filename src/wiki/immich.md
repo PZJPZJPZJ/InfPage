@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Immich
+  itemDesc: 开源照片与视频管理
+  itemIcon: immich.app
+---
 # Immich:开源相册管理
 ## 官网地址
 - [官网](https://immich.app/)

@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: XRay UI
+  itemDesc: X-Ray代理管理界面
+  itemIcon: github.com
+---
 # Xray UI:代理服务器管理面板
 ## 仓库地址
 - [3x-ui-Github](https://github.com/MHSanaei/3x-ui)

@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: NextTrace
+  itemDesc: 可视化路由跟踪工具
+  itemIcon: nexttrace.org
+---
 # NextTrace:路由跟踪工具
 ## 仓库地址
 - [GitHub](https://github.com/nxtrace/NTrace-core)

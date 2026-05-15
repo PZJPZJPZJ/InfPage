@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: SFX Builder
+  itemDesc: 自解压文件生成工具
+  itemIcon: github.com
+---
 # SFX Builder:自解压程序制作工具
 ## 下载地址
 - [SourceForge](https://sourceforge.net/projects/s-zipsfxbuilder/)

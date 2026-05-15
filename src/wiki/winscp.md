@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: WinSCP
+  itemDesc: SFTP文件传输工具
+  itemIcon: winscp.net
+---
 # WinSCP:SSH远程管理工具
 ## 下载地址
 - [官网](https://winscp.net/eng/index.php)

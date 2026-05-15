@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: NSSM
+  itemDesc: Windows服务管理
+  itemIcon: nssm.cc
+---
 # NSSM:Windows服务安装工具
 ## 下载地址
 - [NSSM官网](https://nssm.cc/download)

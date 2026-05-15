@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Windows To Go
+  itemDesc: U盘启动Windows系统
+  itemIcon: microsoft.com
+---
 # Windows To Go:便携系统制作工具
 ## 下载地址
 - [官方论坛](https://bbs.luobotou.org/bstra/thread-761-1-1.html)

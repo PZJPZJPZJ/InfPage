@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Clash
+  itemDesc: 网络代理工具
+  itemIcon: board.zash.run.place
+---
 # Clash:代理工具
 ## 图形客户端
 ### [Clash Verge Rev](https://github.com/clash-verge-rev/clash-verge-rev)

@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Ryujinx
+  itemDesc: Nintendo Switch模拟器
+  itemIcon: ryujinx-emulator.com
+---
 # Ryujinx:Switch模拟器
 ## Windows版安装步骤
 1. 访问<https://ryujinx-emulator.com/>下载[Ryujinx](https://archive.org/download/ryujinx-1.1.1403-linux_x64.7z/ryujinx-1.1.1403-win_x64.7z)并解压

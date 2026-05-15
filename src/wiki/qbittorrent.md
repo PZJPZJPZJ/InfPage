@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: QBittorrent
+  itemDesc: 开源种子下载工具
+  itemIcon: qbittorrent.org
+---
 # qBittorrent:磁力下载工具
 ## 下载地址
 - [官网](https://www.qbittorrent.org/download)

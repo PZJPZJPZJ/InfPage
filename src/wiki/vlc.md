@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: VLC
+  itemDesc: 跨平台多媒体播放器
+  itemIcon: videolan.org
+---
 # VLC:跨平台播放器
 ## 下载地址
 - [官网](https://www.videolan.org/)

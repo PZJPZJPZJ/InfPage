@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: PortableApps
+  itemDesc: 便携应用制作器
+  itemIcon: portableapps.com
+---
 # PortableApps:便携应用制作器
 ## 安装教程
 访问[PortableApps](https://portableapps.com/development)官网，下载[PortableAppsLauncher](https://download2.portableapps.com/portableapps/PortableApps.comLauncher/PortableApps.comLauncher_2.2.9.paf.exe)启动程序生成器

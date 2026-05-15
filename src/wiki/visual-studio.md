@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Visual Studio
+  itemDesc: 微软开发工具
+  itemIcon: code.visualstudio.com
+---
 # Visual Studio:微软集成开发环境
 ## Visual Studio
 - [Visual Studio-官网](https://visualstudio.microsoft.com)

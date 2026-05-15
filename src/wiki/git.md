@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Git
+  itemDesc: 版本控制系统
+  itemIcon: git-scm.com
+---
 # Git:版本控制
 ## 下载地址
 - [Git 官网](https://git-scm.com/)

@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Checkra1n
+  itemDesc: iOS越狱工具
+  itemIcon: checkra.in
+---
 # Checkra1n:iOS越狱
 ## 适用机型
 - iPhone5s~iPhoneX

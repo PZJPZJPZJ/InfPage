@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Scrcpy
+  itemDesc: Android屏幕投影工具
+  itemIcon: github.com
+---
 # Scrcpy:安卓屏幕镜像工具
 ## 下载地址
 - [官网](https://scrcpy.org/)

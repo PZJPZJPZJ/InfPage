@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: MySQL
+  itemDesc: 开源关系型数据库
+  itemIcon: mysql.com
+---
 # MySQL:数据库服务端
 ## 下载地址
 - [官网](https://dev.mysql.com/downloads/mysql/)

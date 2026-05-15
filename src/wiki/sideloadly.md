@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Sideloadly
+  itemDesc: iOS应用安装工具
+  itemIcon: sideloadly.io
+---
 # Sideloadly:iOS侧载工具
 ## 下载地址
 - [官网](https://sideloadly.io/)

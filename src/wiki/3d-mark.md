@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: 3DMark
+  itemDesc: 显卡与游戏性能基准测试
+  itemIcon: 3dmark.com
+---
 # 3DMark:显卡跑分工具
 ## 下载地址
 - [3DMark官网](https://www.3dmark.com/)

@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: RPCS3
+  itemDesc: PlayStation 3模拟器
+  itemIcon: rpcs3.net
+---
 # RPCS3:PlayStation3仿真器
 ## 下载地址
 - [官网](https://rpcs3.net/)

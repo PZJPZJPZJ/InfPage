@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: MiWiFi
+  itemDesc: 小米路由器工具
+  itemIcon: www.miwifi.com
+---
 # 小米路由器工具
 ## 密码计算器
 先访问[路由器后台](http://miwifi.com/)，在首页`SN`处复制序列号(如`12345/A1B2C3D4E`)。

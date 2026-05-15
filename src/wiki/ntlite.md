@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: NTLite
+  itemDesc: Windows系统集成与精简工具
+  itemIcon: ntlite.com
+---
 # NTLite:Windows精简工具
 ## 官方地址
 - [官网](https://www.ntlite.com/)

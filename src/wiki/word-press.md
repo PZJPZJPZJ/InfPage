@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: WordPress
+  itemDesc: 开源建站系统
+  itemIcon: wordpress.com
+---
 # WordPress:开源内容管理系统
 ## 官方地址
 - [WordPress官网](https://wordpress.org/)

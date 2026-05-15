@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Sunshine
+  itemDesc: 游戏流服务器
+  itemIcon: app.lizardbyte.dev
+---
 # Sunshine:远程串流软件
 ## 官方仓库
 [Github](https://github.com/LizardByte/Sunshine)

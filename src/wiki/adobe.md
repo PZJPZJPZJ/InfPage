@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Adobe
+  itemDesc: Adobe创意设计套件
+  itemIcon: adobe.com
+---
 # Adobe:多媒体编辑
 ## 下载地址
 [Adobe-123yun]: https://www.123865.com/s/tlYRVv-AjfI

@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: LM Studio
+  itemDesc: 本地大语言模型运行工具
+  itemIcon: lmstudio.ai
+---
 # LM Studio:大语言/视觉模型部署工具
 ## 网址
 - [LM Studio-官网](https://lmstudio.ai/)

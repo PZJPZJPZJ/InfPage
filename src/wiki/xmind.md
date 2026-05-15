@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: XMind
+  itemDesc: 思维导图软件
+  itemIcon: xmind.com
+---
 # XMind:思维导图软件
 ## 下载地址
 - [Xmind官网](https://xmind.cn/)

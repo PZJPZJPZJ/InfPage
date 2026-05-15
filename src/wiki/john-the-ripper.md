@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: John The Ripper
+  itemDesc: 密码安全测试工具
+  itemIcon: openwall.com
+---
 # John the Ripper:文件哈希获取工具
 ## 官方地址
 - <https://www.openwall.com/john/>

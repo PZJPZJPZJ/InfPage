@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Ventoy
+  itemDesc: 多启动盘制作工具
+  itemIcon: ventoy.net
+---
 # Ventoy:多镜像启动盘
 ## 下载地址
 - [官网](https://www.ventoy.net/cn/)

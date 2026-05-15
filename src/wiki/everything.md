@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Everything
+  itemDesc: 极速本地文件搜索
+  itemIcon: voidtools.com
+---
 # Everything:文件搜索工具
 ## 官方网站
 - <https://www.voidtools.com/>

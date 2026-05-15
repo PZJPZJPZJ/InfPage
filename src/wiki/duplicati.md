@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Duplicati
+  itemDesc: 备份与恢复工具
+  itemIcon: duplicati.com
+---
 # Duplicati:定时备份工具
 ## DockerCompose部署
 ```yaml

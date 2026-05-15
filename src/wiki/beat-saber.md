@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Beat Saber
+  itemDesc: VR音乐游戏
+  itemIcon: beatsaber.com
+---
 # BeatSaber:节奏光剑
 ## 通用教程
 - <https://bs.wdsky.top/>

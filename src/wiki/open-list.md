@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: OpenList
+  itemDesc: 网盘挂载工具
+  itemIcon: doc.oplist.org
+---
 # OpenList:开源网盘
 ## 官方地址
 - [OpenList](https://oplist.org/)

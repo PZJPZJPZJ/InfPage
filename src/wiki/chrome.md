@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Google Chrome
+  itemDesc: 谷歌浏览器
+  itemIcon: 'https://www.google.com/chrome/static/images/chrome-logo-m100.svg'
+---
 # Chrome:谷歌浏览器
 ## 下载地址
 - [官网](https://www.google.com/chrome/)

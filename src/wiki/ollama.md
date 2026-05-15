@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Ollama
+  itemDesc: 本地AI模型管理平台
+  itemIcon: ollama.ai
+---
 # Ollama:大语言模型部署工具
 ## 网址
 - [Ollama-官网](https://ollama.com/)

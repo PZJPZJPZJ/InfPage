@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Windows
+  itemDesc: 微软系统镜像与工具
+  itemIcon: microsoft.com
+---
 # Windows:微软操作系统
 ## 安装教程
 ### Windows安装程序直接安装

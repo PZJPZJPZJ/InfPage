@@ -8,6 +8,12 @@
     --vp-sidebar-c-bg: rgba(27, 27, 31, 0.8);
 }
 
+/* ===== Override Components ===== */
+.vp-hero-image {
+  max-width: 50%;
+  max-height: 150px;
+}
+
 /* ===== Custom Buttons ===== */
 .vp-custom-btn {
   display: inline-flex;

@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: OpenClaw
+  itemDesc: AI智能体网关
+  itemIcon: openclaw.ai
+---
 # OpenClaw:AI智能体网关
 ## 官网地址
 - [OpenClaw-官网](https://openclaw.ai/)

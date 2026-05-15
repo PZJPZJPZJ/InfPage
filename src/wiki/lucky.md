@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Lucky Patcher
+  itemDesc: 系统修改与优化
+  itemIcon: luckypatchers.com
+---
 # Lucky:网络打洞穿透工具
 ## 下载地址
 - [Github](https://github.com/gdy666/lucky)

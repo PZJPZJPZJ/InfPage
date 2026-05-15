@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: BalenaEtcher
+  itemDesc: 跨平台镜像写入工具
+  itemIcon: balena.io
+---
 # BalenaEtcher:镜像写入工具
 ## 官方地址
 - [官网](https://etcher.balena.io)

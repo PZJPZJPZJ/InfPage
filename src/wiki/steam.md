@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Steam
+  itemDesc: 游戏平台与分发
+  itemIcon: steampowered.com
+---
 # Steam:游戏平台
 ## 官方地址
 - [Steam官网](https://store.steampowered.com/)

@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Docker
+  itemDesc: 容器化应用部署平台
+  itemIcon: docker.com
+---
 # Docker:开源应用容器引擎
 ## 官方地址
 - <https://download.docker.com>
