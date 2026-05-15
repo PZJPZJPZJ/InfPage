@@ -1,0 +1,1 @@
+import{_ as t,c as o,e as n,r as a,o as c}from"./app-B3ArvWrw.js";const s={};function r(l,_){const e=a("Catalog");return c(),o("div",null,[n(e)])}const d=t(s,[["render",r]]),m=JSON.parse('{"path":"/note/nodejs/","title":"Nodejs","lang":"zh-CN","frontmatter":{"title":"Nodejs"},"git":{},"filePathRelative":null}');export{d as comp,m as data};
