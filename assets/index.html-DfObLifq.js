@@ -1,0 +1,1 @@
+import{_ as e,c as o,e as a,r as n,o as c}from"./app-BP0LvVfU.js";const r={};function s(l,_){const t=n("CustomCatalog");return c(),o("div",null,[a(t)])}const i=e(r,[["render",s]]),p=JSON.parse('{"path":"/note/","title":"Note","lang":"zh-CN","frontmatter":{"title":"Note"},"git":{},"filePathRelative":null}');export{i as comp,p as data};
