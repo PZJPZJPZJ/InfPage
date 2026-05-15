@@ -5,7 +5,7 @@
     <label class="totp-label">TOTP验证码生成</label>
     <input
       v-model="input"
-      placeholder="输入 Base32 密钥，或粘贴 otpauth:// 链接自动解析，读取URL的secret参数"
+      placeholder="输入 Base32/Base64/HEX/otpauth 密钥，读取URL的secret参数"
       class="totp-input"
       @paste="onPaste"
     />
@@ -34,6 +34,14 @@
         <option :value="6">6 位(默认)</option>
         <option :value="7">7 位</option>
         <option :value="8">8 位</option>
+      </select>
+    </label>
+    <label class="totp-opt-item">
+      <span>格式</span>
+      <select v-model="inputFormat" class="totp-select">
+        <option value="base32">Base32(默认)</option>
+        <option value="base64">Base64</option>
+        <option value="hex">HEX</option>
       </select>
     </label>
   </div>
@@ -79,18 +87,28 @@
   <div class="totp-field">
     <label class="totp-label">TOTP密钥生成</label>
   </div>
-  <label class="totp-opt-item">
-    <span>密钥长度</span>
-    <select v-model="keyBits" class="totp-select">
-      <option :value="128">128 位</option>
-      <option :value="160">160 位</option>
-      <option :value="256" selected>256 位（推荐）</option>
-      <option :value="512">512 位</option>
-    </select>
-  </label>
+  <div class="totp-options">
+    <label class="totp-opt-item">
+      <span>长度</span>
+      <select v-model="keyBits" class="totp-select">
+        <option :value="128">128 位（16 字节）</option>
+        <option :value="160">160 位（20 字节）</option>
+        <option :value="256" selected>256 位（32 字节，推荐）</option>
+        <option :value="512">512 位（64 字节）</option>
+      </select>
+    </label>
+    <label class="totp-opt-item">
+      <span>格式</span>
+      <select v-model="keyFormat" class="totp-select">
+        <option value="base32">Base32(默认)</option>
+        <option value="base64">Base64</option>
+        <option value="hex">HEX</option>
+      </select>
+    </label>
+  </div>
 
   <div class="keygen-output">
-    <div class="keygen-label">生成的密钥（Base32）</div>
+    <div class="keygen-label">生成的密钥</div>
     <div :class="['keygen-key', { 'keygen-key--empty': !generatedKey }]">{{ generatedKey || '------' }}</div>
   </div>
 
@@ -122,6 +140,61 @@ function base32Decode(str) {
   return new Uint8Array(bytes);
 }
 
+function base32Encode(bytes) {
+  let result = "";
+  let buf = 0, bits = 0;
+  for (const b of bytes) {
+    buf = (buf << 8) | b;
+    bits += 8;
+    while (bits >= 5) {
+      bits -= 5;
+      result += B32[(buf >> bits) & 0x1f];
+    }
+  }
+  if (bits > 0) {
+    result += B32[(buf << (5 - bits)) & 0x1f];
+  }
+  return result;
+}
+
+/* ====== Base64 / HEX ====== */
+function base64Decode(str) {
+  const bin = atob(str.replace(/=+$/, ""));
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
+
+function base64Encode(bytes) {
+  return btoa(String.fromCharCode(...bytes));
+}
+
+function hexDecode(str) {
+  const clean = str.replace(/\s/g, "");
+  if (clean.length % 2 !== 0) throw new Error("HEX 字符串长度必须为偶数");
+  const bytes = new Uint8Array(clean.length / 2);
+  for (let i = 0; i < clean.length; i += 2) {
+    bytes[i / 2] = parseInt(clean.substring(i, i + 2), 16);
+  }
+  return bytes;
+}
+
+function hexEncode(bytes) {
+  return Array.from(bytes, b => b.toString(16).padStart(2, "0").toUpperCase()).join("");
+}
+
+function decodeKey(str, fmt) {
+  if (fmt === "base64") return base64Decode(str);
+  if (fmt === "hex") return hexDecode(str);
+  return base32Decode(str);
+}
+
+function encodeKey(bytes, fmt) {
+  if (fmt === "base64") return base64Encode(bytes);
+  if (fmt === "hex") return hexEncode(bytes);
+  return base32Encode(bytes);
+}
+
 /* ====== TOTP ====== */
 const HMAC_ALGO = { "SHA-1": "SHA-1", "SHA-256": "SHA-256", "SHA-512": "SHA-512" };
 
@@ -133,9 +206,9 @@ function counterBytes(n) {
   return buf;
 }
 
-async function generateTOTP(secret, algo, digits, period) {
+async function generateTOTP(secret, algo, digits, period, fmt) {
   if (!secret) return null;
-  const keyBytes = base32Decode(secret);
+  const keyBytes = decodeKey(secret, fmt || "base32");
   const counter = Math.floor(Date.now() / 1000 / period);
 
   const cryptoKey = await crypto.subtle.importKey(
@@ -192,6 +265,9 @@ const keyBits = ref(256);
 const generatedKey = ref("");
 const keyCopied = ref(false);
 
+const inputFormat = ref("base32");
+const keyFormat = ref("base32");
+
 let timer = null;
 
 /* ====== URL query params ====== */
@@ -238,20 +314,7 @@ async function copyOTP() {
 function generateKey() {
   const bytes = new Uint8Array(keyBits.value / 8);
   crypto.getRandomValues(bytes);
-  let result = "";
-  let buf = 0, bits = 0;
-  for (const b of bytes) {
-    buf = (buf << 8) | b;
-    bits += 8;
-    while (bits >= 5) {
-      bits -= 5;
-      result += B32[(buf >> bits) & 0x1f];
-    }
-  }
-  if (bits > 0) {
-    result += B32[(buf << (5 - bits)) & 0x1f];
-  }
-  generatedKey.value = result;
+  generatedKey.value = encodeKey(bytes, keyFormat.value);
   keyCopied.value = false;
 }
 
@@ -303,6 +366,11 @@ const remainColor = computed(() => {
   return "#e53e3e";
 });
 
+const keyFormatLabel = computed(() => {
+  const labels = { base32: "Base32", base64: "Base64", hex: "HEX" };
+  return labels[keyFormat.value] || "Base32";
+});
+
 /* ====== Refresh ====== */
 async function refresh() {
   if (!secret.value) {
@@ -312,12 +380,14 @@ async function refresh() {
     return;
   }
   try {
-    otp.value = await generateTOTP(secret.value, algorithm.value, digits.value, period.value);
+    otp.value = await generateTOTP(secret.value, algorithm.value, digits.value, period.value, inputFormat.value);
     error.value = "";
   } catch (e) {
     otp.value = "Error";
     if (e.message?.includes("无效字符")) {
-      error.value = "密钥包含无效字符，请检查 Base32 编码";
+      error.value = "密钥包含无效字符，请检查密钥格式是否正确";
+    } else if (e.message?.includes("HEX")) {
+      error.value = e.message;
     } else {
       error.value = "生成失败，请检查密钥是否正确";
     }
@@ -330,10 +400,12 @@ async function refresh() {
 watch(algorithm, refresh);
 watch(period, refresh);
 watch(digits, refresh);
+watch(inputFormat, refresh);
 
 watch(input, (val) => {
   const parsed = parseURI(val);
   if (parsed) {
+    inputFormat.value = "base32";
     secret.value = parsed.secret;
     algorithm.value = HMAC_ALGO[parsed.algorithm] || "SHA-1";
     period.value = parsed.period;
