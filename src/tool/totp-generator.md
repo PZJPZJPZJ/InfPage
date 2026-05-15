@@ -2,10 +2,10 @@
 
 <div class="totp-card">
   <div class="totp-field">
-    <label class="totp-label">密钥（读取URL的secret参数）</label>
+    <label class="totp-label">TOTP验证码生成</label>
     <input
       v-model="input"
-      placeholder="输入 Base32 密钥，或粘贴 otpauth:// 链接自动解析"
+      placeholder="输入 Base32 密钥，或粘贴 otpauth:// 链接自动解析，读取URL的secret参数"
       class="totp-input"
       @paste="onPaste"
     />
@@ -42,15 +42,6 @@
     <div class="totp-otp-section">
       <div class="totp-label">验证码</div>
       <div :class="['totp-otp', { 'totp-otp--empty': !secret }]">{{ otp }}</div>
-      <div class="totp-copy-wrap">
-        <button
-          v-if="secret && otp !== 'Error'"
-          class="totp-copy"
-          @click="copyOTP"
-        >
-          {{ copied ? '已复制' : '复制' }}
-        </button>
-      </div>
     </div>
     <div class="totp-clock">
       <svg viewBox="0 0 100 100" class="totp-svg">
@@ -71,7 +62,41 @@
     </div>
   </div>
 
+  <div class="totp-actions">
+    <button
+      v-if="secret && otp !== 'Error'"
+      class="vp-custom-btn vp-custom-btn--secondary"
+      @click="copyOTP"
+    >
+      {{ copied ? '已复制' : '复制验证码' }}
+    </button>
+  </div>
+
   <p v-if="error" class="totp-error">{{ error }}</p>
+</div>
+
+<div class="keygen-card">
+  <div class="totp-field">
+    <label class="totp-label">TOTP密钥生成</label>
+  </div>
+  <label class="totp-opt-item">
+    <span>密钥长度</span>
+    <select v-model="keyBits" class="totp-select">
+      <option :value="128">128 位</option>
+      <option :value="160">160 位</option>
+      <option :value="256" selected>256 位（推荐）</option>
+      <option :value="512">512 位</option>
+    </select>
+  </label>
+
+  <div class="keygen-output">
+    <div class="keygen-label">生成的密钥（Base32）</div>
+    <div :class="['keygen-key', { 'keygen-key--empty': !generatedKey }]">{{ generatedKey || '------' }}</div>
+  </div>
+
+  <div class="keygen-actions">
+    <button class="vp-custom-btn vp-custom-btn--secondary" @click="generateAndCopyKey">{{ keyCopied ? '已复制' : '生成并复制' }}</button>
+  </div>
 </div>
 
 <script setup>
@@ -162,6 +187,11 @@ const remain = ref("--");
 const error = ref("");
 const copied = ref(false);
 
+/* ====== Key Generator State ====== */
+const keyBits = ref(256);
+const generatedKey = ref("");
+const keyCopied = ref(false);
+
 let timer = null;
 
 /* ====== URL query params ====== */
@@ -204,6 +234,51 @@ async function copyOTP() {
   }
 }
 
+/* ====== Key Generator ====== */
+function generateKey() {
+  const bytes = new Uint8Array(keyBits.value / 8);
+  crypto.getRandomValues(bytes);
+  let result = "";
+  let buf = 0, bits = 0;
+  for (const b of bytes) {
+    buf = (buf << 8) | b;
+    bits += 8;
+    while (bits >= 5) {
+      bits -= 5;
+      result += B32[(buf >> bits) & 0x1f];
+    }
+  }
+  if (bits > 0) {
+    result += B32[(buf << (5 - bits)) & 0x1f];
+  }
+  generatedKey.value = result;
+  keyCopied.value = false;
+}
+
+async function copyKey() {
+  try {
+    await navigator.clipboard.writeText(generatedKey.value);
+    keyCopied.value = true;
+    setTimeout(() => { keyCopied.value = false; }, 1500);
+  } catch {
+    const ta = document.createElement("textarea");
+    ta.value = generatedKey.value;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    keyCopied.value = true;
+    setTimeout(() => { keyCopied.value = false; }, 1500);
+  }
+}
+
+async function generateAndCopyKey() {
+  generateKey();
+  /* small delay to let generateKey update the ref */
+  await new Promise(r => setTimeout(r, 0));
+  await copyKey();
+}
+
 /* ====== Computed ====== */
 const circumference = 2 * Math.PI * 42;
 
@@ -232,6 +307,7 @@ const remainColor = computed(() => {
 async function refresh() {
   if (!secret.value) {
     otp.value = "------";
+    remain.value = "--";
     error.value = "";
     return;
   }
@@ -281,15 +357,18 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.totp-card {
+.totp-card,
+.keygen-card {
   background: var(--vp-c-bg-soft);
   border-radius: 14px;
   padding: 1.4rem 1.5rem 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   border: 1px solid var(--vp-c-border);
+}
+.totp-card {
+  margin-bottom: 1.25rem;
 }
 
 /* ---- Input ---- */
@@ -300,7 +379,7 @@ onUnmounted(() => {
 }
 
 .totp-field .totp-label {
-  font-size: 0.78rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--vp-c-text-2);
   letter-spacing: 0.02em;
@@ -394,46 +473,19 @@ onUnmounted(() => {
   letter-spacing: 0.03em;
 }
 
-.totp-otp {
-  font-size: clamp(1.4rem, 5.5vw, 2.6rem);
-  font-weight: 800;
+.totp-otp,
+.keygen-key {
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
+  font-weight: 700;
   overflow-wrap: anywhere;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.1em;
   color: var(--vp-c-brand);
-  line-height: 1.2;
+  line-height: 1.3;
   transition: color 0.3s;
 }
-.totp-otp--empty {
+.totp-otp--empty,
+.keygen-key--empty {
   color: var(--vp-c-text-3);
-  font-weight: 600;
-  letter-spacing: normal;
-}
-
-/* ---- Copy button ---- */
-.totp-copy-wrap {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.3rem;
-}
-
-.totp-copy {
-  font-size: 0.75rem;
-  padding: 0.25rem 0.75rem;
-  border: 1px solid var(--vp-c-border);
-  border-radius: 5px;
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-2);
-  cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 500;
-  line-height: 1.6;
-}
-.totp-copy:hover {
-  border-color: var(--vp-c-brand);
-  color: var(--vp-c-brand);
-  background: color-mix(in srgb, var(--vp-c-brand) 6%, var(--vp-c-bg));
 }
 
 /* ---- Clock (SVG circle) ---- */
@@ -488,6 +540,13 @@ onUnmounted(() => {
   text-transform: uppercase;
 }
 
+.totp-actions,
+.keygen-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
 /* ---- Error ---- */
 .totp-error {
   font-size: 0.8rem;
@@ -497,4 +556,21 @@ onUnmounted(() => {
   background: rgba(229, 62, 62, 0.06);
   border-radius: 6px;
 }
+
+.keygen-output {
+  background: var(--vp-c-bg);
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--vp-c-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.keygen-output .keygen-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--vp-c-text-3);
+}
+
 </style>

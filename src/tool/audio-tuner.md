@@ -1,45 +1,53 @@
 # 声音频率检测器
-<div class="tuner_pitch_scale">
-  <span v-for="(note, index) in surroundingNotes" :key="note" :class="{ 'tuner_pitch_current': index === 3 }">
-    {{ note }}
-  </span>
-</div>
-<div class="tuner_deviation">
-  <div class="tuner_deviation_wrapper">
-    <!-- 刻度线容器 -->
-    <div class="tuner_deviation_scale">
-      <div class="tuner_deviation_mark tuner_deviation_mark_prev">
-        <div class="tuner_deviation_mark_line"></div>
-        <span class="tuner_deviation_mark_label">-50</span>
+
+<div class="tuner_card">
+  <div class="tuner_pitch_scale">
+    <span v-for="(note, index) in surroundingNotes" :key="note" :class="{ 'tuner_pitch_current': index === 3 }">
+      {{ note }}
+    </span>
+  </div>
+
+  <div class="tuner_deviation">
+    <div class="tuner_deviation_wrapper">
+      <div class="tuner_deviation_scale">
+        <div class="tuner_deviation_mark tuner_deviation_mark_prev">
+          <div class="tuner_deviation_mark_line"></div>
+          <span class="tuner_deviation_mark_label">-50</span>
+        </div>
+        <div class="tuner_deviation_mark tuner_deviation_mark_current">
+          <div class="tuner_deviation_mark_line"></div>
+          <span class="tuner_deviation_mark_label">0</span>
+        </div>
+        <div class="tuner_deviation_mark tuner_deviation_mark_next">
+          <div class="tuner_deviation_mark_line"></div>
+          <span class="tuner_deviation_mark_label">+50</span>
+        </div>
       </div>
-      <div class="tuner_deviation_mark tuner_deviation_mark_current">
-        <div class="tuner_deviation_mark_line"></div>
-        <span class="tuner_deviation_mark_label">0</span>
-      </div>
-      <div class="tuner_deviation_mark tuner_deviation_mark_next">
-        <div class="tuner_deviation_mark_line"></div>
-        <span class="tuner_deviation_mark_label">+50</span>
+      <div class="tuner_deviation_bar">
+        <div class="tuner_deviation_indicator" :style="{ left: deviationPosition + '%' }"></div>
       </div>
     </div>
-    <!-- 实时指示器条 -->
-    <div class="tuner_deviation_bar">
-      <div class="tuner_deviation_indicator" :style="{ left: deviationPosition + '%' }"></div>
+  </div>
+
+  <div class="tuner_info">
+    <div class="tuner_info_item">
+      <span class="tuner_info_label">频率</span>
+      <span class="tuner_frequency">{{ detectedFrequency.toFixed(1) }}<small>Hz</small></span>
+    </div>
+    <div class="tuner_info_divider"></div>
+    <div class="tuner_info_item">
+      <span class="tuner_info_label">偏移</span>
+      <span class="tuner_frequency">{{ pitchDeviation.toFixed(1) }}<small>cents</small></span>
     </div>
   </div>
-  <div>
-    <span>频率:</span>
-    <div class="tuner_frequency">{{ detectedFrequency.toFixed(1) }} Hz</div>
-  </div>
-  <div>
-    <span>偏移:</span>
-    <div class="tuner_frequency">{{ pitchDeviation.toFixed(1) }} cents</div>
-  </div>
+
   <div class="tuner_controls">
-  <button class="tuner_btn" @click="toggleListening">
-    {{ isListening ? '停止监听' : '开始监听' }}
-  </button>
+    <button class="vp-custom-btn vp-custom-btn--secondary" @click="toggleListening">
+      {{ isListening ? '停止监听' : '开始监听' }}
+    </button>
+  </div>
 </div>
-</div>
+
 <div v-if="isListening" class="tuner_chart_wrapper">
   <canvas ref="pitchCanvas" class="tuner_chart"></canvas>
 </div>
@@ -173,7 +181,7 @@
     ctx.clearRect(0, 0, W, H)
 
     // 背景
-    ctx.fillStyle = 'rgba(0,0,0,0.03)'
+    ctx.fillStyle = '#ffffff'
     ctx.fillRect(0, 0, W, H)
 
     // 边框
@@ -394,54 +402,76 @@
 </script>
 
 <style scoped>
-  .tuner_btn {
-    margin: 20px 0;
-    padding: 10px 20px;
-    border: 1px solid var(--vp-c-text);
-    border-radius: 6px;
-    color: var(--vp-c-text);
-    cursor: pointer;
-    font-size: 14px;
-    min-width: 120px;
+  /* ---- Card container ---- */
+  .tuner_card {
+    background: var(--vp-c-bg-soft);
+    border-radius: 14px;
+    padding: 1.4rem 1.5rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    border: 1px solid var(--vp-c-border);
   }
 
-  .tuner_frequency {
-    font-size: 24px;
-    font-weight: bold;
-    color: var(--vp-c-accent);
-  }
-
+  /* ---- Pitch Scale (音符显示) ---- */
   .tuner_pitch_scale {
     display: flex;
     justify-content: center;
     gap: 20px;
-    margin: 20px 0;
+    padding: 14px 20px;
+    background: var(--vp-c-bg);
+    border-radius: 10px;
     font-size: 16px;
+    font-weight: 500;
+    color: var(--vp-c-text-3);
+    user-select: none;
+  }
+
+  .tuner_pitch_scale span {
+    transition: color 0.2s, transform 0.2s;
+    min-width: 32px;
+    text-align: center;
   }
 
   .tuner_pitch_current {
-    font-size: 20px;
-    font-weight: bold;
-    color: var(--vp-c-accent);
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: var(--vp-c-accent) !important;
+    position: relative;
+    transform: scale(1.12);
   }
 
+  .tuner_pitch_current::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 2.5px;
+    background: var(--vp-c-accent);
+    border-radius: 2px;
+  }
+
+  /* ---- Deviation Section ---- */
   .tuner_deviation {
-    margin-top: 15px;
+    margin: 0;
   }
 
   .tuner_deviation_wrapper {
     position: relative;
-    margin: 30px 0 15px;
+    margin: 32px 0 6px;
   }
 
   .tuner_deviation_scale {
     position: absolute;
-    top: -25px;
+    top: -26px;
     left: 0;
     right: 0;
-    height: 25px;
+    height: 26px;
     display: flex;
     justify-content: space-between;
+    pointer-events: none;
   }
 
   .tuner_deviation_mark {
@@ -454,56 +484,123 @@
 
   .tuner_deviation_mark_line {
     width: 2px;
-    height: 15px;
-    background-color: #dc3545;
+    height: 14px;
+    background: var(--vp-c-danger, #dc3545);
+    border-radius: 1px;
+    transition: height 0.2s;
   }
 
   .tuner_deviation_mark_current .tuner_deviation_mark_line {
-    background-color: #28a745;
+    background: var(--vp-c-success, #28a745);
     height: 20px;
+  }
+
+  .tuner_deviation_mark_current .tuner_deviation_mark_label {
+    color: var(--vp-c-success, #28a745);
+    font-weight: 600;
   }
 
   .tuner_deviation_mark_label {
-    font-size: 12px;
-    color: #6c757d;
-    margin-top: 2px;
+    font-size: 11px;
+    color: var(--vp-c-text-3);
+    margin-top: 3px;
   }
 
   .tuner_deviation_bar {
-    height: 20px;
-    border: 1px solid #dee2e6;
-    border-radius: 10px;
+    height: 22px;
+    border: 1px solid var(--vp-c-border);
+    border-radius: 11px;
     position: relative;
+    overflow: hidden;
     background: linear-gradient(to right,
-        #dc3545 0%,
-        #ffc107 40%,
-        #28a745 50%,
-        #ffc107 60%,
-        #dc3545 100%);
+        var(--vp-c-danger, #dc3545) 0%,
+        var(--vp-c-warning, #ffc107) 38%,
+        var(--vp-c-success, #28a745) 50%,
+        var(--vp-c-warning, #ffc107) 62%,
+        var(--vp-c-danger, #dc3545) 100%);
   }
 
   .tuner_deviation_indicator {
-    width: 4px;
-    height: calc(100% + 10px);
+    width: 5px;
+    height: calc(100% + 12px);
     background: var(--vp-c-text-mute);
     position: absolute;
-    top: -5px;
+    top: -6px;
     transform: translateX(-50%);
-    transition: left 0.1s;
-    border-radius: 2px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    transition: left 0.08s ease;
+    border-radius: 3px;
+    box-shadow: 0 0 5px var(--vp-c-text-mute);
+    pointer-events: none;
   }
 
+  /* ---- Info Row (频率 & 偏移) ---- */
+  .tuner_info {
+    background: var(--vp-c-bg);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--vp-c-border);
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .tuner_info_item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .tuner_info_label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--vp-c-text-3);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .tuner_frequency {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--vp-c-accent);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.3;
+  }
+
+  .tuner_frequency small {
+    font-size: 0.55em;
+    font-weight: 500;
+    color: var(--vp-c-text-3);
+    margin-left: 2px;
+  }
+
+  .tuner_info_divider {
+    width: 1px;
+    height: 36px;
+    background: var(--vp-c-border);
+    flex-shrink: 0;
+  }
+
+  /* ---- Controls ---- */
+  .tuner_controls {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  /* ---- Chart ---- */
   .tuner_chart_wrapper {
-    margin-top: 24px;
+    margin-top: 1.25rem;
     width: 100%;
   }
 
   .tuner_chart {
     display: block;
     width: 100%;
-    height: 60vh;
-    border-radius: 8px;
-    background: var(--vp-c-bg-soft);
+    min-height: 60vh;
+    border-radius: 10px;
   }
 </style>
