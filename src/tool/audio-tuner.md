@@ -417,7 +417,7 @@
   .tuner_pitch_scale {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 15px;
     padding: 14px 20px;
     background: var(--vp-c-bg);
     border-radius: 10px;
@@ -434,11 +434,11 @@
   }
 
   .tuner_pitch_current {
-    font-size: 22px !important;
-    font-weight: 700 !important;
-    color: var(--vp-c-accent) !important;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--vp-c-accent);
     position: relative;
-    transform: scale(1.12);
+    transform: scale(1.1);
   }
 
   .tuner_pitch_current::after {
@@ -593,14 +593,14 @@
 
   /* ---- Chart ---- */
   .tuner_chart_wrapper {
-    margin-top: 1.25rem;
+    margin-top: 24px;
     width: 100%;
   }
 
   .tuner_chart {
     display: block;
     width: 100%;
-    min-height: 60vh;
-    border-radius: 10px;
+    height: 60vh;
+    border-radius: 8px;
   }
 </style>
