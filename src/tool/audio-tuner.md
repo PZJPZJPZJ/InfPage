@@ -1,5 +1,4 @@
 # 声音频率检测器
-
 <div class="tuner_card">
   <div class="tuner_pitch_scale">
     <span v-for="(note, index) in surroundingNotes" :key="note" :class="{ 'tuner_pitch_current': index === 3 }">

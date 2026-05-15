@@ -1,5 +1,4 @@
 # 加速度测量工具
-
 <div class="container">
   <!-- GPS Status -->
   <div class="statusBar">

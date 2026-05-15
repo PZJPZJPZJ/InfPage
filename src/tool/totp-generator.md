@@ -1,11 +1,10 @@
-# 动态验证码生成器
-
+# 动态验证码工具
 <div class="totp-card">
   <div class="totp-field">
     <label class="totp-label">TOTP验证码生成</label>
     <input
       v-model="input"
-      placeholder="输入 Base32/Base64/HEX/otpauth 密钥，读取URL的secret参数"
+      placeholder="输入密钥或otpauth链接，自动读取URL参数secret"
       class="totp-input"
       @paste="onPaste"
     />
