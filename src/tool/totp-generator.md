@@ -433,7 +433,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .totp-card,
 .keygen-card {
   background: var(--vp-c-bg-soft);
@@ -650,4 +650,45 @@ onUnmounted(() => {
   color: var(--vp-c-text-3);
 }
 
+.vp-custom-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.4rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  &--primary {
+    background: var(--vp-c-accent-bg);
+    color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+
+    &:hover {
+      opacity: 0.88;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+  }
+
+  &--secondary {
+    background: transparent;
+    color: var(--vp-c-accent);
+    border: 1.5px solid var(--vp-c-border);
+
+    &:hover {
+      background: var(--vp-c-accent-soft);
+      border-color: var(--vp-c-accent-bg);
+    }
+  }
+}
 </style>

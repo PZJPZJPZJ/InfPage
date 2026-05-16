@@ -406,206 +406,247 @@ routeMeta:
   })
 </script>
 
-<style scoped>
-  /* ---- Card container ---- */
-  .tuner_card {
-    background: var(--vp-c-bg-soft);
-    border-radius: 14px;
-    padding: 1.4rem 1.5rem 1.25rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    border: 1px solid var(--vp-c-border);
+<style lang="scss" scoped>
+/* ---- Card container ---- */
+.tuner_card {
+  background: var(--vp-c-bg-soft);
+  border-radius: 14px;
+  padding: 1.4rem 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  border: 1px solid var(--vp-c-border);
+}
+
+/* ---- Pitch Scale (音符显示) ---- */
+.tuner_pitch_scale {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 14px 20px;
+  background: var(--vp-c-bg);
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--vp-c-text-3);
+  user-select: none;
+}
+
+.tuner_pitch_scale span {
+  transition: color 0.2s, transform 0.2s;
+  min-width: 32px;
+  text-align: center;
+}
+
+.tuner_pitch_current {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--vp-c-accent);
+  position: relative;
+  transform: scale(1.1);
+}
+
+.tuner_pitch_current::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 2.5px;
+  background: var(--vp-c-accent);
+  border-radius: 2px;
+}
+
+/* ---- Deviation Section ---- */
+.tuner_deviation {
+  margin: 0;
+}
+
+.tuner_deviation_wrapper {
+  position: relative;
+  margin: 32px 0 6px;
+}
+
+.tuner_deviation_scale {
+  position: absolute;
+  top: -26px;
+  left: 0;
+  right: 0;
+  height: 26px;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.tuner_deviation_mark {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 2px;
+}
+
+.tuner_deviation_mark_line {
+  width: 2px;
+  height: 14px;
+  background: var(--vp-c-danger, #dc3545);
+  border-radius: 1px;
+  transition: height 0.2s;
+}
+
+.tuner_deviation_mark_current .tuner_deviation_mark_line {
+  background: var(--vp-c-success, #28a745);
+  height: 20px;
+}
+
+.tuner_deviation_mark_current .tuner_deviation_mark_label {
+  color: var(--vp-c-success, #28a745);
+  font-weight: 600;
+}
+
+.tuner_deviation_mark_label {
+  font-size: 11px;
+  color: var(--vp-c-text-3);
+  margin-top: 3px;
+}
+
+.tuner_deviation_bar {
+  height: 22px;
+  border: 1px solid var(--vp-c-border);
+  border-radius: 11px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(to right,
+      var(--vp-c-danger, #dc3545) 0%,
+      var(--vp-c-warning, #ffc107) 38%,
+      var(--vp-c-success, #28a745) 50%,
+      var(--vp-c-warning, #ffc107) 62%,
+      var(--vp-c-danger, #dc3545) 100%);
+}
+
+.tuner_deviation_indicator {
+  width: 5px;
+  height: calc(100% + 12px);
+  background: var(--vp-c-text-mute);
+  position: absolute;
+  top: -6px;
+  transform: translateX(-50%);
+  transition: left 0.08s ease;
+  border-radius: 3px;
+  box-shadow: 0 0 5px var(--vp-c-text-mute);
+  pointer-events: none;
+}
+
+/* ---- Info Row (频率 & 偏移) ---- */
+.tuner_info {
+  background: var(--vp-c-bg);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--vp-c-border);
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.tuner_info_item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.tuner_info_label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--vp-c-text-3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tuner_frequency {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--vp-c-accent);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+}
+
+.tuner_frequency small {
+  font-size: 0.55em;
+  font-weight: 500;
+  color: var(--vp-c-text-3);
+  margin-left: 2px;
+}
+
+.tuner_info_divider {
+  width: 1px;
+  height: 36px;
+  background: var(--vp-c-border);
+  flex-shrink: 0;
+}
+
+/* ---- Controls ---- */
+.tuner_controls {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ---- Chart ---- */
+.tuner_chart_wrapper {
+  margin-top: 24px;
+  width: 100%;
+}
+
+.tuner_chart {
+  display: block;
+  width: 100%;
+  height: 60vh;
+  border-radius: 8px;
+}
+.vp-custom-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.4rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+
+  &:active {
+    transform: scale(0.96);
   }
 
-  /* ---- Pitch Scale (音符显示) ---- */
-  .tuner_pitch_scale {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    padding: 14px 20px;
-    background: var(--vp-c-bg);
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--vp-c-text-3);
-    user-select: none;
+  &--primary {
+    background: var(--vp-c-accent-bg);
+    color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+
+    &:hover {
+      opacity: 0.88;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
   }
 
-  .tuner_pitch_scale span {
-    transition: color 0.2s, transform 0.2s;
-    min-width: 32px;
-    text-align: center;
-  }
-
-  .tuner_pitch_current {
-    font-size: 20px;
-    font-weight: 700;
+  &--secondary {
+    background: transparent;
     color: var(--vp-c-accent);
-    position: relative;
-    transform: scale(1.1);
-  }
+    border: 1.5px solid var(--vp-c-border);
 
-  .tuner_pitch_current::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 22px;
-    height: 2.5px;
-    background: var(--vp-c-accent);
-    border-radius: 2px;
+    &:hover {
+      background: var(--vp-c-accent-soft);
+      border-color: var(--vp-c-accent-bg);
+    }
   }
-
-  /* ---- Deviation Section ---- */
-  .tuner_deviation {
-    margin: 0;
-  }
-
-  .tuner_deviation_wrapper {
-    position: relative;
-    margin: 32px 0 6px;
-  }
-
-  .tuner_deviation_scale {
-    position: absolute;
-    top: -26px;
-    left: 0;
-    right: 0;
-    height: 26px;
-    display: flex;
-    justify-content: space-between;
-    pointer-events: none;
-  }
-
-  .tuner_deviation_mark {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 2px;
-  }
-
-  .tuner_deviation_mark_line {
-    width: 2px;
-    height: 14px;
-    background: var(--vp-c-danger, #dc3545);
-    border-radius: 1px;
-    transition: height 0.2s;
-  }
-
-  .tuner_deviation_mark_current .tuner_deviation_mark_line {
-    background: var(--vp-c-success, #28a745);
-    height: 20px;
-  }
-
-  .tuner_deviation_mark_current .tuner_deviation_mark_label {
-    color: var(--vp-c-success, #28a745);
-    font-weight: 600;
-  }
-
-  .tuner_deviation_mark_label {
-    font-size: 11px;
-    color: var(--vp-c-text-3);
-    margin-top: 3px;
-  }
-
-  .tuner_deviation_bar {
-    height: 22px;
-    border: 1px solid var(--vp-c-border);
-    border-radius: 11px;
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(to right,
-        var(--vp-c-danger, #dc3545) 0%,
-        var(--vp-c-warning, #ffc107) 38%,
-        var(--vp-c-success, #28a745) 50%,
-        var(--vp-c-warning, #ffc107) 62%,
-        var(--vp-c-danger, #dc3545) 100%);
-  }
-
-  .tuner_deviation_indicator {
-    width: 5px;
-    height: calc(100% + 12px);
-    background: var(--vp-c-text-mute);
-    position: absolute;
-    top: -6px;
-    transform: translateX(-50%);
-    transition: left 0.08s ease;
-    border-radius: 3px;
-    box-shadow: 0 0 5px var(--vp-c-text-mute);
-    pointer-events: none;
-  }
-
-  /* ---- Info Row (频率 & 偏移) ---- */
-  .tuner_info {
-    background: var(--vp-c-bg);
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--vp-c-border);
-    display: flex;
-    align-items: center;
-    gap: 0;
-  }
-
-  .tuner_info_item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.15rem;
-    min-width: 0;
-  }
-
-  .tuner_info_label {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--vp-c-text-3);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  .tuner_frequency {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--vp-c-accent);
-    font-variant-numeric: tabular-nums;
-    line-height: 1.3;
-  }
-
-  .tuner_frequency small {
-    font-size: 0.55em;
-    font-weight: 500;
-    color: var(--vp-c-text-3);
-    margin-left: 2px;
-  }
-
-  .tuner_info_divider {
-    width: 1px;
-    height: 36px;
-    background: var(--vp-c-border);
-    flex-shrink: 0;
-  }
-
-  /* ---- Controls ---- */
-  .tuner_controls {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  /* ---- Chart ---- */
-  .tuner_chart_wrapper {
-    margin-top: 24px;
-    width: 100%;
-  }
-
-  .tuner_chart {
-    display: block;
-    width: 100%;
-    height: 60vh;
-    border-radius: 8px;
-  }
+}
 </style>

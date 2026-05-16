@@ -18,6 +18,10 @@ interface SubDirSection {
   items: CatItem[]
 }
 
+// 仅取一次 routes 快照，避免 HMR 更新时的数据中间态
+// 与官方 @vuepress/plugin-catalog 策略一致
+const routesSnapshot = routes.value
+
 // 当前目录路径，以 / 结尾
 const basePath = computed(() => {
   const p = page.value.path
@@ -29,7 +33,7 @@ const directItems = computed(() => {
   const b = basePath.value
   const items: CatItem[] = []
 
-  for (const [path, route] of Object.entries(routes.value)) {
+  for (const [path, route] of Object.entries(routesSnapshot)) {
     if (path === b || path === '/404.html') continue
     if (!path.startsWith(b)) continue
     if (path.endsWith('/')) continue
@@ -60,7 +64,7 @@ const subDirSections = computed<SubDirSection[]>(() => {
 
   // 先找所有直接子目录
   const subDirPaths: string[] = []
-  for (const [path] of Object.entries(routes.value)) {
+  for (const [path] of Object.entries(routesSnapshot)) {
     if (path === b || path === '/404.html') continue
     if (!path.startsWith(b)) continue
     if (!path.endsWith('/')) continue
@@ -73,14 +77,14 @@ const subDirSections = computed<SubDirSection[]>(() => {
 
   // 为每个子目录收集 item
   for (const dirPath of subDirPaths) {
-    const dirRoute = routes.value[dirPath]
+    const dirRoute = routesSnapshot[dirPath]
     const dirMeta = (dirRoute?.meta as Record<string, unknown>) || {}
     const dirTitle = (dirMeta.itemTitle as string) || (dirMeta.title as string) || ''
     if (!dirTitle) continue
 
     const items: CatItem[] = []
 
-    for (const [path, route] of Object.entries(routes.value)) {
+    for (const [path, route] of Object.entries(routesSnapshot)) {
       if (path === dirPath || path === '/404.html') continue
       if (!path.startsWith(dirPath)) continue
 
