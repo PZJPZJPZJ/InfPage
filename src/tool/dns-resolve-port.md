@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: DNS Resolve Port
+  itemDesc: 打洞端口查询工具
+  itemIcon: cloud.tencent.com
+---
 # 打洞端口查询工具
 手动输入或读取URL参数name，解析含SRV/TXT/IP4P(AAAA)端口记录的域名，自动获取打洞端口链接
 <div class="container">

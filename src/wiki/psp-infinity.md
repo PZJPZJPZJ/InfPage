@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: PSP Infinity
   itemDesc: PSP终极破解工具
-  itemIcon: infinity.lolhax.org
+  itemIcon: github.com
 ---
 # PSP Infinity:PSP所有机型自制固件完美固化
 ## 下载地址

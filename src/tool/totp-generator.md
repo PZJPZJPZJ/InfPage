@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: TOTP Generator
+  itemDesc: 动态验证码工具
+  itemIcon: 1password.com
+---
 # 动态验证码工具
 <div class="totp-card">
   <div class="totp-field">

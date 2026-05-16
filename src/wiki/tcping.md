@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: TCPing
   itemDesc: TCP连通性检测工具
-  itemIcon: tcping.app
+  itemIcon: github.com
 ---
 # TCPing:TCP网络连通性检测工具
 ## 下载地址

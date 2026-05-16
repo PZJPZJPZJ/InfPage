@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Audio Tuner
+  itemDesc: 声音频率检测器
+  itemIcon: guitartuna.com
+---
 # 声音频率检测器
 <div class="tuner_card">
   <div class="tuner_pitch_scale">

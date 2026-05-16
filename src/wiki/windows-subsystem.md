@@ -1,8 +1,8 @@
 ---
 routeMeta:
   itemTitle: Windows Subsystem
-  itemDesc: Windows 子系统 (WSL/WSA)
-  itemIcon: microsoft.com
+  itemDesc: Windows 子系统
+  itemIcon: ubuntu.com
 ---
 # Windows Subsystem:Windows子系统
 ## Windows Subsystem for Linux

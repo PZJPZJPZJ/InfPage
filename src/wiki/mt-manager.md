@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: MT Manager
   itemDesc: MT管理器
-  itemIcon: github.com
+  itemIcon: https://mt2.cn/logo-fg.svg
 ---
 # MT Manager:安卓高级文件管理
 ## 下载地址

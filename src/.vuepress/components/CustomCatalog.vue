@@ -123,17 +123,14 @@ const subDirSections = computed<SubDirSection[]>(() => {
             class="vp-custom-catalog-card"
           >
             <RouteLink :to="item.path" class="vp-custom-catalog-link">
-              <img
-                :src="item.icon
-                  ? (item.icon.startsWith('https')
-                    ? item.icon
-                    : `https://favicon.im/${item.icon}`)
-                  : `https://favicon.im/board.zash.run.place`"
+              <img v-if="item.icon"
+                :src="item.icon.startsWith('https') ? item.icon : `https://favicon.im/${item.icon}`"
                 :alt="item.title"
                 class="vp-custom-catalog-icon"
                 loading="lazy"
                 @error="($event) => (($event.target as HTMLImageElement).style.visibility = 'hidden')"
               />
+              <span v-else class="vp-custom-catalog-icon vp-custom-catalog-icon--fallback">○</span>
               <div class="vp-custom-catalog-text">
                 <span>{{ item.title }}</span>
                 <p>{{ item.desc }}</p>
@@ -162,17 +159,14 @@ const subDirSections = computed<SubDirSection[]>(() => {
             class="vp-custom-catalog-card"
           >
             <RouteLink :to="item.path" class="vp-custom-catalog-link">
-              <img
-                :src="item.icon
-                  ? (item.icon.startsWith('https')
-                    ? item.icon
-                    : `https://favicon.im/${item.icon}`)
-                  : `https://favicon.im/board.zash.run.place`"
+              <img v-if="item.icon"
+                :src="item.icon.startsWith('https') ? item.icon : `https://favicon.im/${item.icon}`"
                 :alt="item.title"
                 class="vp-custom-catalog-icon"
                 loading="lazy"
                 @error="($event) => (($event.target as HTMLImageElement).style.visibility = 'hidden')"
               />
+              <span v-else class="vp-custom-catalog-icon vp-custom-catalog-icon--fallback">○</span>
               <div class="vp-custom-catalog-text">
                 <span>{{ item.title }}</span>
                 <p>{{ item.desc }}</p>
@@ -238,6 +232,14 @@ const subDirSections = computed<SubDirSection[]>(() => {
     margin-right: 0.75rem;
     border-radius: 4px;
     object-fit: contain;
+  }
+
+  .vp-custom-catalog-icon--fallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: var(--vp-c-text-mute, #999);
   }
 
   a.vp-custom-catalog-link {

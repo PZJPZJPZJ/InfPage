@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: Open EUICC
   itemDesc: eSIM卡管理工具
-  itemIcon: github.com
+  itemIcon: https://cdn.jsdelivr.net/gh/estkme-group/openeuicc@master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp
 ---
 # OpenEUICC:开源eSIM写入工具
 ## 官方地址

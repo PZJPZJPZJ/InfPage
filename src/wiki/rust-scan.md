@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: Rust Scan
   itemDesc: 高速端口扫描器
-  itemIcon: rustscan.io
+  itemIcon: https://cdn.jsdelivr.net/gh/bee-san/RustScan@master/pictures/rustscan.png
 ---
 # RustScan:端口批量扫描工具
 ## 官方地址

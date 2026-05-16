@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: NRF Connect
   itemDesc: 蓝牙低能耗开发工具
-  itemIcon: nrfconnect.com
+  itemIcon: github.com
 ---
 # nRF Connect:蓝牙开发人员通信工具
 ## 下载地址

@@ -123,6 +123,27 @@ useUpdateDeviceStatus(
   @media screen and (max-width: $MQMobile) {
     padding-inline-start: 4rem;
   }
+
+    @media print {
+    display: none;
+  }
+
+  .vp-navbar-blur {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    .blur-layer {
+      position: absolute;
+      inset: 0;
+
+      &:nth-child(1) { backdrop-filter: blur(20px); mask: linear-gradient(0deg, transparent 80%, black 100%); }
+      &:nth-child(2) { backdrop-filter: blur(10px); mask: linear-gradient(0deg, transparent 60%, black 80%); }
+      &:nth-child(3) { backdrop-filter: blur(5px);  mask: linear-gradient(0deg, transparent 40%, black 60%); }
+      &:nth-child(4) { backdrop-filter: blur(3px);  mask: linear-gradient(0deg, transparent 20%, black 40%); }
+      &:nth-child(5) { backdrop-filter: blur(1px);  mask: linear-gradient(0deg, transparent 0%,  black 20%); }
+    }
+  }
 }
 
 .vp-navbar-items-wrapper {
@@ -138,35 +159,5 @@ useUpdateDeviceStatus(
 
   font-size: 0.9rem;
   white-space: nowrap;
-}
-
-.blur-layer{
-  position: absolute;
-  inset:0;
-}
-
-.blur-layer:nth-child(1){
-  backdrop-filter: blur(20px);
-  mask: linear-gradient(0deg, transparent 80%, black 100%);
-}
-
-.blur-layer:nth-child(2){
-  backdrop-filter: blur(10px);
-  mask: linear-gradient(0deg, transparent 60%, black 80%);
-}
-
-.blur-layer:nth-child(3){
-  backdrop-filter: blur(5px);
-  mask: linear-gradient(0deg, transparent 40%, black 60%);
-}
-
-.blur-layer:nth-child(4){
-  backdrop-filter: blur(3px);
-  mask: linear-gradient(0deg, transparent 20%, black 40%);
-}
-
-.blur-layer:nth-child(5){
-  backdrop-filter: blur(1px);
-  mask: linear-gradient(0deg, transparent 0%, black 20%);
 }
 </style>

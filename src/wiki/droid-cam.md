@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: Droid Cam
   itemDesc: 手机作为摄像头
-  itemIcon: droidcam.com
+  itemIcon: https://droidcam.app/favicon.ico
 ---
 # DroidCam:电脑远程摄像头
 ## 下载地址

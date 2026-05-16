@@ -1,3 +1,9 @@
+---
+routeMeta:
+  itemTitle: Speed Tester
+  itemDesc: 加速度测量工具
+  itemIcon: maps.google.com
+---
 # 加速度测量工具
 <div class="container">
   <!-- GPS Status -->

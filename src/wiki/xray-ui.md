@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: XRay UI
   itemDesc: X-Ray代理管理界面
-  itemIcon: github.com
+  itemIcon: https://cdn.jsdelivr.net/gh/MHSanaei/3x-ui@main/media/3x-ui-light.png
 ---
 # Xray UI:代理服务器管理面板
 ## 仓库地址

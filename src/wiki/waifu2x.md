@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: Waifu2X
   itemDesc: AI图像放大与去噪
-  itemIcon: upscayl.github.io
+  itemIcon: https://cdn.jsdelivr.net/gh/AaronFeng753/Waifu2x-Extension-GUI@master/.github/README/ICON.png
 ---
 # Waifu2x:图片超分辨率工具
 ## 下载地址
