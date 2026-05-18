@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: AI API Proxy
   itemDesc: AI中转站本地部署
-  itemIcon: starwindsoftware.com
+  itemIcon: https://cdn.jsdelivr.net/gh/Wei-Shaw/sub2api@main/frontend/public/logo.png
 ---
 # AI中转站本地部署
 ## Sub2API
