@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: NextTrace
   itemDesc: 可视化路由跟踪工具
-  itemIcon: nexttrace.org
+  itemIcon: https://cdn.jsdelivr.net/gh/nxtrace/NTrace-core@main/assets/logo.png
 ---
 # NextTrace:路由跟踪工具
 ## 仓库地址
