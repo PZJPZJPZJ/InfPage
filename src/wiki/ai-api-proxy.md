@@ -7,7 +7,7 @@ routeMeta:
 # AI中转站本地部署
 ## Sub2API
 [Sub2API-Github](https://github.com/Wei-Shaw/sub2api)
-```yaml
+```yml title="docker-compose.yml"
 services:
   sub2api:
     image: weishaw/sub2api:latest
@@ -74,12 +74,92 @@ services:
       retries: 5
 ```
 
+## CLIProxyAPI
+- [CLIProxyAPI-Github](https://github.com/router-for-me/CLIProxyAPI)
+- [CPA Usage Keeper-用量监控面板](https://github.com/Willxup/cpa-usage-keeper)
+```yml title="docker-compose.yml"
+services:
+  cli-proxy-api:
+    image: eceasy/cli-proxy-api:latest
+    container_name: cli-proxy-api
+    restart: unless-stopped
+    ports:
+      - 8317:831
+    volumes:
+      - ./cpa/config.yaml:/CLIProxyAPI/config.yaml
+      - ./cpa/auths:/root/.cli-proxy-api
+      - ./cpa/logs:/CLIProxyAPI/logs
+    networks:
+      - cpa-network
+
+  cpa-usage-keeper:
+    image: ghcr.io/willxup/cpa-usage-keeper:latest
+    container_name: cpa-usage-keeper
+    restart: unless-stopped
+    depends_on:
+      - cli-proxy-api
+    ports:
+      - 8080:8080
+    environment:
+      TZ: Asia/Shanghai
+      CPA_BASE_URL: http://cli-proxy-api:8317
+      CPA_MANAGEMENT_KEY: replace-with-your-management-key
+      REDIS_QUEUE_ADDR: cli-proxy-api:8317
+      AUTH_ENABLED: true
+      LOGIN_PASSWORD: replace-with-your-login-password
+    volumes:
+      - ./keeper:/data
+    networks:
+      - cpa-network
+
+networks:
+  cpa-network:
+    driver: bridge
+```
+
+```yaml title="/CLIProxyAPI/config.yaml"
+# Server host/interface to bind to. Default is empty ("") to bind all interfaces (IPv4 + IPv6).
+# Use "127.0.0.1" or "localhost" to restrict access to local machine only.
+host: ""
+# Server port
+port: 8317
+# TLS settings for HTTPS. When enabled, the server listens with the provided certificate and key.
+tls:
+  enable: false
+  cert: ""
+  key: ""
+# Management API settings
+remote-management:
+# Whether to allow remote (non-localhost) management access.
+# When false, only localhost can access management endpoints (a key is still required).
+  allow-remote: true
+# Management key. If a plaintext value is provided here, it will be hashed on startup.
+# All management requests (even from localhost) require this key.
+# Leave empty to disable the Management API entirely (404 for all /v0/management routes).
+  secret-key: "loginpassword"
+# Disable the bundled management control panel asset download and HTTP route when true.
+  disable-control-panel: false
+# GitHub repository for the management control panel. Accepts a repository URL or releases API URL.
+  panel-github-repository: "https://github.com/router-for-me/Cli-Proxy-API-Management-Center"
+# Authentication directory (supports ~ for home directory)
+auth-dir: "~/.cli-proxy-api"
+```
+
+```yaml title="/root/.cli-proxy-api/codex.json"
+{
+  "type": "codex",
+  "access_token": "",
+  "refresh_token": "",
+  "id_token": "",
+  "account_id": "",
+  "email": "",
+  "expired": false,
+  "last_refresh": ""
+}
+```
+
 ## New API
 - [NewAPI-Github](https://github.com/QuantumNous/new-api)
 
 ## One API
 - [OneAPI-Github](https://github.com/songquanpeng/one-api)
-
-## CLIProxyAPI
-- [CLIProxyAPI-Github](https://github.com/router-for-me/CLIProxyAPI)
-- [CLIProxyAPI-安装](https://linux.do/t/topic/1672081/4)
