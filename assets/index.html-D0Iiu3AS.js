@@ -1,0 +1,1 @@
+import{_ as e,c as o,e as a,r as n,o as r}from"./app-DusWGbuA.js";const l={};function c(s,_){const t=n("CustomCatalog");return r(),o("div",null,[a(t)])}const i=e(l,[["render",c]]),p=JSON.parse('{"path":"/note/flutter/","title":"Flutter","lang":"zh-CN","frontmatter":{"title":"Flutter"},"git":{},"filePathRelative":null}');export{i as comp,p as data};
