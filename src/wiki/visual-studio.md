@@ -24,11 +24,11 @@ routeMeta:
 ```json title="%USERPROFILE%\.claude\settings.json"
 {
   "env": {
-    "ANTHROPIC_BASE_URL": "https://www.example.com",
-    "ANTHROPIC_AUTH_TOKEN": "sk-example",
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "low-level-model-name",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "medium-level-model-name",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "high-level-model-name"
+    "ANTHROPIC_BASE_URL": "https://www.example.com", /* 修改为请求地址 */
+    "ANTHROPIC_AUTH_TOKEN": "sk-example", /* 修改为请求密钥 */
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "deepseek-v4-flash", /* 修改为自定义模型名称 */
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "deepseek-v4-flash[1m]", /* 修改为自定义模型名称 */
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "deepseek-v4-pro[1m]" /* 修改为自定义模型名称 */
   }
 }
 ```
@@ -36,8 +36,8 @@ routeMeta:
 - [Codex](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt)
 ```yaml title="%USERPROFILE%\.codex\config.toml"
 model_provider = "OpenAI"
-model = "gpt-5.4"
-review_model = "gpt-5.4"
+model = "gpt-5.4" # 修改为自定义模型名称
+review_model = "gpt-5.4" # 修改为自定义模型名称
 model_reasoning_effort = "xhigh"
 disable_response_storage = true
 network_access = "enabled"
@@ -47,14 +47,14 @@ model_auto_compact_token_limit = 900000
 
 [model_providers.OpenAI]
 name = "OpenAI"
-base_url = "https://www.example.com"
+base_url = "https://www.example.com" # 修改为请求地址
 wire_api = "responses"
 requires_openai_auth = true
 ```
 
 ```yaml title="%USERPROFILE%\.codex\config.toml"
 {
-  "OPENAI_API_KEY": "sk-example"
+  "OPENAI_API_KEY": "sk-example" # 修改为请求密钥
 }
 ```
 
