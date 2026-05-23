@@ -76,7 +76,6 @@ services:
 
 ## CLIProxyAPI
 - [CLIProxyAPI-Github](https://github.com/router-for-me/CLIProxyAPI)
-- [CPA Usage Keeper-用量监控面板](https://github.com/Willxup/cpa-usage-keeper)
 ```yml title="docker-compose.yml"
 services:
   cli-proxy-api:
@@ -84,14 +83,32 @@ services:
     container_name: cli-proxy-api
     restart: unless-stopped
     ports:
-      - 8317:831
+      - 8317:8317
     volumes:
       - ./cpa/config.yaml:/CLIProxyAPI/config.yaml
       - ./cpa/auths:/root/.cli-proxy-api
       - ./cpa/logs:/CLIProxyAPI/logs
-    networks:
-      - cpa-network
+```
 
+- [CPA-Manager-监控面板](https://github.com/seakee/CPA-Manager)
+```yml title="docker-compose.yml"
+  cpa-manager:
+    image: seakee/cpa-manager:latest
+    container_name: cpa-manager
+    restart: unless-stopped
+    depends_on:
+      - cli-proxy-api
+    environment:
+      CPA_UPSTREAM_URL: http://cli-proxy-api:8317
+      CPA_MANAGEMENT_KEY: replace-with-your-management-key
+    ports:
+      - 18317:18317
+    volumes:
+      - ./cpa-manager:/data
+```
+
+- [CPA-Usage-Keeper-监控面板](https://github.com/Willxup/cpa-usage-keeper)
+```yml title="docker-compose.yml"
   cpa-usage-keeper:
     image: ghcr.io/willxup/cpa-usage-keeper:latest
     container_name: cpa-usage-keeper
@@ -109,12 +126,6 @@ services:
       LOGIN_PASSWORD: replace-with-your-login-password
     volumes:
       - ./keeper:/data
-    networks:
-      - cpa-network
-
-networks:
-  cpa-network:
-    driver: bridge
 ```
 
 ```yaml title="/CLIProxyAPI/config.yaml"
@@ -136,7 +147,7 @@ remote-management:
 # Management key. If a plaintext value is provided here, it will be hashed on startup.
 # All management requests (even from localhost) require this key.
 # Leave empty to disable the Management API entirely (404 for all /v0/management routes).
-  secret-key: "loginpassword"
+  secret-key: "replace-with-your-login-password"
 # Disable the bundled management control panel asset download and HTTP route when true.
   disable-control-panel: false
 # GitHub repository for the management control panel. Accepts a repository URL or releases API URL.
