@@ -16,30 +16,46 @@ routeMeta:
 
 ### VSCode插件
 - [Claude Code](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code)
+
 ```json title="VSCode > setting.json"
 "claudeCode.disableLoginPrompt": true,
-"claudeCode.environmentVariables": [
-    {
-        "name": "ANTHROPIC_AUTH_TOKEN",
-        "value": "API密钥"
-    },
-    {
-        "name": "ANTHROPIC_BASE_URL",
-        "value": "请求地址Anthropic标准"
-    },
-    {
-        "name": "ANTHROPIC_DEFAULT_HAIKU_MODEL",
-        "value": "模型名称"
-    },
-    {
-        "name": "ANTHROPIC_DEFAULT_SONNET_MODEL",
-        "value": "模型名称"
-    },
-    {
-        "name": "ANTHROPIC_DEFAULT_OPUS_MODEL",
-        "value": "模型名称"
-    },
-],
+```
+
+```json title="%USERPROFILE%\.claude\settings.json"
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://www.example.com",
+    "ANTHROPIC_AUTH_TOKEN": "sk-example",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "low-level-model-name",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "medium-level-model-name",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "high-level-model-name"
+  }
+}
+```
+
+- [Codex](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt)
+```yaml title="%USERPROFILE%\.codex\config.toml"
+model_provider = "OpenAI"
+model = "gpt-5.4"
+review_model = "gpt-5.4"
+model_reasoning_effort = "xhigh"
+disable_response_storage = true
+network_access = "enabled"
+windows_wsl_setup_acknowledged = true
+model_context_window = 1000000
+model_auto_compact_token_limit = 900000
+
+[model_providers.OpenAI]
+name = "OpenAI"
+base_url = "https://www.example.com"
+wire_api = "responses"
+requires_openai_auth = true
+```
+
+```yaml title="%USERPROFILE%\.codex\config.toml"
+{
+  "OPENAI_API_KEY": "sk-example"
+}
 ```
 
 ## Google Antigravity
