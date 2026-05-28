@@ -80,7 +80,7 @@ services:
 services:
   cli-proxy-api:
     image: eceasy/cli-proxy-api:latest
-    container_name: cli-proxy-api
+    container_name: cpa
     restart: unless-stopped
     ports:
       - 8317:8317
@@ -99,7 +99,7 @@ services:
     depends_on:
       - cli-proxy-api
     environment:
-      CPA_UPSTREAM_URL: http://cli-proxy-api:8317
+      CPA_UPSTREAM_URL: http://cpa:8317
       CPA_MANAGEMENT_KEY: replace-with-your-management-key
     ports:
       - 18317:18317
@@ -118,14 +118,13 @@ services:
     ports:
       - 8080:8080
     environment:
-      TZ: Asia/Shanghai
-      CPA_BASE_URL: http://cli-proxy-api:8317
+      CPA_BASE_URL: http://cpa:8317
       CPA_MANAGEMENT_KEY: replace-with-your-management-key
-      REDIS_QUEUE_ADDR: cli-proxy-api:8317
+      TLS_SKIP_VERIFY: true
       AUTH_ENABLED: true
       LOGIN_PASSWORD: replace-with-your-login-password
     volumes:
-      - ./keeper:/data
+      - ./cpa-usage-keeper:/data
 ```
 
 ```yaml title="/CLIProxyAPI/config.yaml"

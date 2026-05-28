@@ -58,6 +58,30 @@ requires_openai_auth = true
 }
 ```
 
+- [Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat)
+```json title="%USERPROFILE%\AppData\Roaming\Code\User\profiles\%PROFILE%\chatLanguageModels.json"
+[
+	{
+		"name": "Custom Endpoint",
+		"vendor": "customendpoint",
+		"apiKey": "${input:chat.lm.secret.%PROFILE%}",
+		"apiType": "chat-completions",
+		"models": [
+			{
+				"id": "deepseek-v4-flash-free", # 修改为自定义模型
+				"name": "Deepseek v4 Flash Free", 修改为自定义模型名称
+				"url": "https://www.example.com/v1", # 修改为请求地址
+				"toolCalling": true,
+				"vision": true,
+				"maxInputTokens": 1000000,
+				"maxOutputTokens": 128000,
+				"supportsReasoningEffort": ["low","medium","high","xhigh"]
+			}
+		]
+	}
+]
+```
+
 ## Google Antigravity
 - [Antigravity-官网](https://antigravity.google/)
 

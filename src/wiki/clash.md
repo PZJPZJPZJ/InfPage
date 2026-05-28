@@ -45,7 +45,7 @@ routeMeta:
 - [ZashBoard](https://board.zash.run.place/)
 - [MetaCubeXD](https://metacubex.github.io/metacubexd/)
 ### 容器部署
-```yaml title="DockerCompose(容器间通信模式)"
+```yaml title="DockerCompose(桥接模式)"
 services:
   mihomo:
     container_name: mihomo
@@ -53,24 +53,24 @@ services:
     volumes:
       - ./config:/root/.config/mihomo
     networks:
-      internal: # 可与旁路网关模式结合使用
-    ports: # 仅容器间通讯可删除无需映射(使用容器名代替IP/Domain)
-      - 7892:7892
+      default:
+    ports:
+      - 7892:7892/tcp
+      - 7892:7892/udp
       - 9090:9090
     restart: unless-stopped
 networks:
-  internal: # 创建接口(使用前必须先声明或创建)
-    name: internal # 接口名称(与其他容器共用)
-    driver: bridge
+  default:
+    enable_ipv6: true
 ```
-```yaml title="DockerCompose(代理服务器模式)"
+```yaml title="DockerCompose(宿主机网络模式)"
 services:
   mihomo:
     container_name: mihomo
     image: metacubex/mihomo:latest
     volumes:
       - ./config:/root/.config/mihomo
-    network_mode: host # 使用宿主机网络(共用宿主机端口和IPv6)
+    network_mode: host
     restart: unless-stopped
 ```
 ```yaml title="DockerCompose(旁路网关模式)"
@@ -79,7 +79,7 @@ services:
     container_name: mihomo
     image: metacubex/mihomo:latest
     dns:
-      - 127.0.0.1 # fake-ip一定要声明为容器的dns(避免docker容器dns干扰)
+      - 127.0.0.1
     cap_add:
       - NET_ADMIN
     devices:
@@ -94,11 +94,11 @@ services:
     restart: unless-stopped
 networks:
   macvlan:
-    name: macvlan # macvlan名称
+    name: macvlan
     driver: macvlan
     driver_opts:
       parent: enp1s0 # 本机出口网卡
-    enable_ipv6: true # 开启IPv6
+    enable_ipv6: true
     ipam:
       config:
         - subnet: 192.168.0.0/24 # 局域网子网
@@ -364,4 +364,16 @@ proxy-providers:
     override:
       udp: true # true:强制启用节点UDP
       skip-cert-verify: false # true:强制跳过证书验证
+```
+```yaml title="飞牛反代穿透"
+listeners:
+  - name: fn-vmess-in
+    type: vmess
+    port: 3000
+    listen: 0.0.0.0
+    ws-path: "/chromium/x" # 可修改/chromium/后的子路径
+    users:
+      - username: fnconnect
+        uuid: ab853535-8d71-4561-a893-b82ae0a5db0c # 可修改任意UUID
+        alterId: 0
 ```
