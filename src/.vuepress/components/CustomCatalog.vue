@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { RouteLink } from 'vuepress/client'
-import { useData } from 'vuepress/client'
 import { computed } from 'vue'
+import { RouteLink, useData } from 'vuepress/client'
 
 const { page, routes } = useData()
 
@@ -14,32 +13,28 @@ interface CatItem {
 
 interface SubDirSection {
   dirPath: string
+  slug: string
   title: string
   items: CatItem[]
 }
 
-// 仅取一次 routes 快照，避免 HMR 更新时的数据中间态
-// 与官方 @vuepress/plugin-catalog 策略一致
 const routesSnapshot = routes.value
 
-// 当前目录路径，以 / 结尾
 const basePath = computed(() => {
-  const p = page.value.path
-  return p.endsWith('/') ? p : p + '/'
+  const path = page.value.path
+  return path.endsWith('/') ? path : `${path}/`
 })
 
-// 当前目录下的直接子项
 const directItems = computed(() => {
-  const b = basePath.value
+  const currentBasePath = basePath.value
   const items: CatItem[] = []
 
   for (const [path, route] of Object.entries(routesSnapshot)) {
-    if (path === b || path === '/404.html') continue
-    if (!path.startsWith(b)) continue
-    if (path.endsWith('/')) continue
+    if (path === currentBasePath || path === '/404.html') continue
+    if (!path.startsWith(currentBasePath) || path.endsWith('/')) continue
 
-    const rel = path.slice(b.length)
-    if (rel.includes('/')) continue
+    const relativePath = path.slice(currentBasePath.length)
+    if (relativePath.includes('/')) continue
 
     const meta = route.meta as Record<string, unknown>
     const title = (meta.itemTitle as string) || (meta.title as string) || ''
@@ -57,40 +52,37 @@ const directItems = computed(() => {
   return items
 })
 
-// 下一级子目录中的 item 列表
 const subDirSections = computed<SubDirSection[]>(() => {
-  const b = basePath.value
+  const currentBasePath = basePath.value
   const sections: SubDirSection[] = []
-
-  // 先找所有直接子目录
   const subDirPaths: string[] = []
-  for (const [path] of Object.entries(routesSnapshot)) {
-    if (path === b || path === '/404.html') continue
-    if (!path.startsWith(b)) continue
-    if (!path.endsWith('/')) continue
 
-    const rel = path.slice(b.length).replace(/\/$/, '')
-    if (rel.includes('/')) continue
+  for (const [path] of Object.entries(routesSnapshot)) {
+    if (path === currentBasePath || path === '/404.html') continue
+    if (!path.startsWith(currentBasePath) || !path.endsWith('/')) continue
+
+    const relativePath = path.slice(currentBasePath.length).replace(/\/$/, '')
+    if (relativePath.includes('/')) continue
 
     subDirPaths.push(path)
   }
 
-  // 为每个子目录收集 item
   for (const dirPath of subDirPaths) {
     const dirRoute = routesSnapshot[dirPath]
     const dirMeta = (dirRoute?.meta as Record<string, unknown>) || {}
-    const dirTitle = (dirMeta.itemTitle as string) || (dirMeta.title as string) || ''
+    const dirTitle =
+      (dirMeta.itemTitle as string) || (dirMeta.title as string) || ''
+
     if (!dirTitle) continue
 
     const items: CatItem[] = []
 
     for (const [path, route] of Object.entries(routesSnapshot)) {
       if (path === dirPath || path === '/404.html') continue
-      if (!path.startsWith(dirPath)) continue
+      if (!path.startsWith(dirPath) || path.endsWith('/')) continue
 
-      const rel = path.slice(dirPath.length)
-      if (rel.includes('/')) continue
-      if (path.endsWith('/')) continue
+      const relativePath = path.slice(dirPath.length)
+      if (relativePath.includes('/')) continue
 
       const meta = route.meta as Record<string, unknown>
       const title = (meta.itemTitle as string) || (meta.title as string) || ''
@@ -108,7 +100,12 @@ const subDirSections = computed<SubDirSection[]>(() => {
 
     items.sort((a, b) => a.title.localeCompare(b.title))
 
-    sections.push({ dirPath, title: dirTitle, items })
+    sections.push({
+      dirPath,
+      slug: `catalog-${dirPath.split('/').filter(Boolean).join('-')}`,
+      title: dirTitle,
+      items,
+    })
   }
 
   return sections.sort((a, b) => a.dirPath.localeCompare(b.dirPath))
@@ -118,7 +115,6 @@ const subDirSections = computed<SubDirSection[]>(() => {
 <template>
   <div class="vp-custom-catalog">
     <template v-if="directItems.length || subDirSections.length">
-      <!-- 当前目录的直接子项 -->
       <div v-if="directItems.length" class="vp-custom-catalog-section">
         <div class="vp-custom-catalog-list">
           <div
@@ -127,7 +123,8 @@ const subDirSections = computed<SubDirSection[]>(() => {
             class="vp-custom-catalog-card"
           >
             <RouteLink :to="item.path" class="vp-custom-catalog-link">
-              <img v-if="item.icon"
+              <img
+                v-if="item.icon"
                 :src="item.icon.startsWith('https') ? item.icon : `https://favicon.im/${item.icon}`"
                 :alt="item.title"
                 class="vp-custom-catalog-icon"
@@ -144,18 +141,16 @@ const subDirSections = computed<SubDirSection[]>(() => {
         </div>
       </div>
 
-      <!-- 子目录区块 -->
       <div
         v-for="section in subDirSections"
         :key="section.dirPath"
         class="vp-custom-catalog-section"
       >
-        <div class="vp-custom-catalog-dir-path">
+        <h2 :id="section.slug" class="vp-custom-catalog-dir-path">
           <RouteLink :to="section.dirPath" class="vp-custom-catalog-dir-link">
             <span class="vp-custom-catalog-dir-title">{{ section.title }}</span>
-            <span class="vp-custom-catalog-dir-arrow" aria-hidden="true">›</span>
           </RouteLink>
-        </div>
+        </h2>
 
         <div class="vp-custom-catalog-list">
           <div
@@ -164,7 +159,8 @@ const subDirSections = computed<SubDirSection[]>(() => {
             class="vp-custom-catalog-card"
           >
             <RouteLink :to="item.path" class="vp-custom-catalog-link">
-              <img v-if="item.icon"
+              <img
+                v-if="item.icon"
                 :src="item.icon.startsWith('https') ? item.icon : `https://favicon.im/${item.icon}`"
                 :alt="item.title"
                 class="vp-custom-catalog-icon"
@@ -181,7 +177,7 @@ const subDirSections = computed<SubDirSection[]>(() => {
         </div>
       </div>
     </template>
-    <p v-else class="vp-custom-catalog-empty">该目录下无文档</p>
+    <p v-else class="vp-custom-catalog-empty">No documents in this directory</p>
   </div>
 </template>
 
@@ -189,7 +185,6 @@ const subDirSections = computed<SubDirSection[]>(() => {
 @use '@vuepress/theme-default/lib/client/styles/variables' as *;
 
 .vp-custom-catalog {
-
   .vp-custom-catalog-section {
     & + & {
       margin-top: 1.5rem;
@@ -197,21 +192,26 @@ const subDirSections = computed<SubDirSection[]>(() => {
   }
 
   .vp-custom-catalog-dir-path {
-    margin: 0.8rem 0 0.8rem 0;
+    margin: 0.8rem 0;
+    padding: 0;
+    border-bottom: none;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
 
     .vp-custom-catalog-dir-link {
       display: flex;
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      padding: 0.8rem 1.5rem 0.8rem 1.5rem;
+      padding: 0.8rem 1.5rem;
       box-sizing: border-box;
       border-radius: 25px;
       background-color: rgba(0, 0, 0, 0.02);
       font-size: 1.2rem;
       font-weight: 600;
       color: var(--vp-c-text);
-      text-decoration: none;
+      text-decoration: none !important;
       transition: color 0.2s, background-color 0.2s;
 
       &:hover {
@@ -228,16 +228,6 @@ const subDirSections = computed<SubDirSection[]>(() => {
       }
     }
 
-    .vp-custom-catalog-dir-arrow {
-      display: inline-flex;
-      align-items: center;
-      margin-left: 1rem;
-      font-size: 1.05em;
-      line-height: 1;
-      font-weight: 500;
-      color: var(--vp-c-text-mute);
-      flex-shrink: 0;
-    }
   }
 
   .vp-custom-catalog-list {
