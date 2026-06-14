@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: Termux
   itemDesc: Android终端模拟器
-  itemIcon: termux.com
+  itemIcon: termux.dev
 ---
 # Termux:安卓终端模拟器
 ## 下载地址

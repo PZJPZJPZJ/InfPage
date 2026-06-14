@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: TVBox
   itemDesc: 安卓电视盒应用
-  itemIcon: tvbox.live
+  itemIcon: https://cdn.jsdelivr.net/gh/takagen99/Box@main/app/src/main/res/drawable/app_icon.png
 ---
 # TVBox:安卓电视工具
 ## 配置教程

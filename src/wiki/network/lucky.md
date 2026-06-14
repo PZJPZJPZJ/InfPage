@@ -1,8 +1,8 @@
 ---
 routeMeta:
-  itemTitle: Lucky Patcher
-  itemDesc: 系统修改与优化
-  itemIcon: luckypatchers.com
+  itemTitle: Lucky
+  itemDesc: 网络打洞穿透工具
+  itemIcon: https://lucky666.cn/img/logo.svg
 ---
 # Lucky:网络打洞穿透工具
 ## 下载地址

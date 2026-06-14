@@ -22,30 +22,26 @@ routeMeta:
 
 ## 速度优化
 ### 页面加载速度
-- [Google PageSpeed Insights](https://pagespeed.web.dev/):测试页面加载存在问题
-- [SpeedVitals](https://speedvitals.com/):测试TTFB时间和CDN生效状态
-- [GTmetrix](https://gtmetrix.com/):综合测试页面加载速度
-- [Webp2jpg](https://github.com/renzhezhilu/webp2jpg-online)：图片格式转换
-  - [Webp2jpg在线版](https://imagestool.com/webp2jpg-online/)
-- [WPRocket](https://pan.baidu.com/s/19rJpoDly8yBTM7PirMYDzQ?pwd=znju):综合优化插件
+- [Google PageSpeed Insights-页面加载测试](https://pagespeed.web.dev/)
+- [SpeedVitals-TTFB时间测试](https://speedvitals.com/)
+- [GTmetrix-页面综合加载速度](https://gtmetrix.com/)
+- [Webp2jpg-图片格式转换](https://github.com/renzhezhilu/webp2jpg-online)
+  - [Webp2jpg-在线版](https://imagestool.com/webp2jpg-online/)
+- [WPRocket-综合优化插件](https://www.cheshirex.com/7119.html)
   - [htaccess配置教程](https://docs.wp-rocket.me/article/1788-wp-rocket-rules-in-the-htaccess-file)
-### 数据库查询优化
-- [Redis](https://wordpress.org/plugins/redis-cache/):缓存数据库插件，建议PHP安装Redis扩展
-- [QueryMonitor](https://wordpress.org/plugins/query-monitor/):测试页面加载查询数据插件
-### 内容分发网络
-- [Cloudflare](https://www.cloudflare.com/):CDN缓存、安全、转发配置
+### 数据库优化
+- [QueryMonitor-数据库查询诊断](https://wordpress.org/plugins/query-monitor/)
 
-## 搜索引擎优化(SEO)
-### RankMath:SEO优化插件
-- [RankMath下载](https://www.cheshirex.com/7891.html)
+## 搜索引擎优化
+- [RankMath-SEO优化插件](https://www.cheshirex.com/7891.html)
 
-### GTranslate/TranslatePress:多语言页面生成插件
-- [TranslatePress下载](https://www.cheshirex.com/7907.html)
+### 多语言翻译
+- [TranslatePress-多语言页面生成](https://www.cheshirex.com/7907.html)
 
 ### 搜索引擎规则
-- [Google Search Status](https://status.search.google.com/):谷歌更新面版
-- [Backlinko](https://backlinko.com):SEO教程
-- [BlackHatWorld](https://www.blackhatworld.com):黑帽SEO论坛
+- [Google Search Status-谷歌更新面版](https://status.search.google.com/)
+- [Backlinko-SEO教程](https://backlinko.com)
+- [BlackHatWorld-SEO论坛](https://www.blackhatworld.com)
 
 ### 关键词研究
 - [Ahrefs](https://ahrefs.com/)
@@ -60,14 +56,13 @@ routeMeta:
 - [Fiverr](https://www.fiverr.com/)
 - [Upwork](https://www.upwork.com/)
 
-## 界面优化
-### Elementor:页面编辑器
-- [Elementor下载](https://www.cheshirex.com/2979.html)
-- [UnlimitedElements](https://www.cheshirex.com/8128.html):无限自定义组件
+## 页面编辑
+- [Elementor-页面编辑器](https://www.cheshirex.com/2979.html)
+- [UnlimitedElements-无限自定义组件](https://www.cheshirex.com/8128.html)
 
-### 网站检测工具
-- [Wappalyzer](https://www.wappalyzer.com/lookup/):框架检测器
-- [WPThemeDetector](https://www.wpthemedetector.com/):主题检测器
+### 检测工具
+- [Wappalyzer-框架检测器](https://www.wappalyzer.com/lookup/)
+- [WPThemeDetector-主题检测器](https://www.wpthemedetector.com/)
 
 ## 服务器
 ### 云主机
@@ -90,12 +85,7 @@ routeMeta:
 ```php
 /** WordPress内存限制设置 */
 define( 'WP_MEMORY_LIMIT', '1024M' );
-/** 强制启用HTTPS，防止反向代理时资源访问异常 */
-$_SERVER['HTTPS'] = 'on';
-define('FORCE_SSL_LOGIN', true);
-define('FORCE_SSL_ADMIN', true);
 /** 灵活检测HTTP/HTTPS，防止反向代理时资源访问异常，与强制启用HTTPS不能同时使用 */
-/** 需添加Nginx配置proxy_set_header X-Forwarded-Proto $scheme; */
 if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
     $_SERVER['HTTPS'] = 'on';
 }

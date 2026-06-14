@@ -8,7 +8,7 @@ routeMeta:
 ## 安装教程
 ### Windows安装程序直接安装
 1. 从[微软官网](https://www.microsoft.com/zh-cn/software-download)下载系统ISO
-2. 插入存储设备并使用[DiskGenius](/wiki/disk-genius.md)检查以下设置
+2. 插入存储设备并使用`DiskGenius`检查以下设置
    - UEFI启动:建议分区方案为MBR(GPT仅可用于UEFI启动)
      - 新版UEFI:建议文件系统为exFAT(可使用NTFS等格式)
      - 传统UEFI:建议文件系统为FAT32(仅支持单文件小于4G)
@@ -26,7 +26,7 @@ routeMeta:
 1. 下载[微PE](https://www.wepe.com.cn/download.html)或[FirPE](https://www.firpe.cn/)运行
 2. 插入存储设备制作启动盘
    - 清空存储设备制作:根据工具指引直接制作
-   - 保留存储设备文件手动制作:生成ISO镜像，参考[Bootice](/wiki/bootice.md)工具写入教程
+   - 保留存储设备文件手动制作:生成ISO镜像，参考`Bootice`工具写入教程
    - 制作完成后可使用[QEMU](https://pzjpzjpzj.lanzoum.com/ii13M2uhan3g)测试启动盘
 3. 从[微软官网](https://www.microsoft.com/zh-cn/software-download)将系统ISO文件放入非启动分区内
 4. 启动电脑在初始BIOS画面不断按下DEL/F1~F12/ESC等键盘按键，尝试选择从存储设备启动
@@ -73,7 +73,7 @@ routeMeta:
 | Windows XP    | SP3    |                           |                        | [ED2K][WinXP-SP3-x86]     |
 | Windows 2000  | SP4    |                           |                        | [ED2K][Win2000-SP4-x86]   |
 
-- BT:需要使用[qBittorrent](/wiki/qbittorrent.md)或类似软件从[MSDN](https://next.itellyou.cn/)下载
+- BT:需要使用[qBittorrent](https://www.fosshub.com/qBittorrent.html)或类似软件从[MSDN](https://next.itellyou.cn/)下载
 - ED2K:需要使用[eMule](https://www.emule-project.com/)或类似软件从[旧MSDN](https://msdn.itellyou.cn/)下载
 
 ## 激活系统

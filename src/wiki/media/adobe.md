@@ -48,7 +48,7 @@ routeMeta:
 | Photoshop          | 图像编辑     | [2026磁力][Adobe-Photoshop-BT] [2025云盘便携版][Adobe-Photoshop-baidu]           |
 | Premiere Pro       | 视频编辑     | [2026磁力][Adobe-Premiere-Pro-BT] [2025云盘][Adobe-Premiere-Pro-baidu]           |
 
-> 进行磁力链接下载前需要先安装[qBittorrent](/wiki/qbittorrent.md)或其他磁力下载工具
+> 进行磁力链接下载前需要先安装[qBittorrent](https://www.fosshub.com/qBittorrent.html)或其他磁力下载工具
 
 ## 官方原版
 1. 下载安装官方[Adobe Creative Cloud](https://creativecloud.adobe.com/apps/download/creative-cloud)

@@ -62,7 +62,7 @@ py macrecovery.py -b Mac-937A206F2EE63C01 -m 00000000000000000 download
 
 打开磁盘管理，在任意磁盘设备创建`FAT32`分区（约1GB空间）
 
-> 单硬盘可使用[DiskGenius](/wiki/disk-genius.md)继续创建一个`HFS+`分区，启动系统后使用macOS磁盘工具抹掉该分区为`APFS`格式，即可在安装程序中选择该分区进行安装
+> 单硬盘可使用`DiskGenius`继续创建一个`HFS+`分区，启动系统后使用macOS磁盘工具抹掉该分区为`APFS`格式，即可在安装程序中选择该分区进行安装
 
 复制`com.apple.recovery.boot`和`EFI`文件夹到该分区根目录
 
@@ -70,7 +70,7 @@ py macrecovery.py -b Mac-937A206F2EE63C01 -m 00000000000000000 download
 
 ##### 离线写入恢复镜像（需提前下载完整系统镜像）
 - macOS系统：访问[Apple官方下载支持](https://support.apple.com/zh-cn/102662)，使用macOS系统命令制作系统镜像磁盘
-- Windows系统：运行镜像下载工具[gibMacOS](https://github.com/corpnewt/gibMacOS)，使用[TransMac](https://pzjpzjpzj.lanzoum.com/i44Ry2rpxr3i)或[BalenaEtcher](/wiki/balena-etcher.md)将完整系统镜像写入磁盘
+- Windows系统：运行镜像下载工具[gibMacOS](https://github.com/corpnewt/gibMacOS)，使用[TransMac](https://pzjpzjpzj.lanzoum.com/i44Ry2rpxr3i)或`BalenaEtcher`将完整系统镜像写入磁盘
 
 ## 驱动编辑
 ### Itlwm(Intel无线网卡驱动)

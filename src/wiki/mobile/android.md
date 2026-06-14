@@ -1,6 +1,6 @@
 ---
 routeMeta:
-  itemTitle: Android相关工具
+  itemTitle: Android
   itemDesc: 安卓工具与资讯
   itemIcon: developer.android.google.cn
 ---

@@ -69,7 +69,7 @@ requires_openai_auth = true
 		"models": [
 			{
 				"id": "deepseek-v4-flash-free", # 修改为自定义模型
-				"name": "Deepseek v4 Flash Free", 修改为自定义模型名称
+				"name": "Deepseek v4 Flash Free", #修改为自定义模型名称
 				"url": "https://www.example.com/v1", # 修改为请求地址
 				"toolCalling": true,
 				"vision": true,
