@@ -192,8 +192,9 @@ const subDirSections = computed<SubDirSection[]>(() => {
   }
 
   .vp-custom-catalog-dir-path {
-    margin: 0.8rem 0;
-    padding: 0;
+    margin-top: calc(1rem - var(--catalog-header-offset, var(--header-offset, 3.6rem)));
+    margin-bottom: 0.8rem;
+    padding-top: var(--catalog-header-offset, var(--header-offset, 3.6rem));
     border-bottom: none;
     font-size: inherit;
     font-weight: inherit;
