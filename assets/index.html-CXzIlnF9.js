@@ -1,0 +1,1 @@
+import{_ as t,c as o,e as a,r as n,o as l}from"./app-BZAOLfuy.js";const c={};function r(s,i){const e=n("CustomCatalog");return l(),o("div",null,[a(e)])}const _=t(c,[["render",r]]),p=JSON.parse('{"path":"/wiki/mobile/","title":"Mobile","lang":"zh-CN","frontmatter":{"title":"Mobile"},"git":{},"filePathRelative":null}');export{_ as comp,p as data};
