@@ -152,7 +152,8 @@ const subDirSections = computed<SubDirSection[]>(() => {
       >
         <div class="vp-custom-catalog-dir-path">
           <RouteLink :to="section.dirPath" class="vp-custom-catalog-dir-link">
-            {{ section.title }}
+            <span class="vp-custom-catalog-dir-title">{{ section.title }}</span>
+            <span class="vp-custom-catalog-dir-arrow" aria-hidden="true">›</span>
           </RouteLink>
         </div>
 
@@ -196,20 +197,46 @@ const subDirSections = computed<SubDirSection[]>(() => {
   }
 
   .vp-custom-catalog-dir-path {
-    margin-bottom: 0.5rem;
-    padding-bottom: 0.25rem;
-    border-bottom: 1px solid var(--vp-c-border, #e2e2e3);
+    margin: 0.8rem 0 0.8rem 0;
 
     .vp-custom-catalog-dir-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0.8rem 1.5rem 0.8rem 1.5rem;
+      box-sizing: border-box;
+      border-radius: 25px;
+      background-color: rgba(0, 0, 0, 0.02);
       font-size: 1.2rem;
       font-weight: 600;
       color: var(--vp-c-text);
       text-decoration: none;
-      transition: color 0.2s;
+      transition: color 0.2s, background-color 0.2s;
 
       &:hover {
         color: var(--vp-c-brand);
+        background-color: rgba(0, 0, 0, 0.05);
       }
+
+      [data-theme='dark'] & {
+        background-color: rgba(255, 255, 255, 0.06);
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+        }
+      }
+    }
+
+    .vp-custom-catalog-dir-arrow {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 1rem;
+      font-size: 1.05em;
+      line-height: 1;
+      font-weight: 500;
+      color: var(--vp-c-text-mute);
+      flex-shrink: 0;
     }
   }
 

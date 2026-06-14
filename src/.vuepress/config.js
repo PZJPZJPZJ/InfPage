@@ -20,7 +20,7 @@ export default defineUserConfig({
   theme: defaultTheme({
     navbar: [
       {
-        text: '软件文档',
+        text: '文档教程',
         link: '/wiki/',
       },
       {
@@ -28,7 +28,7 @@ export default defineUserConfig({
         link: '/tool/',
       },
       {
-        text: '笔记方案',
+        text: '笔记总结',
         link: '/note/',
       }
     ],
