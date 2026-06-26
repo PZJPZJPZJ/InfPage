@@ -290,36 +290,42 @@ proxy-groups:
     type: url-test
     include-all: true
     filter: "(?i)香港"
+    exclude-filter: "(?i)专线"
     tolerance: 100
 
   - name: 台湾
     type: url-test
     include-all: true
     filter: "(?i)台湾"
+    exclude-filter: "(?i)专线"
     tolerance: 100
 
   - name: 新加坡
     type: url-test
     include-all: true
     filter: "(?i)新加坡"
+    exclude-filter: "(?i)专线"
     tolerance: 100
 
   - name: 美国
     type: url-test
     include-all: true
     filter: "(?i)美国"
+    exclude-filter: "(?i)专线"
     tolerance: 100
 
   - name: 日本
     type: url-test
     include-all: true
     filter: "(?i)日本"
+    exclude-filter: "(?i)专线"
     tolerance: 100
 
   - name: 韩国
     type: url-test
     include-all: true
     filter: "(?i)韩国"
+    exclude-filter: "(?i)专线"
     tolerance: 100
 
 rules:
