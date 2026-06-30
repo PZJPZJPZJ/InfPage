@@ -68,6 +68,10 @@ services:
   mihomo:
     container_name: mihomo
     image: metacubex/mihomo:latest
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
     volumes:
       - ./config:/root/.config/mihomo
     network_mode: host
