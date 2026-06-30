@@ -121,9 +121,6 @@ services:
     restart: unless-stopped
 ```
 
-## Cursor
-- [Cursor-官网](https://www.cursor.com)
-
 ## Code Server
 - [code-server-Github](https://github.com/coder/code-server)
 ```yaml title="Docker Compose"
@@ -157,3 +154,6 @@ services:
   "recommendationsUrl": ""
 },
 ```
+
+## Cursor
+- [Cursor-官网](https://www.cursor.com)
