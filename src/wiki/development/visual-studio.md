@@ -36,8 +36,7 @@ routeMeta:
 - [Codex](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt)
 ```yaml title="%USERPROFILE%\.codex\config.toml"
 model_provider = "OpenAI"
-model = "gpt-5.4" # 修改为自定义模型名称
-review_model = "gpt-5.4" # 修改为自定义模型名称
+model = "gpt-5.5" # 修改为自定义模型名称
 model_reasoning_effort = "xhigh"
 disable_response_storage = true
 network_access = "enabled"
@@ -126,7 +125,7 @@ services:
 - [Cursor-官网](https://www.cursor.com)
 
 ## Code Server
-- [code-server-Github](https://www.cursor.com)
+- [code-server-Github](https://github.com/coder/code-server)
 ```yaml title="Docker Compose"
 services:
   code-server:
@@ -134,6 +133,8 @@ services:
     container_name: code-server
     ports:
       - 8080:8080
+    environment:
+      - PASSWORD=your-login-password
     volumes:
       - ./local:/home/coder/.local
       - ./config:/home/coder/.config
@@ -142,10 +143,12 @@ services:
 ```
 ### 接入官方插件市场
 ```yaml title="/usr/lib/code-server/lib/vscode/product.json"
+# 替换这一项
 "linkProtectionTrustedDomains": [
   "https://open-vsx.org",
   "https://marketplace.visualstudio.com"
 ],
+# 补充这一项
 "extensionsGallery": {
   "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery",
   "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index",
