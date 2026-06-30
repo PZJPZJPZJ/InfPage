@@ -1,0 +1,1 @@
+import{_ as e,c as o,e as a,r as n,o as r}from"./app-CGdQRN8E.js";const c={};function s(l,i){const t=n("CustomCatalog");return r(),o("div",null,[a(t)])}const m=e(c,[["render",s]]),p=JSON.parse('{"path":"/wiki/network/","title":"Network","lang":"zh-CN","frontmatter":{"title":"Network"},"git":{},"filePathRelative":null}');export{m as comp,p as data};
