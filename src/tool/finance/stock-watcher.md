@@ -5,6 +5,129 @@ routeMeta:
   itemIcon: xueqiu.com
 ---
 <div class="stock-watcher">
+  <div v-if="!watchlist.length" class="sw-card sw-empty-state">
+    <div class="sw-empty-title">还没有自选股</div>
+    <div class="sw-empty-text">
+      输入 6 位股票或 ETF 代码，或带市场前缀的代码，例如 `600000`、`510300`、`159915`、`sz300750`，即可开始看盘。
+    </div>
+  </div>
+  <div v-else class="sw-list">
+    <div
+      v-for="row in watchRows"
+      :key="row.item.symbol"
+      :class="[
+        'sw-card',
+        'sw-stock-card',
+        priceClass(row.quote),
+        highlightedSymbol === row.item.symbol ? 'is-highlighted' : '',
+        row.quote?.stale ? 'is-stale' : ''
+      ]"
+      @click="toggleExpanded(row.item.symbol)"
+    >
+      <div class="sw-stock-main">
+        <div class="sw-stock-top">
+          <div class="sw-stock-id">
+            <div class="sw-stock-name-row">
+              <span class="sw-stock-name">{{ row.quote?.name || "--" }}</span>
+              <span class="sw-stock-code">{{ row.item.symbol }}</span>
+              <span :class="['sw-stock-code', isQuoteExpired(row.quote) ? 'is-expired' : '']">
+                {{ formatQuoteBadge(row.quote) }}
+              </span>
+            </div>
+          </div>
+          <div class="sw-stock-price">
+            <span class="sw-change">{{ formatSigned(row.quote, "change") }}</span>
+            <span class="sw-change-percent">{{ formatPercent(row.quote?.changePercent) }}</span>
+            <div class="sw-price">{{ formatPrice(row.quote, "price") }}</div>
+          </div>
+        </div>
+        <div v-if="editMode" class="sw-stock-actions" @click.stop>
+          <button class="sw-btn sw-btn-ghost" type="button" :disabled="isFirstItem(row.item.symbol)" @click="moveWatchItem(row.item.symbol, -1)">
+            上移
+          </button>
+          <button class="sw-btn sw-btn-ghost" type="button" :disabled="isLastItem(row.item.symbol)" @click="moveWatchItem(row.item.symbol, 1)">
+            下移
+          </button>
+          <button class="sw-btn sw-btn-ghost" type="button" :disabled="isFirstItem(row.item.symbol)" @click="moveWatchItemTo(row.item.symbol, 0)">
+            置顶
+          </button>
+          <button class="sw-btn sw-btn-ghost" type="button" :disabled="isLastItem(row.item.symbol)" @click="moveWatchItemTo(row.item.symbol, watchlist.length - 1)">
+            置底
+          </button>
+          <button class="sw-btn sw-btn-danger" type="button" @click="removeWatchItem(row.item.symbol)">
+            删除
+          </button>
+        </div>
+      </div>
+      <div v-if="row.quote?.error" class="sw-item-error">
+        {{ row.quote.error }}
+      </div>
+      <div v-if="isExpanded(row.item.symbol)" class="sw-depth-panel" @click.stop>
+        <div class="sw-depth-card sw-info-table-card">
+          <div class="sw-info-table">
+            <div class="sw-info-row"><span class="sw-info-label">今开</span><span class="sw-info-value">{{ formatPrice(row.quote, "open") }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">昨收</span><span class="sw-info-value">{{ formatPrice(row.quote, "preClose") }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">最高</span><span class="sw-info-value">{{ formatPrice(row.quote, "high") }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">最低</span><span class="sw-info-value">{{ formatPrice(row.quote, "low") }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">成交量</span><span class="sw-info-value">{{ formatVolume(row.quote?.volume) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">成交额</span><span class="sw-info-value">{{ formatAmountWan(row.quote?.amountWan) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">外盘</span><span class="sw-info-value">{{ formatVolume(row.quote?.outerVolume) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">内盘</span><span class="sw-info-value">{{ formatVolume(row.quote?.innerVolume) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">换手率</span><span class="sw-info-value">{{ formatRatio(row.quote?.turnoverRate, '%') }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">量比</span><span class="sw-info-value">{{ formatVolumeRatio(row.quote?.volumeRatio) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">涨停价</span><span class="sw-info-value">{{ formatPrice(row.quote, "limitUp") }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">跌停价</span><span class="sw-info-value">{{ formatPrice(row.quote, "limitDown") }}</span></div>
+          </div>
+        </div>
+        <div class="sw-depth-grid">
+          <div class="sw-depth-card sw-depth-card-ask">
+            <div class="sw-depth-title-row">
+              <span class="sw-depth-title sw-depth-title-ask">卖盘五档</span>
+              <span class="sw-pressure-text sw-pressure-sell">卖压 {{ formatDepthPressureSummary(row.quote, "ask") }}</span>
+            </div>
+            <div class="sw-depth-table">
+              <div class="sw-depth-head">
+                <span>档位</span>
+                <span>价格</span>
+                <span>数量</span>
+              </div>
+              <div
+                v-for="level in askLevels(row.quote)"
+                :key="'ask-' + level.level"
+                class="sw-depth-row"
+              >
+                <span>{{ level.label }}</span>
+                <span>{{ formatPrice(row.quote, level.priceField) }}</span>
+                <span>{{ formatVolume(level.volume) }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="sw-depth-card sw-depth-card-bid">
+            <div class="sw-depth-title-row">
+              <span class="sw-depth-title sw-depth-title-bid">买盘五档</span>
+              <span class="sw-pressure-text sw-pressure-buy">买压 {{ formatDepthPressureSummary(row.quote, "bid") }}</span>
+            </div>
+            <div class="sw-depth-table">
+              <div class="sw-depth-head">
+                <span>档位</span>
+                <span>价格</span>
+                <span>数量</span>
+              </div>
+              <div
+                v-for="level in bidLevels(row.quote)"
+                :key="'bid-' + level.level"
+                class="sw-depth-row"
+              >
+                <span>{{ level.label }}</span>
+                <span>{{ formatPrice(row.quote, level.priceField) }}</span>
+                <span>{{ formatVolume(level.volume) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="sw-card sw-toolbar">
     <div class="sw-toolbar-main">
       <label class="sw-field sw-code-field">
@@ -15,7 +138,7 @@ routeMeta:
             class="sw-input"
             type="text"
             inputmode="text"
-            placeholder="600000 / sh000001"
+            placeholder="600000 / sh000001 / hk00700"
             @keyup.enter="addWatchItem"
           />
         </div>
@@ -82,117 +205,6 @@ routeMeta:
     </div>
     <div v-if="requestError" class="sw-toolbar-error">
       {{ requestError }}
-    </div>
-  </div>
-  <div v-if="!watchlist.length" class="sw-card sw-empty-state">
-    <div class="sw-empty-title">还没有自选股</div>
-    <div class="sw-empty-text">
-      输入 6 位股票或 ETF 代码，或带市场前缀的代码，例如 `600000`、`510300`、`159915`、`sz300750`，即可开始看盘。
-    </div>
-  </div>
-  <div v-else class="sw-list">
-    <div
-      v-for="row in watchRows"
-      :key="row.item.symbol"
-      :class="[
-        'sw-card',
-        'sw-stock-card',
-        priceClass(row.quote),
-        highlightedSymbol === row.item.symbol ? 'is-highlighted' : '',
-        row.quote?.stale ? 'is-stale' : ''
-      ]"
-      @click="toggleExpanded(row.item.symbol)"
-    >
-      <div class="sw-stock-main">
-        <div class="sw-stock-top">
-          <div class="sw-stock-id">
-            <div class="sw-stock-name-row">
-              <span class="sw-stock-name">{{ row.quote?.name || "--" }}</span>
-              <span class="sw-stock-code">{{ row.item.symbol }}</span>
-              <span :class="['sw-stock-code', isQuoteExpired(row.quote) ? 'is-expired' : '']">
-                {{ formatQuoteBadge(row.quote) }}
-              </span>
-            </div>
-          </div>
-          <div class="sw-stock-price">
-            <span class="sw-change">{{ formatSigned(row.quote?.change) }}</span>
-            <span class="sw-change-percent">{{ formatPercent(row.quote?.changePercent) }}</span>
-            <div class="sw-price">{{ formatPrice(row.quote?.price) }}</div>
-          </div>
-        </div>
-        <div v-if="editMode" class="sw-stock-actions" @click.stop>
-          <button class="sw-btn sw-btn-ghost" type="button" :disabled="isFirstItem(row.item.symbol)" @click="moveWatchItem(row.item.symbol, -1)">
-            上移
-          </button>
-          <button class="sw-btn sw-btn-ghost" type="button" :disabled="isLastItem(row.item.symbol)" @click="moveWatchItem(row.item.symbol, 1)">
-            下移
-          </button>
-          <button class="sw-btn sw-btn-danger" type="button" @click="removeWatchItem(row.item.symbol)">
-            删除
-          </button>
-        </div>
-      </div>
-      <div v-if="row.quote?.error" class="sw-item-error">
-        {{ row.quote.error }}
-      </div>
-      <div v-if="isExpanded(row.item.symbol)" class="sw-depth-panel" @click.stop>
-        <div class="sw-depth-card sw-info-table-card">
-          <div class="sw-info-table">
-            <div class="sw-info-row"><span class="sw-info-label">今开</span><span class="sw-info-value">{{ formatPrice(row.quote?.open) }}</span></div>
-            <div class="sw-info-row"><span class="sw-info-label">昨收</span><span class="sw-info-value">{{ formatPrice(row.quote?.preClose) }}</span></div>
-            <div class="sw-info-row"><span class="sw-info-label">最高</span><span class="sw-info-value">{{ formatPrice(row.quote?.high) }}</span></div>
-            <div class="sw-info-row"><span class="sw-info-label">最低</span><span class="sw-info-value">{{ formatPrice(row.quote?.low) }}</span></div>
-            <div class="sw-info-row"><span class="sw-info-label">成交量</span><span class="sw-info-value">{{ formatVolume(row.quote?.volume) }}</span></div>
-            <div class="sw-info-row"><span class="sw-info-label">成交额</span><span class="sw-info-value">{{ formatAmountWan(row.quote?.amountWan) }}</span></div>
-            <div class="sw-info-row"><span class="sw-info-label">外盘</span><span class="sw-info-value">{{ formatVolume(row.quote?.outerVolume) }}</span></div>
-            <div class="sw-info-row"><span class="sw-info-label">内盘</span><span class="sw-info-value">{{ formatVolume(row.quote?.innerVolume) }}</span></div>
-            <div class="sw-info-row"><span class="sw-info-label">换手率</span><span class="sw-info-value">{{ formatRatio(row.quote?.turnoverRate, '%') }}</span></div>
-            <div class="sw-info-row"><span class="sw-info-label">量比</span><span class="sw-info-value">{{ formatRatio(row.quote?.volumeRatio) }}</span></div>
-            <div class="sw-info-row"><span class="sw-info-label">涨停价</span><span class="sw-info-value">{{ formatPrice(row.quote?.limitUp) }}</span></div>
-            <div class="sw-info-row"><span class="sw-info-label">跌停价</span><span class="sw-info-value">{{ formatPrice(row.quote?.limitDown) }}</span></div>
-          </div>
-        </div>
-        <div class="sw-depth-grid">
-          <div class="sw-depth-card sw-depth-card-ask">
-            <div class="sw-depth-title">卖盘五档</div>
-            <div class="sw-depth-table">
-              <div class="sw-depth-head">
-                <span>档位</span>
-                <span>价格</span>
-                <span>数量</span>
-              </div>
-              <div
-                v-for="level in askLevels(row.quote)"
-                :key="'ask-' + level.level"
-                class="sw-depth-row"
-              >
-                <span>{{ level.label }}</span>
-                <span>{{ formatPrice(level.price) }}</span>
-                <span>{{ formatVolume(level.volume) }}</span>
-              </div>
-            </div>
-          </div>
-          <div class="sw-depth-card sw-depth-card-bid">
-            <div class="sw-depth-title">买盘五档</div>
-            <div class="sw-depth-table">
-              <div class="sw-depth-head">
-                <span>档位</span>
-                <span>价格</span>
-                <span>数量</span>
-              </div>
-              <div
-                v-for="level in bidLevels(row.quote)"
-                :key="'bid-' + level.level"
-                class="sw-depth-row"
-              >
-                <span>{{ level.label }}</span>
-                <span>{{ formatPrice(level.price) }}</span>
-                <span>{{ formatVolume(level.volume) }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
@@ -281,34 +293,59 @@ function toNumber(value) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-function normalizeInputCode(input) {
-  const normalized = String(input || "").trim().toLowerCase();
+function getDecimalPlaces(value) {
+  if (value === null || value === undefined || value === "" || value === "-") return null;
+  const text = String(value).trim();
+  if (!text || /e/i.test(text)) return null;
+  const decimalPart = text.split(".")[1];
+  return decimalPart === undefined ? 0 : decimalPart.length;
+}
 
-  if (/^(sh|sz|bj)\d{6}$/.test(normalized)) {
+function buildPriceDecimals(entries) {
+  return Object.fromEntries(
+    entries
+      .map(([field, value]) => [field, getDecimalPlaces(value)])
+      .filter(([, decimals]) => decimals !== null)
+  );
+}
+
+function normalizeInputCode(input) {
+  const raw = String(input || "").trim();
+  const normalized = raw.replace(/\s+/g, "");
+  const lower = normalized.toLowerCase();
+
+  if (!normalized) {
+    throw new Error("请输入股票代码");
+  }
+
+  if (/^(sh|sz|bj)\d{6}$/.test(lower)) {
     return {
-      symbol: normalized,
-      code: normalized.slice(2),
+      symbol: lower,
+      code: lower.slice(2),
     };
   }
 
-  if (/^\d{6}$/.test(normalized)) {
-    if (normalized.startsWith("5") || normalized.startsWith("6")) {
-      return { symbol: `sh${normalized}`, code: normalized };
+  if (/^\d{6}$/.test(lower)) {
+    if (lower.startsWith("5") || lower.startsWith("6")) {
+      return { symbol: `sh${lower}`, code: lower };
     }
     if (
-      normalized.startsWith("0") ||
-      normalized.startsWith("1") ||
-      normalized.startsWith("2") ||
-      normalized.startsWith("3")
+      lower.startsWith("0") ||
+      lower.startsWith("1") ||
+      lower.startsWith("2") ||
+      lower.startsWith("3")
     ) {
-      return { symbol: `sz${normalized}`, code: normalized };
+      return { symbol: `sz${lower}`, code: lower };
     }
-    if (normalized.startsWith("4") || normalized.startsWith("8")) {
-      return { symbol: `bj${normalized}`, code: normalized };
+    if (lower.startsWith("4") || lower.startsWith("8")) {
+      return { symbol: `bj${lower}`, code: lower };
     }
   }
 
-  throw new Error("请输入有效的股票或 ETF 代码，例如 600000、510300、159915 或 sz300750");
+  return {
+    symbol: normalized,
+    code: normalized,
+  };
 }
 
 function toProviderSymbol(codeOrSymbol) {
@@ -318,11 +355,11 @@ function toProviderSymbol(codeOrSymbol) {
 function toNeteaseCode(codeOrSymbol) {
   const { code } = normalizeInputCode(codeOrSymbol);
 
-  if (code.startsWith("5") || code.startsWith("6")) {
+  if (/^\d{6}$/.test(code) && (code.startsWith("5") || code.startsWith("6"))) {
     return `0${code}`;
   }
 
-  if (code.startsWith("0") || code.startsWith("1") || code.startsWith("2") || code.startsWith("3")) {
+  if (/^\d{6}$/.test(code) && (code.startsWith("0") || code.startsWith("1") || code.startsWith("2") || code.startsWith("3"))) {
     return `1${code}`;
   }
 
@@ -332,11 +369,11 @@ function toNeteaseCode(codeOrSymbol) {
 function toEastmoneySecid(codeOrSymbol) {
   const { code } = normalizeInputCode(codeOrSymbol);
 
-  if (code.startsWith("5") || code.startsWith("6")) {
+  if (/^\d{6}$/.test(code) && (code.startsWith("5") || code.startsWith("6"))) {
     return `1.${code}`;
   }
 
-  if (code.startsWith("0") || code.startsWith("1") || code.startsWith("2") || code.startsWith("3")) {
+  if (/^\d{6}$/.test(code) && (code.startsWith("0") || code.startsWith("1") || code.startsWith("2") || code.startsWith("3"))) {
     return `0.${code}`;
   }
 
@@ -432,6 +469,7 @@ function createEmptyQuote(symbol, code) {
     updatedAt: null,
     stale: false,
     error: null,
+    priceDecimals: {},
   };
 }
 
@@ -491,6 +529,26 @@ function parseTencentQuote(symbol, rawText) {
     volumeRatio: toNumber(raw[49]),
     limitUp: toNumber(raw[47]),
     limitDown: toNumber(raw[48]),
+    priceDecimals: buildPriceDecimals([
+      ["price", raw[3]],
+      ["preClose", raw[4]],
+      ["open", raw[5]],
+      ["bid1", raw[9]],
+      ["bid2", raw[11]],
+      ["bid3", raw[13]],
+      ["bid4", raw[15]],
+      ["bid5", raw[17]],
+      ["ask1", raw[19]],
+      ["ask2", raw[21]],
+      ["ask3", raw[23]],
+      ["ask4", raw[25]],
+      ["ask5", raw[27]],
+      ["change", raw[31]],
+      ["high", raw[33]],
+      ["low", raw[34]],
+      ["limitUp", raw[47]],
+      ["limitDown", raw[48]],
+    ]),
   };
 }
 
@@ -539,6 +597,23 @@ function parseSinaQuote(symbol, rawText) {
     ask5: toNumber(raw[29]),
     date: raw[30] || null,
     time: raw[31] || null,
+    priceDecimals: buildPriceDecimals([
+      ["open", raw[1]],
+      ["preClose", raw[2]],
+      ["price", raw[3]],
+      ["high", raw[4]],
+      ["low", raw[5]],
+      ["bid1", raw[11]],
+      ["bid2", raw[13]],
+      ["bid3", raw[15]],
+      ["bid4", raw[17]],
+      ["bid5", raw[19]],
+      ["ask1", raw[21]],
+      ["ask2", raw[23]],
+      ["ask3", raw[25]],
+      ["ask4", raw[27]],
+      ["ask5", raw[29]],
+    ]),
   };
 }
 
@@ -584,6 +659,24 @@ function parseNeteaseQuote(symbol, data) {
     ask5Volume: toNumber(data.askvol5),
     updatedAt: data.update || data.time || null,
     time: data.time || null,
+    priceDecimals: buildPriceDecimals([
+      ["price", data.price],
+      ["preClose", data.yestclose],
+      ["open", data.open],
+      ["high", data.high],
+      ["low", data.low],
+      ["change", data.updown],
+      ["bid1", data.bid1],
+      ["bid2", data.bid2],
+      ["bid3", data.bid3],
+      ["bid4", data.bid4],
+      ["bid5", data.bid5],
+      ["ask1", data.ask1],
+      ["ask2", data.ask2],
+      ["ask3", data.ask3],
+      ["ask4", data.ask4],
+      ["ask5", data.ask5],
+    ]),
   };
 }
 
@@ -627,6 +720,24 @@ function parseEastmoneyQuote(symbol, data) {
     ask5Volume: toNumber(data.f40),
     updatedAt: data.f86 ? formatUnixTimestamp(data.f86) : null,
     time: data.f86 ? formatUnixTimeOnly(data.f86) : null,
+    priceDecimals: buildPriceDecimals([
+      ["price", data.f43],
+      ["preClose", data.f60],
+      ["open", data.f46],
+      ["high", data.f44],
+      ["low", data.f45],
+      ["change", data.f169],
+      ["bid1", data.f19],
+      ["bid2", data.f17],
+      ["bid3", data.f15],
+      ["bid4", data.f13],
+      ["bid5", data.f11],
+      ["ask1", data.f31],
+      ["ask2", data.f33],
+      ["ask3", data.f35],
+      ["ask4", data.f37],
+      ["ask5", data.f39],
+    ]),
   };
 }
 
@@ -698,6 +809,7 @@ function toQuoteModel(parsed) {
     updatedAt: timeInfo.updatedAt,
     stale: false,
     error: null,
+    priceDecimals: parsed.priceDecimals || {},
   };
 }
 
@@ -791,7 +903,7 @@ function loadTencentQuotes(symbols) {
     return Promise.resolve({});
   }
 
-  const query = uniqueSymbols.join(",");
+  const query = uniqueSymbols.map((symbol) => encodeURIComponent(symbol)).join(",");
   const url = `https://qt.gtimg.cn/q=${query}&_=${Date.now()}`;
 
   return loadScriptWithHandlers(url, {
@@ -841,7 +953,7 @@ function loadSinaQuotes(symbols) {
     return Promise.resolve({});
   }
 
-  const query = uniqueSymbols.join(",");
+  const query = uniqueSymbols.map((symbol) => encodeURIComponent(symbol)).join(",");
   const url = `https://hq.sinajs.cn/list=${query}&rn=${Date.now()}`;
 
   return loadScriptWithHandlers(url, {
@@ -1099,6 +1211,17 @@ function applyState(state) {
   refreshIntervalInput.value = String(refreshIntervalSec.value);
 }
 
+function isValidQuoteModel(quote) {
+  if (!quote || quote.error || quote.stale) return false;
+  return Boolean(
+    quote.name ||
+    toNumber(quote.price) !== null ||
+    toNumber(quote.open) !== null ||
+    toNumber(quote.preClose) !== null ||
+    toNumber(quote.volume) !== null
+  );
+}
+
 function restartRefreshTimer() {
   if (!isBrowser) return;
 
@@ -1197,6 +1320,14 @@ async function addWatchItem() {
       return;
     }
 
+    const freshQuotes = await currentProvider.value.loadQuotes([normalized.symbol]);
+    const freshQuote = freshQuotes[normalized.symbol];
+
+    if (!isValidQuoteModel(freshQuote)) {
+      inputError.value = freshQuote?.error || "该代码未返回有效行情数据，请检查代码或切换数据源";
+      return;
+    }
+
     watchlist.value = [
       ...watchlist.value,
       {
@@ -1207,12 +1338,15 @@ async function addWatchItem() {
     ];
 
     stockCodeInput.value = "";
+    quotesBySymbol.value = {
+      ...quotesBySymbol.value,
+      [normalized.symbol]: freshQuote,
+    };
     saveState();
     restartRefreshTimer();
     flashSymbol(normalized.symbol);
-    void refreshQuotes();
   } catch (error) {
-    inputError.value = error instanceof Error ? error.message : "股票代码格式不正确";
+    inputError.value = error instanceof Error ? error.message : "该代码未返回有效行情数据";
   }
 }
 
@@ -1246,6 +1380,20 @@ function moveWatchItem(symbol, direction) {
   const nextWatchlist = [...watchlist.value];
   const [moved] = nextWatchlist.splice(currentIndex, 1);
   nextWatchlist.splice(nextIndex, 0, moved);
+  watchlist.value = nextWatchlist;
+  saveState();
+}
+
+function moveWatchItemTo(symbol, targetIndex) {
+  const currentIndex = watchlist.value.findIndex((item) => item.symbol === symbol);
+  if (currentIndex === -1) return;
+
+  const boundedIndex = Math.min(Math.max(targetIndex, 0), watchlist.value.length - 1);
+  if (currentIndex === boundedIndex) return;
+
+  const nextWatchlist = [...watchlist.value];
+  const [moved] = nextWatchlist.splice(currentIndex, 1);
+  nextWatchlist.splice(boundedIndex, 0, moved);
   watchlist.value = nextWatchlist;
   saveState();
 }
@@ -1382,17 +1530,27 @@ function priceClass(quote) {
   return change > 0 ? "is-up" : "is-down";
 }
 
-function formatPrice(value) {
-  const parsed = toNumber(value);
-  if (parsed === null) return "--";
-  return parsed.toFixed(2);
+function getQuoteValue(target, field) {
+  if (!field) return target;
+  return target?.[field];
 }
 
-function formatSigned(value) {
-  const parsed = toNumber(value);
+function getQuoteDecimals(target, field, fallback = 2) {
+  const decimals = field ? target?.priceDecimals?.[field] : null;
+  return Number.isInteger(decimals) && decimals >= 0 ? decimals : fallback;
+}
+
+function formatPrice(target, field) {
+  const parsed = toNumber(getQuoteValue(target, field));
+  if (parsed === null) return "--";
+  return parsed.toFixed(getQuoteDecimals(target, field));
+}
+
+function formatSigned(target, field) {
+  const parsed = toNumber(getQuoteValue(target, field));
   if (parsed === null) return "--";
   const sign = parsed > 0 ? "+" : "";
-  return `${sign}${parsed.toFixed(2)}`;
+  return `${sign}${parsed.toFixed(getQuoteDecimals(target, field))}`;
 }
 
 function formatPercent(value) {
@@ -1418,6 +1576,35 @@ function formatRatio(value, suffix = "") {
   const parsed = toNumber(value);
   if (parsed === null) return "--";
   return `${parsed.toFixed(2)}${suffix}`;
+}
+
+function getTradingProgress(now = new Date()) {
+  const minutes = now.getHours() * 60 + now.getMinutes();
+  const sessions = [
+    [9 * 60 + 30, 11 * 60 + 30],
+    [13 * 60, 15 * 60],
+  ];
+  const elapsed = sessions.reduce((total, [start, end]) => {
+    if (minutes <= start) return total;
+    return total + Math.min(minutes, end) - start;
+  }, 0);
+  return elapsed / 240;
+}
+
+function classifyVolumeRatio(value) {
+  const parsed = toNumber(value);
+  if (parsed === null) return "";
+  const progress = getTradingProgress();
+  const tolerance = progress < 0.1 ? 0.35 : progress < 0.25 ? 0.25 : progress < 0.5 ? 0.18 : 0.12;
+  if (parsed >= 1 + tolerance) return "放量";
+  if (parsed <= 1 - tolerance) return "缩量";
+  return "平量";
+}
+
+function formatVolumeRatio(value) {
+  const parsed = toNumber(value);
+  if (parsed === null) return "--";
+  return `${parsed.toFixed(2)}（${classifyVolumeRatio(parsed)}）`;
 }
 
 function formatGroupedNumber(value) {
@@ -1474,23 +1661,55 @@ function formatLocalDateTime(value) {
   });
 }
 
+function sumDepthVolumes(quote, side) {
+  const prefix = side === "bid" ? "bid" : "ask";
+  return [1, 2, 3, 4, 5].reduce((total, level) => {
+    const volume = toNumber(quote?.[`${prefix}${level}Volume`]);
+    return volume === null ? total : total + volume;
+  }, 0);
+}
+
+function hasDepthPressure(quote) {
+  return sumDepthVolumes(quote, "bid") > 0 || sumDepthVolumes(quote, "ask") > 0;
+}
+
+function formatDepthPressure(quote, side) {
+  if (!hasDepthPressure(quote)) return "--";
+  return formatVolume(sumDepthVolumes(quote, side));
+}
+
+function formatDepthPressureShare(quote, side) {
+  if (!hasDepthPressure(quote)) return "--";
+  const bidPressure = sumDepthVolumes(quote, "bid");
+  const askPressure = sumDepthVolumes(quote, "ask");
+  const total = bidPressure + askPressure;
+  if (total <= 0) return "--";
+  const value = side === "bid" ? bidPressure : askPressure;
+  return `${((value / total) * 100).toFixed(1)}%`;
+}
+
+function formatDepthPressureSummary(quote, side) {
+  if (!hasDepthPressure(quote)) return "--";
+  return `${formatDepthPressure(quote, side)} ${formatDepthPressureShare(quote, side)}`;
+}
+
 function askLevels(quote) {
   return [
-    { level: 5, label: "卖五", price: quote?.ask5, volume: quote?.ask5Volume },
-    { level: 4, label: "卖四", price: quote?.ask4, volume: quote?.ask4Volume },
-    { level: 3, label: "卖三", price: quote?.ask3, volume: quote?.ask3Volume },
-    { level: 2, label: "卖二", price: quote?.ask2, volume: quote?.ask2Volume },
-    { level: 1, label: "卖一", price: quote?.ask1, volume: quote?.ask1Volume },
+    { level: 5, label: "卖五", priceField: "ask5", volume: quote?.ask5Volume },
+    { level: 4, label: "卖四", priceField: "ask4", volume: quote?.ask4Volume },
+    { level: 3, label: "卖三", priceField: "ask3", volume: quote?.ask3Volume },
+    { level: 2, label: "卖二", priceField: "ask2", volume: quote?.ask2Volume },
+    { level: 1, label: "卖一", priceField: "ask1", volume: quote?.ask1Volume },
   ];
 }
 
 function bidLevels(quote) {
   return [
-    { level: 1, label: "买一", price: quote?.bid1, volume: quote?.bid1Volume },
-    { level: 2, label: "买二", price: quote?.bid2, volume: quote?.bid2Volume },
-    { level: 3, label: "买三", price: quote?.bid3, volume: quote?.bid3Volume },
-    { level: 4, label: "买四", price: quote?.bid4, volume: quote?.bid4Volume },
-    { level: 5, label: "买五", price: quote?.bid5, volume: quote?.bid5Volume },
+    { level: 1, label: "买一", priceField: "bid1", volume: quote?.bid1Volume },
+    { level: 2, label: "买二", priceField: "bid2", volume: quote?.bid2Volume },
+    { level: 3, label: "买三", priceField: "bid3", volume: quote?.bid3Volume },
+    { level: 4, label: "买四", priceField: "bid4", volume: quote?.bid4Volume },
+    { level: 5, label: "买五", priceField: "bid5", volume: quote?.bid5Volume },
   ];
 }
 
@@ -1536,7 +1755,6 @@ onUnmounted(() => {
     linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(247, 248, 250, 0.96));
   border: 1px solid rgba(148, 163, 184, 0.22);
   border-radius: 18px;
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
 }
 
 [data-theme="dark"] .sw-card {
@@ -1544,7 +1762,6 @@ onUnmounted(() => {
     radial-gradient(circle at top right, rgba(148, 163, 184, 0.08), transparent 28%),
     linear-gradient(180deg, rgba(19, 24, 34, 0.96), rgba(13, 17, 23, 0.98));
   border-color: rgba(148, 163, 184, 0.16);
-  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
 }
 
 .sw-toolbar {
@@ -1565,6 +1782,10 @@ onUnmounted(() => {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.65rem;
+  width: 100%;
+}
+
+.sw-toolbar-actions .sw-btn {
   width: 100%;
 }
 
@@ -1597,17 +1818,11 @@ onUnmounted(() => {
   background: rgba(255, 255, 255, 0.86);
   color: var(--vp-c-text-1);
   font-size: 0.95rem;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+  transition: border-color 0.18s ease, background-color 0.18s ease;
 }
 
 [data-theme="dark"] .sw-input {
   background: rgba(30, 41, 59, 0.72);
-}
-
-.sw-input:focus {
-  outline: none;
-  border-color: #d43d51;
-  box-shadow: 0 0 0 4px rgba(212, 61, 81, 0.14);
 }
 
 .sw-input-short {
@@ -1631,7 +1846,7 @@ onUnmounted(() => {
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.16s ease, opacity 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
+  transition: transform 0.16s ease, opacity 0.16s ease, background-color 0.16s ease;
   white-space: nowrap;
 }
 
@@ -1647,7 +1862,6 @@ onUnmounted(() => {
 .sw-btn-primary {
   background: linear-gradient(135deg, #cf2338, #f97316);
   color: #fff;
-  box-shadow: 0 10px 20px rgba(207, 35, 56, 0.2);
 }
 
 .sw-btn-secondary {
@@ -1692,9 +1906,7 @@ onUnmounted(() => {
 }
 
 .sw-select:focus {
-  outline: none;
-  border-color: #d43d51;
-  box-shadow: 0 0 0 4px rgba(212, 61, 81, 0.14);
+  outline: auto;
 }
 
 .sw-hidden-input {
@@ -1738,9 +1950,7 @@ onUnmounted(() => {
 }
 
 .sw-stock-card.is-highlighted {
-  box-shadow:
-    0 0 0 2px rgba(212, 61, 81, 0.28),
-    0 18px 36px rgba(15, 23, 42, 0.12);
+  border-color: rgba(212, 61, 81, 0.55);
 }
 
 .sw-stock-card.is-stale {
@@ -1903,19 +2113,36 @@ onUnmounted(() => {
   background: rgba(30, 41, 59, 0.48);
 }
 
-.sw-depth-card-ask {
-  box-shadow: inset 0 0 0 1px rgba(239, 68, 68, 0.08);
-}
-
-.sw-depth-card-bid {
-  box-shadow: inset 0 0 0 1px rgba(22, 163, 74, 0.08);
-}
-
 .sw-depth-title {
   font-size: 0.84rem;
   font-weight: 800;
-  margin-bottom: 0.7rem;
   color: var(--vp-c-text-1);
+}
+
+.sw-depth-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.65rem;
+  margin-bottom: 0.7rem;
+}
+
+.sw-depth-title-ask,
+.sw-pressure-sell {
+  color: #dc2626;
+}
+
+.sw-depth-title-bid,
+.sw-pressure-buy {
+  color: #16a34a;
+}
+
+.sw-pressure-text {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .sw-depth-table {
