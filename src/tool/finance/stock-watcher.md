@@ -15,17 +15,14 @@ routeMeta:
             class="sw-input"
             type="text"
             inputmode="text"
-            placeholder="例如 600000 / sz000001"
+            placeholder="例如 600000 / 510300 / sz000001 / 159915"
             @keyup.enter="addWatchItem"
           />
-          <button class="sw-btn sw-btn-primary" type="button" @click="addWatchItem">
-            新增自选
-          </button>
         </div>
         <span v-if="inputError" class="sw-inline-error">{{ inputError }}</span>
       </label>
       <label class="sw-field sw-interval-field">
-        <span class="sw-field-label">刷新频率</span>
+        <span class="sw-field-label">刷新频率(秒)</span>
         <div class="sw-input-wrap">
           <input
             v-model="refreshIntervalInput"
@@ -38,8 +35,15 @@ routeMeta:
             @blur="commitRefreshInterval"
             @keyup.enter="commitRefreshInterval"
           />
-          <span class="sw-input-suffix">秒</span>
         </div>
+      </label>
+      <label class="sw-field sw-source-field">
+        <span class="sw-field-label">数据源</span>
+        <select v-model="providerId" class="sw-select" @change="handleProviderChange">
+          <option v-for="option in providerOptions" :key="option.id" :value="option.id">
+            {{ option.label }}
+          </option>
+        </select>
       </label>
     </div>
     <div class="sw-toolbar-actions">
@@ -70,30 +74,14 @@ routeMeta:
         @change="handleImportFile"
       />
     </div>
-  </div>
-  <div class="sw-card sw-status-bar">
-    <div class="sw-status-item">
-      <span class="sw-status-label">数据源</span>
-      <span class="sw-status-value">{{ currentProvider.label }}</span>
-    </div>
-    <div class="sw-status-item">
-      <span class="sw-status-label">最近刷新</span>
-      <span class="sw-status-value">{{ lastRefreshDisplay }}</span>
-    </div>
-    <div class="sw-status-item">
-      <span class="sw-status-label">状态</span>
-      <span class="sw-status-value" :class="{ 'is-loading': isRefreshing }">
-        {{ isRefreshing ? "行情更新中" : "空闲" }}
-      </span>
-    </div>
-    <div v-if="requestError" class="sw-status-error">
+    <div v-if="requestError" class="sw-toolbar-error">
       {{ requestError }}
     </div>
   </div>
   <div v-if="!watchlist.length" class="sw-card sw-empty-state">
     <div class="sw-empty-title">还没有自选股</div>
     <div class="sw-empty-text">
-      输入 6 位股票代码或带市场前缀的代码，例如 `600000`、`000001`、`sz300750`，即可开始看盘。
+      输入 6 位股票或 ETF 代码，或带市场前缀的代码，例如 `600000`、`510300`、`159915`、`sz300750`，即可开始看盘。
     </div>
   </div>
   <div v-else class="sw-list">
@@ -113,59 +101,55 @@ routeMeta:
           <div class="sw-stock-name-row">
             <span class="sw-stock-name">{{ row.quote?.name || "--" }}</span>
             <span class="sw-stock-code">{{ row.item.symbol }}</span>
-          </div>
-          <div class="sw-stock-meta">
-            <span>代码 {{ row.item.code }}</span>
-            <span>更新时间 {{ row.quote?.updatedAt || "--" }}</span>
-            <span v-if="row.quote?.stale" class="sw-stale-badge">数据可能已过期</span>
+            <span :class="['sw-stock-code', isQuoteExpired(row.quote) ? 'is-expired' : '']">
+              {{ formatQuoteBadge(row.quote) }}
+            </span>
           </div>
         </div>
         <div class="sw-stock-price">
           <div class="sw-price">{{ formatPrice(row.quote?.price) }}</div>
-          <div class="sw-change-row">
-            <span class="sw-change">{{ formatSigned(row.quote?.change) }}</span>
-            <span class="sw-change-percent">{{ formatPercent(row.quote?.changePercent) }}</span>
-          </div>
+          <span class="sw-change">{{ formatSigned(row.quote?.change) }}</span>
+          <span class="sw-change-percent">{{ formatPercent(row.quote?.changePercent) }}</span>
         </div>
         <div class="sw-stock-actions">
           <button class="sw-btn sw-btn-ghost" type="button" @click="toggleExpanded(row.item.symbol)">
-            {{ isExpanded(row.item.symbol) ? "收起盘口" : "展开盘口" }}
+            {{ isExpanded(row.item.symbol) ? "收起" : "展开" }}
           </button>
           <button class="sw-btn sw-btn-danger" type="button" @click="removeWatchItem(row.item.symbol)">
             删除
           </button>
         </div>
       </div>
-      <div class="sw-quick-stats">
-        <div class="sw-stat">
-          <span class="sw-stat-label">今开</span>
-          <span class="sw-stat-value">{{ formatPrice(row.quote?.open) }}</span>
-        </div>
-        <div class="sw-stat">
-          <span class="sw-stat-label">昨收</span>
-          <span class="sw-stat-value">{{ formatPrice(row.quote?.preClose) }}</span>
-        </div>
-        <div class="sw-stat">
-          <span class="sw-stat-label">最高</span>
-          <span class="sw-stat-value">{{ formatPrice(row.quote?.high) }}</span>
-        </div>
-        <div class="sw-stat">
-          <span class="sw-stat-label">最低</span>
-          <span class="sw-stat-value">{{ formatPrice(row.quote?.low) }}</span>
-        </div>
-        <div class="sw-stat">
-          <span class="sw-stat-label">成交量</span>
-          <span class="sw-stat-value">{{ formatVolume(row.quote?.volume) }}</span>
-        </div>
-        <div class="sw-stat">
-          <span class="sw-stat-label">成交额</span>
-          <span class="sw-stat-value">{{ formatAmountWan(row.quote?.amountWan) }}</span>
-        </div>
-      </div>
       <div v-if="row.quote?.error" class="sw-item-error">
         {{ row.quote.error }}
       </div>
       <div v-if="isExpanded(row.item.symbol)" class="sw-depth-panel">
+        <div class="sw-quick-stats sw-quick-stats-expanded">
+          <div class="sw-stat">
+            <span class="sw-stat-label">今开</span>
+            <span class="sw-stat-value">{{ formatPrice(row.quote?.open) }}</span>
+          </div>
+          <div class="sw-stat">
+            <span class="sw-stat-label">昨收</span>
+            <span class="sw-stat-value">{{ formatPrice(row.quote?.preClose) }}</span>
+          </div>
+          <div class="sw-stat">
+            <span class="sw-stat-label">最高</span>
+            <span class="sw-stat-value">{{ formatPrice(row.quote?.high) }}</span>
+          </div>
+          <div class="sw-stat">
+            <span class="sw-stat-label">最低</span>
+            <span class="sw-stat-value">{{ formatPrice(row.quote?.low) }}</span>
+          </div>
+          <div class="sw-stat">
+            <span class="sw-stat-label">成交量</span>
+            <span class="sw-stat-value">{{ formatVolume(row.quote?.volume) }}</span>
+          </div>
+          <div class="sw-stat">
+            <span class="sw-stat-label">成交额</span>
+            <span class="sw-stat-value">{{ formatAmountWan(row.quote?.amountWan) }}</span>
+          </div>
+        </div>
         <div class="sw-depth-grid">
           <div class="sw-depth-card sw-depth-card-ask">
             <div class="sw-depth-title">卖盘五档</div>
@@ -251,6 +235,7 @@ const providers = {
   },
 };
 
+const providerOptions = Object.values(providers);
 const currentProvider = computed(() => providers[providerId.value] || providers.tencent);
 
 const watchRows = computed(() =>
@@ -259,11 +244,6 @@ const watchRows = computed(() =>
     quote: quotesBySymbol.value[item.symbol] || createEmptyQuote(item.symbol, item.code),
   }))
 );
-
-const lastRefreshDisplay = computed(() => {
-  if (!lastRefreshAt.value) return "尚未刷新";
-  return formatLocalDateTime(lastRefreshAt.value);
-});
 
 function createDefaultState() {
   return {
@@ -297,8 +277,15 @@ function normalizeInputCode(input) {
   }
 
   if (/^\d{6}$/.test(normalized)) {
-    if (normalized.startsWith("6")) return { symbol: `sh${normalized}`, code: normalized };
-    if (normalized.startsWith("0") || normalized.startsWith("3")) {
+    if (normalized.startsWith("5") || normalized.startsWith("6")) {
+      return { symbol: `sh${normalized}`, code: normalized };
+    }
+    if (
+      normalized.startsWith("0") ||
+      normalized.startsWith("1") ||
+      normalized.startsWith("2") ||
+      normalized.startsWith("3")
+    ) {
       return { symbol: `sz${normalized}`, code: normalized };
     }
     if (normalized.startsWith("4") || normalized.startsWith("8")) {
@@ -306,7 +293,7 @@ function normalizeInputCode(input) {
     }
   }
 
-  throw new Error("请输入有效的股票代码，例如 600000、000001 或 sz300750");
+  throw new Error("请输入有效的股票或 ETF 代码，例如 600000、510300、159915 或 sz300750");
 }
 
 function parseProviderDateTime(value) {
@@ -804,6 +791,11 @@ function commitRefreshInterval() {
   restartRefreshTimer();
 }
 
+function handleProviderChange() {
+  saveState();
+  void refreshQuotes();
+}
+
 function handleManualRefresh() {
   void refreshQuotes();
 }
@@ -925,6 +917,33 @@ function formatAmountWan(value) {
   return `${parsed.toLocaleString("zh-CN")} 万`;
 }
 
+function parseUpdatedAt(value) {
+  if (typeof value !== "string" || !value.trim()) return null;
+  const normalized = value.replace(" ", "T");
+  const date = new Date(normalized);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function isSameLocalDay(a, b) {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
+
+function isQuoteExpired(quote) {
+  if (quote?.stale) return true;
+  const updatedAt = parseUpdatedAt(quote?.updatedAt);
+  if (!updatedAt) return true;
+  return !isSameLocalDay(updatedAt, new Date());
+}
+
+function formatQuoteBadge(quote) {
+  if (isQuoteExpired(quote)) return "数据过期";
+  return quote?.time || "--";
+}
+
 function formatLocalDateTime(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "--";
@@ -987,11 +1006,12 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  font-size: 0.92rem;
 }
 
 .sw-card {
   background:
-    radial-gradient(circle at top right, rgba(207, 35, 56, 0.06), transparent 32%),
+    radial-gradient(circle at top right, rgba(148, 163, 184, 0.06), transparent 32%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(247, 248, 250, 0.96));
   border: 1px solid rgba(148, 163, 184, 0.22);
   border-radius: 18px;
@@ -1000,7 +1020,7 @@ onUnmounted(() => {
 
 [data-theme="dark"] .sw-card {
   background:
-    radial-gradient(circle at top right, rgba(248, 113, 113, 0.12), transparent 28%),
+    radial-gradient(circle at top right, rgba(148, 163, 184, 0.08), transparent 28%),
     linear-gradient(180deg, rgba(19, 24, 34, 0.96), rgba(13, 17, 23, 0.98));
   border-color: rgba(148, 163, 184, 0.16);
   box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
@@ -1017,7 +1037,7 @@ onUnmounted(() => {
 .sw-toolbar-main {
   flex: 1 1 540px;
   display: grid;
-  grid-template-columns: minmax(280px, 2.2fr) minmax(180px, 1fr);
+  grid-template-columns: minmax(260px, 2fr) minmax(180px, 1fr) minmax(160px, 0.95fr);
   gap: 0.9rem;
 }
 
@@ -1129,41 +1149,32 @@ onUnmounted(() => {
   color: #cf2338;
 }
 
+.sw-select {
+  min-width: 150px;
+  padding: 0.78rem 0.9rem;
+  border-radius: 12px;
+  border: 1px solid var(--vp-c-border);
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--vp-c-text-1);
+  font-size: 0.92rem;
+}
+
+[data-theme="dark"] .sw-select {
+  background: rgba(30, 41, 59, 0.72);
+}
+
+.sw-select:focus {
+  outline: none;
+  border-color: #d43d51;
+  box-shadow: 0 0 0 4px rgba(212, 61, 81, 0.14);
+}
+
 .sw-hidden-input {
   display: none;
 }
 
-.sw-status-bar {
-  padding: 0.95rem 1rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem 1.2rem;
-  align-items: center;
-}
-
-.sw-status-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-width: 180px;
-}
-
-.sw-status-label {
-  font-size: 0.82rem;
-  color: var(--vp-c-text-2);
-}
-
-.sw-status-value {
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: var(--vp-c-text-1);
-}
-
-.sw-status-value.is-loading {
-  color: #cf2338;
-}
-
-.sw-status-error {
+.sw-toolbar-error {
+  width: 100%;
   color: #cf2338;
   font-size: 0.88rem;
   font-weight: 600;
@@ -1192,30 +1203,9 @@ onUnmounted(() => {
 }
 
 .sw-stock-card {
-  padding: 1rem;
+  padding: 0.78rem 0.9rem;
   position: relative;
   overflow: hidden;
-}
-
-.sw-stock-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 5px;
-  border-radius: 18px 0 0 18px;
-  background: rgba(148, 163, 184, 0.35);
-}
-
-.sw-stock-card.is-up::before {
-  background: linear-gradient(180deg, #ef4444, #fb7185);
-}
-
-.sw-stock-card.is-down::before {
-  background: linear-gradient(180deg, #16a34a, #4ade80);
-}
-
-.sw-stock-card.is-flat::before {
-  background: linear-gradient(180deg, #64748b, #94a3b8);
 }
 
 .sw-stock-card.is-highlighted {
@@ -1230,71 +1220,76 @@ onUnmounted(() => {
 
 .sw-stock-main {
   display: grid;
-  grid-template-columns: minmax(220px, 2fr) minmax(120px, 0.8fr) auto;
-  gap: 1rem;
+  grid-template-columns: minmax(260px, 1.9fr) auto auto;
+  gap: 0.75rem;
   align-items: center;
+}
+
+.sw-stock-id {
+  min-width: 0;
 }
 
 .sw-stock-name-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.4rem;
+  min-width: 0;
 }
 
 .sw-stock-name {
-  font-size: 1.12rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--vp-c-text-1);
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .sw-stock-code {
-  font-size: 0.85rem;
-  padding: 0.22rem 0.55rem;
+  font-size: 0.78rem;
+  padding: 0.18rem 0.48rem;
   border-radius: 999px;
   background: rgba(148, 163, 184, 0.12);
   color: var(--vp-c-text-2);
   font-family: "JetBrains Mono", "Consolas", monospace;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
-.sw-stock-meta {
-  margin-top: 0.45rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem 0.8rem;
-  font-size: 0.82rem;
-  color: var(--vp-c-text-2);
-}
-
-.sw-stale-badge {
+.sw-stock-code.is-expired {
   color: #cf2338;
-  font-weight: 700;
+  background: rgba(207, 35, 56, 0.1);
 }
 
 .sw-stock-price {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.3rem;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 0.55rem;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .sw-price {
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   font-weight: 700;
   line-height: 1;
+  color: var(--vp-c-text-1);
 }
 
 .sw-change-row {
-  display: flex;
-  gap: 0.55rem;
-  font-size: 0.95rem;
-  font-weight: 700;
+  display: contents;
+}
+
+.sw-change,
+.sw-change-percent {
+  font-size: 0.84rem;
+  font-weight: 600;
 }
 
 .sw-stock-actions {
   display: flex;
-  gap: 0.6rem;
+  gap: 0.45rem;
   justify-content: flex-end;
   flex-wrap: wrap;
 }
@@ -1325,7 +1320,7 @@ onUnmounted(() => {
 }
 
 .sw-stat-value {
-  font-size: 0.9rem;
+  font-size: 0.84rem;
   font-weight: 700;
   color: var(--vp-c-text-1);
   font-variant-numeric: tabular-nums;
@@ -1342,6 +1337,11 @@ onUnmounted(() => {
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px dashed rgba(148, 163, 184, 0.35);
+}
+
+.sw-quick-stats-expanded {
+  margin-top: 0;
+  margin-bottom: 0.95rem;
 }
 
 .sw-depth-grid {
@@ -1370,7 +1370,7 @@ onUnmounted(() => {
 }
 
 .sw-depth-title {
-  font-size: 0.95rem;
+  font-size: 0.84rem;
   font-weight: 800;
   margin-bottom: 0.7rem;
   color: var(--vp-c-text-1);
@@ -1401,26 +1401,65 @@ onUnmounted(() => {
   padding: 0.6rem 0.7rem;
   border-radius: 12px;
   background: rgba(148, 163, 184, 0.08);
-  font-size: 0.88rem;
+  font-size: 0.78rem;
   color: var(--vp-c-text-1);
 }
 
 .sw-stock-card.is-up .sw-price,
+.sw-stock-card.is-down .sw-price,
+.sw-stock-card.is-flat .sw-price {
+  color: var(--vp-c-text-1);
+}
+
 .sw-stock-card.is-up .sw-change,
 .sw-stock-card.is-up .sw-change-percent {
   color: #dc2626;
 }
 
-.sw-stock-card.is-down .sw-price,
 .sw-stock-card.is-down .sw-change,
 .sw-stock-card.is-down .sw-change-percent {
   color: #16a34a;
 }
 
-.sw-stock-card.is-flat .sw-price,
 .sw-stock-card.is-flat .sw-change,
 .sw-stock-card.is-flat .sw-change-percent {
   color: var(--vp-c-text-1);
+}
+
+@media (max-width: 1160px) {
+  .sw-stock-main {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "id price"
+      "actions actions";
+    row-gap: 0.45rem;
+  }
+
+  .sw-stock-id {
+    grid-area: id;
+  }
+
+  .sw-stock-price {
+    grid-area: price;
+    gap: 0.4rem;
+  }
+
+  .sw-stock-actions {
+    grid-area: actions;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .sw-stock-name-row {
+    flex-wrap: wrap;
+  }
+
+  .sw-stock-name {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 @media (max-width: 980px) {
@@ -1429,15 +1468,29 @@ onUnmounted(() => {
   }
 
   .sw-stock-main {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 0.5rem;
   }
 
   .sw-stock-price {
-    align-items: flex-start;
+    align-items: baseline;
+    gap: 0.35rem;
   }
 
   .sw-stock-actions {
-    justify-content: flex-start;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 0.3rem;
+  }
+
+  .sw-stock-name-row {
+    flex-wrap: nowrap;
+  }
+
+  .sw-stock-name {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .sw-quick-stats {
@@ -1462,8 +1515,50 @@ onUnmounted(() => {
     flex-wrap: wrap;
   }
 
-  .sw-code-field .sw-btn-primary {
-    width: 100%;
+  .sw-stock-card {
+    padding: 0.64rem 0.7rem;
+  }
+
+  .sw-stock-main {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 0.35rem;
+  }
+
+  .sw-stock-name {
+    font-size: 0.9rem;
+  }
+
+  .sw-stock-code {
+    font-size: 0.7rem;
+    padding: 0.12rem 0.35rem;
+  }
+
+  .sw-stock-price {
+    gap: 0.28rem;
+  }
+
+  .sw-price {
+    font-size: 1rem;
+  }
+
+  .sw-change,
+  .sw-change-percent {
+    font-size: 0.72rem;
+  }
+
+  .sw-stock-actions {
+    gap: 0.22rem;
+    flex-wrap: nowrap;
+  }
+
+  .sw-stock-actions .sw-btn {
+    padding: 0.34rem 0.44rem;
+    font-size: 0.72rem;
+    border-radius: 8px;
+  }
+
+  .sw-item-error {
+    font-size: 0.78rem;
   }
 
   .sw-quick-stats {
