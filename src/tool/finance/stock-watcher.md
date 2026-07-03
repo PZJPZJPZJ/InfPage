@@ -1588,16 +1588,50 @@ function getTradingProgress(now = new Date()) {
     if (minutes <= start) return total;
     return total + Math.min(minutes, end) - start;
   }, 0);
-  return elapsed / 240;
+  return Math.min(1, Math.max(0, elapsed / 240));
 }
 
 function classifyVolumeRatio(value) {
   const parsed = toNumber(value);
   if (parsed === null) return "";
   const progress = getTradingProgress();
-  const tolerance = progress < 0.1 ? 0.35 : progress < 0.25 ? 0.25 : progress < 0.5 ? 0.18 : 0.12;
-  if (parsed >= 1 + tolerance) return "放量";
-  if (parsed <= 1 - tolerance) return "缩量";
+
+  if (progress === 0) {
+    if (parsed >= 2) return "明显放量";
+    if (parsed <= 0.5) return "明显缩量";
+    return "待观察";
+  }
+
+  if (progress < 0.08) {
+    if (parsed >= 2.5) return "异常放量";
+    if (parsed >= 2) return "明显放量";
+    if (parsed <= 0.45) return "明显缩量";
+    return "早盘观察";
+  }
+
+  if (progress < 0.25) {
+    if (parsed >= 2.3) return "异常放量";
+    if (parsed >= 1.7) return "明显放量";
+    if (parsed >= 1.35) return "温和放量";
+    if (parsed <= 0.55) return "明显缩量";
+    if (parsed <= 0.72) return "缩量";
+    return "平量";
+  }
+
+  if (progress < 0.5) {
+    if (parsed >= 2.2) return "异常放量";
+    if (parsed >= 1.55) return "明显放量";
+    if (parsed >= 1.25) return "温和放量";
+    if (parsed <= 0.6) return "明显缩量";
+    if (parsed <= 0.8) return "缩量";
+    return "平量";
+  }
+
+  if (parsed >= 2) return "异常放量";
+  if (parsed >= 1.45) return "明显放量";
+  if (parsed >= 1.15) return "温和放量";
+  if (parsed <= 0.65) return "明显缩量";
+  if (parsed <= 0.88) return "缩量";
   return "平量";
 }
 
