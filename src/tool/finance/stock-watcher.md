@@ -47,9 +47,6 @@ routeMeta:
       </label>
     </div>
     <div class="sw-toolbar-actions">
-      <button class="sw-btn sw-btn-secondary" type="button" @click="toggleEditMode">
-        {{ editMode ? "完成编辑" : "编辑模式" }}
-      </button>
       <button
         class="sw-btn sw-btn-secondary"
         type="button"
@@ -68,6 +65,12 @@ routeMeta:
       </button>
       <button class="sw-btn sw-btn-secondary" type="button" @click="triggerImport">
         导入配置
+      </button>
+      <button class="sw-btn sw-btn-secondary" type="button" @click="toggleEditMode">
+        {{ editMode ? "完成编辑" : "编辑模式" }}
+      </button>
+      <button class="sw-btn sw-btn-secondary" type="button" @click="toggleDigitGrouping">
+        {{ digitGrouping === 3 ? "数字分组: 3位" : "数字分组: 4位" }}
       </button>
       <input
         ref="fileInputRef"
@@ -133,30 +136,20 @@ routeMeta:
         {{ row.quote.error }}
       </div>
       <div v-if="isExpanded(row.item.symbol)" class="sw-depth-panel" @click.stop>
-        <div class="sw-quick-stats sw-quick-stats-expanded">
-          <div class="sw-stat">
-            <span class="sw-stat-label">今开</span>
-            <span class="sw-stat-value">{{ formatPrice(row.quote?.open) }}</span>
-          </div>
-          <div class="sw-stat">
-            <span class="sw-stat-label">昨收</span>
-            <span class="sw-stat-value">{{ formatPrice(row.quote?.preClose) }}</span>
-          </div>
-          <div class="sw-stat">
-            <span class="sw-stat-label">最高</span>
-            <span class="sw-stat-value">{{ formatPrice(row.quote?.high) }}</span>
-          </div>
-          <div class="sw-stat">
-            <span class="sw-stat-label">最低</span>
-            <span class="sw-stat-value">{{ formatPrice(row.quote?.low) }}</span>
-          </div>
-          <div class="sw-stat">
-            <span class="sw-stat-label">成交量</span>
-            <span class="sw-stat-value">{{ formatVolume(row.quote?.volume) }}</span>
-          </div>
-          <div class="sw-stat">
-            <span class="sw-stat-label">成交额</span>
-            <span class="sw-stat-value">{{ formatAmountWan(row.quote?.amountWan) }}</span>
+        <div class="sw-depth-card sw-info-table-card">
+          <div class="sw-info-table">
+            <div class="sw-info-row"><span class="sw-info-label">今开</span><span class="sw-info-value">{{ formatPrice(row.quote?.open) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">昨收</span><span class="sw-info-value">{{ formatPrice(row.quote?.preClose) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">最高</span><span class="sw-info-value">{{ formatPrice(row.quote?.high) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">最低</span><span class="sw-info-value">{{ formatPrice(row.quote?.low) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">成交量</span><span class="sw-info-value">{{ formatVolume(row.quote?.volume) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">成交额</span><span class="sw-info-value">{{ formatAmountWan(row.quote?.amountWan) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">外盘</span><span class="sw-info-value">{{ formatVolume(row.quote?.outerVolume) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">内盘</span><span class="sw-info-value">{{ formatVolume(row.quote?.innerVolume) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">换手率</span><span class="sw-info-value">{{ formatRatio(row.quote?.turnoverRate, '%') }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">量比</span><span class="sw-info-value">{{ formatRatio(row.quote?.volumeRatio) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">涨停价</span><span class="sw-info-value">{{ formatPrice(row.quote?.limitUp) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">跌停价</span><span class="sw-info-value">{{ formatPrice(row.quote?.limitDown) }}</span></div>
           </div>
         </div>
         <div class="sw-depth-grid">
@@ -224,6 +217,7 @@ const watchlist = ref([]);
 const refreshIntervalSec = ref(DEFAULT_REFRESH_INTERVAL_SEC);
 const refreshIntervalInput = ref(String(DEFAULT_REFRESH_INTERVAL_SEC));
 const providerId = ref("tencent");
+const digitGrouping = ref(3);
 const editMode = ref(false);
 const quotesBySymbol = ref({});
 const expandedState = ref({});
@@ -269,6 +263,7 @@ function createDefaultState() {
   return {
     version: 1,
     provider: "tencent",
+    digitGrouping: 3,
     refreshIntervalSec: DEFAULT_REFRESH_INTERVAL_SEC,
     watchlist: [],
   };
@@ -407,6 +402,12 @@ function createEmptyQuote(symbol, code) {
     changePercent: null,
     volume: null,
     amountWan: null,
+    outerVolume: null,
+    innerVolume: null,
+    turnoverRate: null,
+    volumeRatio: null,
+    limitUp: null,
+    limitDown: null,
     time: null,
     bid1: null,
     bid1Volume: null,
@@ -458,6 +459,8 @@ function parseTencentQuote(symbol, rawText) {
     preClose: toNumber(raw[4]),
     open: toNumber(raw[5]),
     volume: toNumber(raw[6]),
+    outerVolume: toNumber(raw[7]),
+    innerVolume: toNumber(raw[8]),
     bid1: toNumber(raw[9]),
     bid1Volume: toNumber(raw[10]),
     bid2: toNumber(raw[11]),
@@ -484,6 +487,10 @@ function parseTencentQuote(symbol, rawText) {
     high: toNumber(raw[33]),
     low: toNumber(raw[34]),
     amountWan: toNumber(raw[37]),
+    turnoverRate: toNumber(raw[38]),
+    volumeRatio: toNumber(raw[49]),
+    limitUp: toNumber(raw[47]),
+    limitDown: toNumber(raw[48]),
   };
 }
 
@@ -661,6 +668,12 @@ function toQuoteModel(parsed) {
     changePercent,
     volume: parsed.volume,
     amountWan: parsed.amountWan,
+    outerVolume: parsed.outerVolume ?? null,
+    innerVolume: parsed.innerVolume ?? null,
+    turnoverRate: parsed.turnoverRate ?? null,
+    volumeRatio: parsed.volumeRatio ?? null,
+    limitUp: parsed.limitUp ?? null,
+    limitDown: parsed.limitDown ?? null,
     time: timeInfo.time,
     bid1: parsed.bid1,
     bid1Volume: parsed.bid1Volume,
@@ -1009,6 +1022,7 @@ function saveState() {
   const state = {
     version: 1,
     provider: providerId.value,
+    digitGrouping: digitGrouping.value,
     refreshIntervalSec: sanitizeRefreshInterval(refreshIntervalSec.value),
     watchlist: watchlist.value.map((item) => ({
       symbol: item.symbol,
@@ -1034,6 +1048,7 @@ function sanitizeImportedState(candidate) {
   const provider = typeof candidate.provider === "string" && providers[candidate.provider]
     ? candidate.provider
     : fallback.provider;
+  const grouping = candidate.digitGrouping === 4 ? 4 : 3;
   const sanitizedWatchlist = [];
   const seen = new Set();
   const rawWatchlist = Array.isArray(candidate.watchlist) ? candidate.watchlist : [];
@@ -1056,6 +1071,7 @@ function sanitizeImportedState(candidate) {
   return {
     version: 1,
     provider,
+    digitGrouping: grouping,
     refreshIntervalSec: sanitizeRefreshInterval(candidate.refreshIntervalSec),
     watchlist: sanitizedWatchlist,
   };
@@ -1077,6 +1093,7 @@ function loadState() {
 
 function applyState(state) {
   providerId.value = state.provider;
+  digitGrouping.value = state.digitGrouping === 4 ? 4 : 3;
   watchlist.value = state.watchlist;
   refreshIntervalSec.value = sanitizeRefreshInterval(state.refreshIntervalSec);
   refreshIntervalInput.value = String(refreshIntervalSec.value);
@@ -1274,6 +1291,11 @@ function toggleEditMode() {
   editMode.value = !editMode.value;
 }
 
+function toggleDigitGrouping() {
+  digitGrouping.value = digitGrouping.value === 3 ? 4 : 3;
+  saveState();
+}
+
 function triggerImport() {
   if (!isBrowser) return;
   fileInputRef.value?.click();
@@ -1302,6 +1324,7 @@ function exportConfig() {
   const payload = {
     version: 1,
     provider: providerId.value,
+    digitGrouping: digitGrouping.value,
     refreshIntervalSec: sanitizeRefreshInterval(refreshIntervalSec.value),
     watchlist: watchlist.value.map((item) => ({
       symbol: item.symbol,
@@ -1382,13 +1405,37 @@ function formatPercent(value) {
 function formatVolume(value) {
   const parsed = toNumber(value);
   if (parsed === null) return "--";
-  return `${parsed.toLocaleString("zh-CN")} 手`;
+  return `${formatGroupedNumber(parsed)} 手`;
 }
 
 function formatAmountWan(value) {
   const parsed = toNumber(value);
   if (parsed === null) return "--";
-  return `${parsed.toLocaleString("zh-CN")} 万`;
+  return `${formatGroupedNumber(parsed)} 万`;
+}
+
+function formatRatio(value, suffix = "") {
+  const parsed = toNumber(value);
+  if (parsed === null) return "--";
+  return `${parsed.toFixed(2)}${suffix}`;
+}
+
+function formatGroupedNumber(value) {
+  const parsed = toNumber(value);
+  if (parsed === null) return "--";
+
+  const grouping = digitGrouping.value === 4 ? 4 : 3;
+  const [integerPart, decimalPart = ""] = String(parsed).split(".");
+  const sign = integerPart.startsWith("-") ? "-" : "";
+  const digits = sign ? integerPart.slice(1) : integerPart;
+  const pattern = new RegExp(`\\B(?=(\\d{${grouping}})+(?!\\d))`, "g");
+  const formattedInteger = digits.replace(pattern, ",");
+
+  if (!decimalPart) {
+    return `${sign}${formattedInteger}`;
+  }
+
+  return `${sign}${formattedInteger}.${decimalPart}`;
 }
 
 function parseUpdatedAt(value) {
@@ -1515,9 +1562,8 @@ onUnmounted(() => {
 }
 
 .sw-toolbar-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.65rem;
   width: 100%;
 }
@@ -1793,38 +1839,6 @@ onUnmounted(() => {
   border-radius: 9px;
 }
 
-.sw-quick-stats {
-  margin-top: 0.95rem;
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 0.7rem;
-}
-
-.sw-stat {
-  padding: 0.72rem 0.8rem;
-  border-radius: 14px;
-  background: rgba(148, 163, 184, 0.08);
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-[data-theme="dark"] .sw-stat {
-  background: rgba(51, 65, 85, 0.5);
-}
-
-.sw-stat-label {
-  font-size: 0.78rem;
-  color: var(--vp-c-text-2);
-}
-
-.sw-stat-value {
-  font-size: 0.84rem;
-  font-weight: 700;
-  color: var(--vp-c-text-1);
-  font-variant-numeric: tabular-nums;
-}
-
 .sw-item-error {
   margin-top: 0.8rem;
   color: #cf2338;
@@ -1838,9 +1852,38 @@ onUnmounted(() => {
   border-top: 1px dashed rgba(148, 163, 184, 0.35);
 }
 
-.sw-quick-stats-expanded {
-  margin-top: 0;
+.sw-info-table-card {
   margin-bottom: 0.95rem;
+}
+
+.sw-info-table {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem 0.9rem;
+}
+
+.sw-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.5rem 0.15rem;
+  border-bottom: 1px dashed rgba(148, 163, 184, 0.22);
+  font-variant-numeric: tabular-nums;
+}
+
+.sw-info-label {
+  font-size: 0.78rem;
+  color: var(--vp-c-text-2);
+  white-space: nowrap;
+}
+
+.sw-info-value {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--vp-c-text-1);
+  text-align: right;
+  min-width: 0;
 }
 
 .sw-depth-grid {
@@ -1960,9 +2003,6 @@ onUnmounted(() => {
     gap: 0.3rem;
   }
 
-  .sw-quick-stats {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 720px) {
@@ -1977,6 +2017,7 @@ onUnmounted(() => {
 
   .sw-toolbar-actions {
     width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .sw-toolbar-actions .sw-btn {
@@ -2047,8 +2088,8 @@ onUnmounted(() => {
     font-size: 0.78rem;
   }
 
-  .sw-quick-stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .sw-info-table {
+    grid-template-columns: 1fr;
   }
 
   .sw-depth-grid {
