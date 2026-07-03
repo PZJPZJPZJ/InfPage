@@ -15,7 +15,7 @@ routeMeta:
             class="sw-input"
             type="text"
             inputmode="text"
-            placeholder="例如 600000 / 510300 / sz000001 / 159915"
+            placeholder="600000 / sh000001"
             @keyup.enter="addWatchItem"
           />
         </div>
@@ -243,6 +243,16 @@ const providers = {
     label: "腾讯行情",
     loadQuotes: loadTencentQuoteModels,
   },
+  sina: {
+    id: "sina",
+    label: "新浪行情",
+    loadQuotes: loadSinaQuoteModels,
+  },
+  eastmoney: {
+    id: "eastmoney",
+    label: "东方财富",
+    loadQuotes: loadEastmoneyQuoteModels,
+  },
 };
 
 const providerOptions = Object.values(providers);
@@ -306,6 +316,38 @@ function normalizeInputCode(input) {
   throw new Error("请输入有效的股票或 ETF 代码，例如 600000、510300、159915 或 sz300750");
 }
 
+function toProviderSymbol(codeOrSymbol) {
+  return normalizeInputCode(codeOrSymbol).symbol;
+}
+
+function toNeteaseCode(codeOrSymbol) {
+  const { code } = normalizeInputCode(codeOrSymbol);
+
+  if (code.startsWith("5") || code.startsWith("6")) {
+    return `0${code}`;
+  }
+
+  if (code.startsWith("0") || code.startsWith("1") || code.startsWith("2") || code.startsWith("3")) {
+    return `1${code}`;
+  }
+
+  throw new Error(`网易行情暂不支持该代码: ${code}`);
+}
+
+function toEastmoneySecid(codeOrSymbol) {
+  const { code } = normalizeInputCode(codeOrSymbol);
+
+  if (code.startsWith("5") || code.startsWith("6")) {
+    return `1.${code}`;
+  }
+
+  if (code.startsWith("0") || code.startsWith("1") || code.startsWith("2") || code.startsWith("3")) {
+    return `0.${code}`;
+  }
+
+  throw new Error(`东方财富暂不支持该代码: ${code}`);
+}
+
 function parseProviderDateTime(value) {
   if (!/^\d{14}$/.test(String(value || ""))) {
     return {
@@ -326,6 +368,29 @@ function parseProviderDateTime(value) {
     time: `${hour}:${minute}:${second}`,
     updatedAt: `${year}-${month}-${day} ${hour}:${minute}:${second}`,
   };
+}
+
+function buildUpdatedAt(dateText, timeText) {
+  if (!dateText || !timeText) return null;
+  return `${dateText} ${timeText}`;
+}
+
+function formatUnixTimestamp(value) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return null;
+
+  const timestamp = parsed > 1e12 ? parsed : parsed * 1000;
+  const date = new Date(timestamp);
+  if (Number.isNaN(date.getTime())) return null;
+
+  const pad = (part) => String(part).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
+function formatUnixTimeOnly(value) {
+  const full = formatUnixTimestamp(value);
+  if (!full) return null;
+  return full.slice(11);
 }
 
 function createEmptyQuote(symbol, code) {
@@ -367,6 +432,12 @@ function createEmptyQuote(symbol, code) {
     stale: false,
     error: null,
   };
+}
+
+function convertAmountWan(value, divisor = 10000) {
+  const parsed = toNumber(value);
+  if (parsed === null) return null;
+  return parsed / divisor;
 }
 
 function parseTencentQuote(symbol, rawText) {
@@ -416,10 +487,166 @@ function parseTencentQuote(symbol, rawText) {
   };
 }
 
+function parseSinaQuote(symbol, rawText) {
+  if (typeof rawText !== "string" || !rawText.trim()) {
+    return null;
+  }
+
+  const raw = rawText.split(",");
+  if (raw.length < 32 || !raw[0]) {
+    return null;
+  }
+
+  return {
+    symbol,
+    name: raw[0] || null,
+    code: symbol.replace(/^(sh|sz|bj)/, ""),
+    price: toNumber(raw[3]),
+    preClose: toNumber(raw[2]),
+    open: toNumber(raw[1]),
+    high: toNumber(raw[4]),
+    low: toNumber(raw[5]),
+    change: null,
+    changePercent: null,
+    volume: toNumber(raw[8]),
+    amountWan: convertAmountWan(raw[9]),
+    bid1Volume: toNumber(raw[10]),
+    bid1: toNumber(raw[11]),
+    bid2Volume: toNumber(raw[12]),
+    bid2: toNumber(raw[13]),
+    bid3Volume: toNumber(raw[14]),
+    bid3: toNumber(raw[15]),
+    bid4Volume: toNumber(raw[16]),
+    bid4: toNumber(raw[17]),
+    bid5Volume: toNumber(raw[18]),
+    bid5: toNumber(raw[19]),
+    ask1Volume: toNumber(raw[20]),
+    ask1: toNumber(raw[21]),
+    ask2Volume: toNumber(raw[22]),
+    ask2: toNumber(raw[23]),
+    ask3Volume: toNumber(raw[24]),
+    ask3: toNumber(raw[25]),
+    ask4Volume: toNumber(raw[26]),
+    ask4: toNumber(raw[27]),
+    ask5Volume: toNumber(raw[28]),
+    ask5: toNumber(raw[29]),
+    date: raw[30] || null,
+    time: raw[31] || null,
+  };
+}
+
+function parseNeteaseQuote(symbol, data) {
+  if (!data || typeof data !== "object") {
+    return null;
+  }
+
+  const percentNumber = toNumber(data.percent);
+
+  return {
+    symbol,
+    name: data.name ?? null,
+    code: data.symbol ?? symbol.replace(/^(sh|sz|bj)/, ""),
+    price: toNumber(data.price),
+    preClose: toNumber(data.yestclose),
+    open: toNumber(data.open),
+    high: toNumber(data.high),
+    low: toNumber(data.low),
+    change: toNumber(data.updown),
+    changePercent: percentNumber === null ? null : percentNumber * 100,
+    volume: toNumber(data.volume),
+    amountWan: convertAmountWan(data.turnover),
+    bid1: toNumber(data.bid1),
+    bid1Volume: toNumber(data.bidvol1),
+    bid2: toNumber(data.bid2),
+    bid2Volume: toNumber(data.bidvol2),
+    bid3: toNumber(data.bid3),
+    bid3Volume: toNumber(data.bidvol3),
+    bid4: toNumber(data.bid4),
+    bid4Volume: toNumber(data.bidvol4),
+    bid5: toNumber(data.bid5),
+    bid5Volume: toNumber(data.bidvol5),
+    ask1: toNumber(data.ask1),
+    ask1Volume: toNumber(data.askvol1),
+    ask2: toNumber(data.ask2),
+    ask2Volume: toNumber(data.askvol2),
+    ask3: toNumber(data.ask3),
+    ask3Volume: toNumber(data.askvol3),
+    ask4: toNumber(data.ask4),
+    ask4Volume: toNumber(data.askvol4),
+    ask5: toNumber(data.ask5),
+    ask5Volume: toNumber(data.askvol5),
+    updatedAt: data.update || data.time || null,
+    time: data.time || null,
+  };
+}
+
+function parseEastmoneyQuote(symbol, data) {
+  if (!data || typeof data !== "object") {
+    return null;
+  }
+
+  return {
+    symbol,
+    name: data.f58 ?? null,
+    code: data.f57 ?? symbol.replace(/^(sh|sz|bj)/, ""),
+    price: toNumber(data.f43),
+    preClose: toNumber(data.f60),
+    open: toNumber(data.f46),
+    high: toNumber(data.f44),
+    low: toNumber(data.f45),
+    change: toNumber(data.f169),
+    changePercent: toNumber(data.f170),
+    volume: toNumber(data.f47),
+    amountWan: convertAmountWan(data.f48),
+    bid1: toNumber(data.f19),
+    bid1Volume: toNumber(data.f20),
+    bid2: toNumber(data.f17),
+    bid2Volume: toNumber(data.f18),
+    bid3: toNumber(data.f15),
+    bid3Volume: toNumber(data.f16),
+    bid4: toNumber(data.f13),
+    bid4Volume: toNumber(data.f14),
+    bid5: toNumber(data.f11),
+    bid5Volume: toNumber(data.f12),
+    ask1: toNumber(data.f31),
+    ask1Volume: toNumber(data.f32),
+    ask2: toNumber(data.f33),
+    ask2Volume: toNumber(data.f34),
+    ask3: toNumber(data.f35),
+    ask3Volume: toNumber(data.f36),
+    ask4: toNumber(data.f37),
+    ask4Volume: toNumber(data.f38),
+    ask5: toNumber(data.f39),
+    ask5Volume: toNumber(data.f40),
+    updatedAt: data.f86 ? formatUnixTimestamp(data.f86) : null,
+    time: data.f86 ? formatUnixTimeOnly(data.f86) : null,
+  };
+}
+
 function toQuoteModel(parsed) {
   if (!parsed) return null;
 
-  const timeInfo = parseProviderDateTime(parsed.datetime);
+  let timeInfo = {
+    time: parsed.time ?? null,
+    updatedAt: parsed.updatedAt ?? null,
+  };
+
+  if (parsed.datetime) {
+    timeInfo = parseProviderDateTime(parsed.datetime);
+  } else if (parsed.date && parsed.time) {
+    timeInfo = {
+      time: parsed.time,
+      updatedAt: buildUpdatedAt(parsed.date, parsed.time),
+    };
+  }
+
+  let change = parsed.change;
+  let changePercent = parsed.changePercent;
+  if ((change === null || changePercent === null) && parsed.price !== null && parsed.preClose) {
+    const nextChange = parsed.price - parsed.preClose;
+    change = change ?? nextChange;
+    changePercent = changePercent ?? (nextChange / parsed.preClose) * 100;
+  }
 
   return {
     symbol: parsed.symbol,
@@ -430,8 +657,8 @@ function toQuoteModel(parsed) {
     open: parsed.open,
     high: parsed.high,
     low: parsed.low,
-    change: parsed.change,
-    changePercent: parsed.changePercent,
+    change,
+    changePercent,
     volume: parsed.volume,
     amountWan: parsed.amountWan,
     time: timeInfo.time,
@@ -477,28 +704,19 @@ function cleanupActiveScript() {
   }
 }
 
-function loadTencentQuotes(symbols) {
+function loadScriptWithHandlers(url, options = {}) {
   return new Promise((resolve, reject) => {
     if (!isBrowser) {
       reject(new Error("当前环境不支持浏览器行情请求"));
       return;
     }
 
-    const uniqueSymbols = Array.from(new Set(symbols.filter(Boolean)));
-    if (!uniqueSymbols.length) {
-      resolve({});
-      return;
-    }
-
     cleanupActiveScript();
 
-    const query = uniqueSymbols.join(",");
     const script = document.createElement("script");
-    const url = `https://qt.gtimg.cn/q=${query}&_=${Date.now()}`;
-
     activeScript = script;
     script.async = true;
-    script.charset = "gb18030";
+    script.charset = options.charset || "utf-8";
     script.src = url;
 
     const finish = () => {
@@ -517,11 +735,55 @@ function loadTencentQuotes(symbols) {
     };
 
     activeScriptTimeoutId = window.setTimeout(() => {
+      if (typeof options.cleanup === "function") {
+        options.cleanup();
+      }
       finish();
       reject(new Error("行情请求超时，请稍后重试"));
     }, REQUEST_TIMEOUT_MS);
 
     script.onload = () => {
+      try {
+        const result = typeof options.onLoad === "function" ? options.onLoad() : {};
+        finish();
+        resolve(result);
+      } catch (error) {
+        if (typeof options.cleanup === "function") {
+          options.cleanup();
+        }
+        finish();
+        reject(error);
+      }
+    };
+
+    script.onerror = () => {
+      if (typeof options.cleanup === "function") {
+        options.cleanup();
+      }
+      finish();
+      reject(new Error("行情脚本加载失败，请检查网络后重试"));
+    };
+
+    if (typeof options.beforeAppend === "function") {
+      options.beforeAppend();
+    }
+
+    document.body.appendChild(script);
+  });
+}
+
+function loadTencentQuotes(symbols) {
+  const uniqueSymbols = Array.from(new Set(symbols.filter(Boolean)));
+  if (!uniqueSymbols.length) {
+    return Promise.resolve({});
+  }
+
+  const query = uniqueSymbols.join(",");
+  const url = `https://qt.gtimg.cn/q=${query}&_=${Date.now()}`;
+
+  return loadScriptWithHandlers(url, {
+    charset: "gb18030",
+    onLoad: () => {
       const payload = {};
 
       uniqueSymbols.forEach((symbol) => {
@@ -535,16 +797,8 @@ function loadTencentQuotes(symbols) {
         }
       });
 
-      finish();
-      resolve(payload);
-    };
-
-    script.onerror = () => {
-      finish();
-      reject(new Error("行情脚本加载失败，请检查网络后重试"));
-    };
-
-    document.body.appendChild(script);
+      return payload;
+    },
   });
 }
 
@@ -554,6 +808,187 @@ async function loadTencentQuoteModels(symbols) {
 
   symbols.forEach((symbol) => {
     const parsed = parseTencentQuote(symbol, payload[symbol]);
+    if (parsed) {
+      models[symbol] = toQuoteModel(parsed);
+      return;
+    }
+
+    const empty = createEmptyQuote(symbol);
+    empty.stale = true;
+    empty.error = "该股票暂未返回有效行情数据";
+    models[symbol] = empty;
+  });
+
+  return models;
+}
+
+function loadSinaQuotes(symbols) {
+  const uniqueSymbols = Array.from(new Set(symbols.filter(Boolean)));
+  if (!uniqueSymbols.length) {
+    return Promise.resolve({});
+  }
+
+  const query = uniqueSymbols.join(",");
+  const url = `https://hq.sinajs.cn/list=${query}&rn=${Date.now()}`;
+
+  return loadScriptWithHandlers(url, {
+    charset: "gb18030",
+    onLoad: () => {
+      const payload = {};
+
+      uniqueSymbols.forEach((symbol) => {
+        const variableName = `hq_str_${symbol}`;
+        payload[symbol] = typeof window[variableName] === "string" ? window[variableName] : "";
+
+        try {
+          delete window[variableName];
+        } catch (error) {
+          window[variableName] = undefined;
+        }
+      });
+
+      return payload;
+    },
+  });
+}
+
+async function loadSinaQuoteModels(symbols) {
+  const uniqueSymbols = symbols.map((symbol) => toProviderSymbol(symbol));
+  const payload = await loadSinaQuotes(uniqueSymbols);
+  const models = {};
+
+  uniqueSymbols.forEach((symbol) => {
+    const parsed = parseSinaQuote(symbol, payload[symbol]);
+    if (parsed) {
+      models[symbol] = toQuoteModel(parsed);
+      return;
+    }
+
+    const empty = createEmptyQuote(symbol);
+    empty.stale = true;
+    empty.error = "该股票暂未返回有效行情数据";
+    models[symbol] = empty;
+  });
+
+  return models;
+}
+
+function loadEastmoneyQuotes(symbols) {
+  const uniqueSymbols = Array.from(new Set(symbols.filter(Boolean)));
+  if (!uniqueSymbols.length) {
+    return Promise.resolve({});
+  }
+  const fields = [
+    "f57","f58","f43","f169","f170","f46","f44","f45","f60","f47","f48","f86",
+    "f19","f20","f17","f18","f15","f16","f13","f14","f11","f12",
+    "f31","f32","f33","f34","f35","f36","f37","f38","f39","f40"
+  ].join(",");
+
+  return Promise.allSettled(
+    uniqueSymbols.map(async (symbol) => {
+      const secid = toEastmoneySecid(symbol);
+      const url = `https://push2.eastmoney.com/api/qt/stock/get?invt=2&fltt=2&secid=${secid}&fields=${fields}&_=${Date.now()}`;
+      const response = await fetch(url, {
+        method: "GET",
+        mode: "cors",
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error(`东方财富 HTTP ${response.status}`);
+      }
+
+      const json = await response.json();
+      return [symbol, json?.data || null];
+    })
+  ).then((results) => {
+    const payload = {};
+
+    results.forEach((result, index) => {
+      const symbol = uniqueSymbols[index];
+      payload[symbol] = result.status === "fulfilled" ? result.value[1] : null;
+    });
+
+    return payload;
+  });
+}
+
+async function loadEastmoneyQuoteModels(symbols) {
+  const uniqueSymbols = Array.from(new Set(symbols.filter(Boolean)));
+  const payload = await loadEastmoneyQuotes(uniqueSymbols);
+  const models = {};
+
+  uniqueSymbols.forEach((symbol) => {
+    const parsed = parseEastmoneyQuote(symbol, payload[symbol]);
+    if (parsed) {
+      models[symbol] = toQuoteModel(parsed);
+      return;
+    }
+
+    const empty = createEmptyQuote(symbol);
+    empty.stale = true;
+    empty.error = "该股票暂未返回有效行情数据";
+    models[symbol] = empty;
+  });
+
+  return models;
+}
+
+function loadNeteaseQuotes(symbols) {
+  const uniqueSymbols = Array.from(new Set(symbols.filter(Boolean)));
+  if (!uniqueSymbols.length) {
+    return Promise.resolve({});
+  }
+
+  const mapping = {};
+  const neteaseCodes = uniqueSymbols.map((symbol) => {
+    const neteaseCode = toNeteaseCode(symbol);
+    mapping[neteaseCode] = symbol;
+    return neteaseCode;
+  });
+
+  const callbackName = `__stockWatcherNeteaseCallback_${Date.now()}`;
+  let callbackPayload = null;
+  const url = `https://api.money.126.net/data/feed/${neteaseCodes.join(",")},money.api?callback=${callbackName}&_=${Date.now()}`;
+
+  return loadScriptWithHandlers(url, {
+    beforeAppend: () => {
+      window[callbackName] = (payload) => {
+        callbackPayload = payload;
+      };
+    },
+    cleanup: () => {
+      try {
+        delete window[callbackName];
+      } catch (error) {
+        window[callbackName] = undefined;
+      }
+    },
+    onLoad: () => {
+      if (!callbackPayload || typeof callbackPayload !== "object") {
+        throw new Error("网易行情未返回有效数据");
+      }
+
+      const payload = {};
+      Object.entries(callbackPayload).forEach(([neteaseCode, value]) => {
+        const symbol = mapping[neteaseCode];
+        if (symbol) {
+          payload[symbol] = value;
+        }
+      });
+
+      return payload;
+    },
+  });
+}
+
+async function loadNeteaseQuoteModels(symbols) {
+  const uniqueSymbols = Array.from(new Set(symbols.filter(Boolean)));
+  const payload = await loadNeteaseQuotes(uniqueSymbols);
+  const models = {};
+
+  uniqueSymbols.forEach((symbol) => {
+    const parsed = parseNeteaseQuote(symbol, payload[symbol]);
     if (parsed) {
       models[symbol] = toQuoteModel(parsed);
       return;
@@ -596,7 +1031,9 @@ function sanitizeImportedState(candidate) {
     throw new Error("暂不支持该版本的配置文件");
   }
 
-  const provider = candidate.provider === "tencent" ? candidate.provider : fallback.provider;
+  const provider = typeof candidate.provider === "string" && providers[candidate.provider]
+    ? candidate.provider
+    : fallback.provider;
   const sanitizedWatchlist = [];
   const seen = new Set();
   const rawWatchlist = Array.isArray(candidate.watchlist) ? candidate.watchlist : [];
