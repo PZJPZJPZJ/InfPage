@@ -47,6 +47,9 @@ routeMeta:
       </label>
     </div>
     <div class="sw-toolbar-actions">
+      <button class="sw-btn sw-btn-secondary" type="button" @click="toggleEditMode">
+        {{ editMode ? "完成编辑" : "编辑模式" }}
+      </button>
       <button
         class="sw-btn sw-btn-secondary"
         type="button"
@@ -95,25 +98,31 @@ routeMeta:
         highlightedSymbol === row.item.symbol ? 'is-highlighted' : '',
         row.quote?.stale ? 'is-stale' : ''
       ]"
+      @click="toggleExpanded(row.item.symbol)"
     >
       <div class="sw-stock-main">
-        <div class="sw-stock-id">
-          <div class="sw-stock-name-row">
-            <span class="sw-stock-name">{{ row.quote?.name || "--" }}</span>
-            <span class="sw-stock-code">{{ row.item.symbol }}</span>
-            <span :class="['sw-stock-code', isQuoteExpired(row.quote) ? 'is-expired' : '']">
-              {{ formatQuoteBadge(row.quote) }}
-            </span>
+        <div class="sw-stock-top">
+          <div class="sw-stock-id">
+            <div class="sw-stock-name-row">
+              <span class="sw-stock-name">{{ row.quote?.name || "--" }}</span>
+              <span class="sw-stock-code">{{ row.item.symbol }}</span>
+              <span :class="['sw-stock-code', isQuoteExpired(row.quote) ? 'is-expired' : '']">
+                {{ formatQuoteBadge(row.quote) }}
+              </span>
+            </div>
+          </div>
+          <div class="sw-stock-price">
+            <span class="sw-change">{{ formatSigned(row.quote?.change) }}</span>
+            <span class="sw-change-percent">{{ formatPercent(row.quote?.changePercent) }}</span>
+            <div class="sw-price">{{ formatPrice(row.quote?.price) }}</div>
           </div>
         </div>
-        <div class="sw-stock-price">
-          <div class="sw-price">{{ formatPrice(row.quote?.price) }}</div>
-          <span class="sw-change">{{ formatSigned(row.quote?.change) }}</span>
-          <span class="sw-change-percent">{{ formatPercent(row.quote?.changePercent) }}</span>
-        </div>
-        <div class="sw-stock-actions">
-          <button class="sw-btn sw-btn-ghost" type="button" @click="toggleExpanded(row.item.symbol)">
-            {{ isExpanded(row.item.symbol) ? "收起" : "展开" }}
+        <div v-if="editMode" class="sw-stock-actions" @click.stop>
+          <button class="sw-btn sw-btn-ghost" type="button" :disabled="isFirstItem(row.item.symbol)" @click="moveWatchItem(row.item.symbol, -1)">
+            上移
+          </button>
+          <button class="sw-btn sw-btn-ghost" type="button" :disabled="isLastItem(row.item.symbol)" @click="moveWatchItem(row.item.symbol, 1)">
+            下移
           </button>
           <button class="sw-btn sw-btn-danger" type="button" @click="removeWatchItem(row.item.symbol)">
             删除
@@ -123,7 +132,7 @@ routeMeta:
       <div v-if="row.quote?.error" class="sw-item-error">
         {{ row.quote.error }}
       </div>
-      <div v-if="isExpanded(row.item.symbol)" class="sw-depth-panel">
+      <div v-if="isExpanded(row.item.symbol)" class="sw-depth-panel" @click.stop>
         <div class="sw-quick-stats sw-quick-stats-expanded">
           <div class="sw-stat">
             <span class="sw-stat-label">今开</span>
@@ -215,6 +224,7 @@ const watchlist = ref([]);
 const refreshIntervalSec = ref(DEFAULT_REFRESH_INTERVAL_SEC);
 const refreshIntervalInput = ref(String(DEFAULT_REFRESH_INTERVAL_SEC));
 const providerId = ref("tencent");
+const editMode = ref(false);
 const quotesBySymbol = ref({});
 const expandedState = ref({});
 const highlightedSymbol = ref("");
@@ -772,6 +782,29 @@ function removeWatchItem(symbol) {
   restartRefreshTimer();
 }
 
+function moveWatchItem(symbol, direction) {
+  const currentIndex = watchlist.value.findIndex((item) => item.symbol === symbol);
+  if (currentIndex === -1) return;
+
+  const nextIndex = currentIndex + direction;
+  if (nextIndex < 0 || nextIndex >= watchlist.value.length) return;
+
+  const nextWatchlist = [...watchlist.value];
+  const [moved] = nextWatchlist.splice(currentIndex, 1);
+  nextWatchlist.splice(nextIndex, 0, moved);
+  watchlist.value = nextWatchlist;
+  saveState();
+}
+
+function isFirstItem(symbol) {
+  return watchlist.value.findIndex((item) => item.symbol === symbol) === 0;
+}
+
+function isLastItem(symbol) {
+  const index = watchlist.value.findIndex((item) => item.symbol === symbol);
+  return index !== -1 && index === watchlist.value.length - 1;
+}
+
 function isExpanded(symbol) {
   return Boolean(expandedState.value[symbol]);
 }
@@ -798,6 +831,10 @@ function handleProviderChange() {
 
 function handleManualRefresh() {
   void refreshQuotes();
+}
+
+function toggleEditMode() {
+  editMode.value = !editMode.value;
 }
 
 function triggerImport() {
@@ -1029,16 +1066,15 @@ onUnmounted(() => {
 .sw-toolbar {
   padding: 1rem;
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0.85rem;
 }
 
 .sw-toolbar-main {
-  flex: 1 1 540px;
   display: grid;
-  grid-template-columns: minmax(260px, 2fr) minmax(180px, 1fr) minmax(160px, 0.95fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.9rem;
+  width: 100%;
 }
 
 .sw-toolbar-actions {
@@ -1046,6 +1082,7 @@ onUnmounted(() => {
   flex-wrap: wrap;
   align-items: flex-end;
   gap: 0.65rem;
+  width: 100%;
 }
 
 .sw-field {
@@ -1065,6 +1102,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 0.65rem;
+  flex-wrap: nowrap;
 }
 
 .sw-input {
@@ -1090,7 +1128,7 @@ onUnmounted(() => {
 }
 
 .sw-input-short {
-  max-width: 120px;
+  max-width: none;
 }
 
 .sw-input-suffix {
@@ -1138,6 +1176,13 @@ onUnmounted(() => {
 .sw-btn-ghost {
   background: rgba(59, 130, 246, 0.08);
   color: #2563eb;
+}
+
+.sw-btn-ghost:disabled,
+.sw-btn-danger:disabled,
+.sw-btn-secondary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 [data-theme="dark"] .sw-btn-ghost {
@@ -1206,6 +1251,7 @@ onUnmounted(() => {
   padding: 0.78rem 0.9rem;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .sw-stock-card.is-highlighted {
@@ -1219,19 +1265,25 @@ onUnmounted(() => {
 }
 
 .sw-stock-main {
-  display: grid;
-  grid-template-columns: minmax(260px, 1.9fr) auto auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.sw-stock-top {
+  display: flex;
   gap: 0.75rem;
   align-items: center;
 }
 
 .sw-stock-id {
   min-width: 0;
+  flex: 1 1 auto;
 }
 
 .sw-stock-name-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 0.4rem;
   min-width: 0;
@@ -1243,6 +1295,8 @@ onUnmounted(() => {
   color: var(--vp-c-text-1);
   white-space: nowrap;
   min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sw-stock-code {
@@ -1268,6 +1322,7 @@ onUnmounted(() => {
   gap: 0.55rem;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  margin-left: auto;
 }
 
 .sw-price {
@@ -1290,8 +1345,15 @@ onUnmounted(() => {
 .sw-stock-actions {
   display: flex;
   gap: 0.45rem;
-  justify-content: flex-end;
+  justify-content: flex-start;
   flex-wrap: wrap;
+}
+
+.sw-stock-actions .sw-btn {
+  padding: 0.28rem 0.5rem;
+  font-size: 0.76rem;
+  line-height: 1.15;
+  border-radius: 9px;
 }
 
 .sw-quick-stats {
@@ -1426,49 +1488,27 @@ onUnmounted(() => {
   color: var(--vp-c-text-1);
 }
 
-@media (max-width: 1160px) {
+@media (max-width: 980px) {
+  .sw-toolbar-main {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.55rem;
+  }
+
+  .sw-field-label {
+    font-size: 0.74rem;
+  }
+
+  .sw-input,
+  .sw-select {
+    padding: 0.68rem 0.72rem;
+    font-size: 0.84rem;
+  }
+
   .sw-stock-main {
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas:
-      "id price"
-      "actions actions";
-    row-gap: 0.45rem;
-  }
-
-  .sw-stock-id {
-    grid-area: id;
-  }
-
-  .sw-stock-price {
-    grid-area: price;
     gap: 0.4rem;
   }
 
-  .sw-stock-actions {
-    grid-area: actions;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: 0.3rem;
-  }
-
-  .sw-stock-name-row {
-    flex-wrap: wrap;
-  }
-
-  .sw-stock-name {
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
-@media (max-width: 980px) {
-  .sw-toolbar-main {
-    grid-template-columns: 1fr;
-  }
-
-  .sw-stock-main {
-    grid-template-columns: minmax(0, 1fr) auto auto;
+  .sw-stock-top {
     gap: 0.5rem;
   }
 
@@ -1478,19 +1518,9 @@ onUnmounted(() => {
   }
 
   .sw-stock-actions {
-    justify-content: flex-end;
-    flex-wrap: nowrap;
+    justify-content: flex-start;
+    flex-wrap: wrap;
     gap: 0.3rem;
-  }
-
-  .sw-stock-name-row {
-    flex-wrap: nowrap;
-  }
-
-  .sw-stock-name {
-    flex: 1 1 auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .sw-quick-stats {
@@ -1503,16 +1533,32 @@ onUnmounted(() => {
     padding: 0.9rem;
   }
 
+  .sw-toolbar-main {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
   .sw-toolbar-actions {
     width: 100%;
   }
 
   .sw-toolbar-actions .sw-btn {
-    flex: 1 1 calc(50% - 0.33rem);
+    padding: 0.56rem 0.6rem;
+    font-size: 0.76rem;
   }
 
-  .sw-input-wrap {
-    flex-wrap: wrap;
+  .sw-field-label {
+    font-size: 0.68rem;
+  }
+
+  .sw-input,
+  .sw-select {
+    padding: 0.56rem 0.52rem;
+    font-size: 0.76rem;
+  }
+
+  .sw-input::placeholder {
+    font-size: 0.72rem;
   }
 
   .sw-stock-card {
@@ -1520,7 +1566,10 @@ onUnmounted(() => {
   }
 
   .sw-stock-main {
-    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 0.32rem;
+  }
+
+  .sw-stock-top {
     gap: 0.35rem;
   }
 
@@ -1548,7 +1597,7 @@ onUnmounted(() => {
 
   .sw-stock-actions {
     gap: 0.22rem;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
   }
 
   .sw-stock-actions .sw-btn {
