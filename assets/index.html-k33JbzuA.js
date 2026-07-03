@@ -1,0 +1,1 @@
+import{_ as e,c as o,e as a,r as n,o as c}from"./app-BgX9xy8T.js";const r={};function s(l,p){const t=n("CustomCatalog");return c(),o("div",null,[a(t)])}const m=e(r,[["render",s]]),i=JSON.parse('{"path":"/note/php/","title":"Php","lang":"zh-CN","frontmatter":{"title":"Php"},"git":{},"filePathRelative":null}');export{m as comp,i as data};
