@@ -14,10 +14,12 @@ routeMeta:
 - [Windows Arm64](https://code.visualstudio.com/docs/?dv=win32arm64setup)
 - [macOS Universal](https://code.visualstudio.com/sha/download?build=stable&os=darwin-universal)
 
-### VSCode插件
-- [Claude Code](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code)
+### 扩展插件
+#### Claude Code
+- [Claude Code 插件](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code)
 
 ```json title="VSCode > setting.json"
+// 跳过登录提示
 "claudeCode.disableLoginPrompt": true,
 ```
 
@@ -33,7 +35,9 @@ routeMeta:
 }
 ```
 
+#### Codex
 - [Codex](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt)
+
 ```yaml title="%USERPROFILE%\.codex\config.toml"
 model_provider = "OpenAI"
 model = "gpt-5.5" # 修改为自定义模型名称
@@ -57,6 +61,13 @@ requires_openai_auth = true
 }
 ```
 
+- [PowerShell-新版安装](https://learn.microsoft.com/zh-cn/powershell/scripting/install/install-powershell-on-windows)
+```json title="VSCode > setting.json"
+// 配置新版 PowerShell 避免默认 PowerShell5 中文乱码
+"terminal.integrated.defaultProfile.windows": "PowerShell",
+```
+
+#### Copilot
 - [Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat)
 ```json title="%USERPROFILE%\AppData\Roaming\Code\User\profiles\%PROFILE%\chatLanguageModels.json"
 [
@@ -67,9 +78,9 @@ requires_openai_auth = true
 		"apiType": "chat-completions",
 		"models": [
 			{
-				"id": "deepseek-v4-flash-free", # 修改为自定义模型
-				"name": "Deepseek v4 Flash Free", #修改为自定义模型名称
-				"url": "https://www.example.com/v1", # 修改为请求地址
+				"id": "deepseek-v4-flash-free", // 修改为自定义模型
+				"name": "Deepseek v4 Flash Free", // 修改为自定义模型名称
+				"url": "https://www.example.com/v1", // 修改为请求地址
 				"toolCalling": true,
 				"vision": true,
 				"maxInputTokens": 1000000,
@@ -79,46 +90,6 @@ requires_openai_auth = true
 		]
 	}
 ]
-```
-
-## Google Antigravity
-- [Antigravity-官网](https://antigravity.google/)
-
-### Antigravity工具
-- [Antigravity-Manager代理](https://github.com/lbjlaq/Antigravity-Manager)
-```yaml title="Docker Compose(内部桥接共享代理)"
-services:
-  antigravity-manager:
-    image: lbjlaq/antigravity-manager:latest
-    container_name: antigravity-manager
-    networks:
-      - internal # 使用容器自动创建的bridge网络(不使用代理可删除)
-    ports:
-      - 8045:8045 # 对外映射端口
-    environment:
-      - API_KEY=sk-your-api-key # 自定义APIKey
-      - WEB_PASSWORD=your-login-password # 自定义Web登陆密码(删除可使用APIKey登录)
-      - ABV_MAX_BODY_SIZE=104857600
-    volumes:
-      - ./antigravity_tools:/root/.antigravity_tools
-    restart: unless-stopped
-networks:
-  internal:
-    external: true # 使用已创建的网络
-```
-```yaml title="Docker Compose(复用其他容器网络)"
-services:
-  antigravity-manager:
-    image: lbjlaq/antigravity-manager:latest
-    container_name: antigravity-manager
-    network_mode: container:mihomo # 复用其他容器macvlan(同Compose则使用`network_mode: service:mihomo`)
-    environment:
-      - API_KEY=sk-your-api-key # 自定义APIKey
-      - WEB_PASSWORD=your-login-password # 自定义Web登陆密码(删除可使用APIKey登录)
-      - ABV_MAX_BODY_SIZE=104857600
-    volumes:
-      - ./antigravity_tools:/root/.antigravity_tools
-    restart: unless-stopped
 ```
 
 ## Code Server
@@ -157,3 +128,6 @@ services:
 
 ## Cursor
 - [Cursor-官网](https://www.cursor.com)
+
+## Google Antigravity
+- [Antigravity-官网](https://antigravity.google/)
