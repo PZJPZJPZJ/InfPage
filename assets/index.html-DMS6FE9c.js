@@ -1,1 +1,0 @@
-import{_ as t,c as a,e as o,r as n,o as c}from"./app-kP1QliBX.js";const r={};function s(l,i){const e=n("CustomCatalog");return c(),a("div",null,[o(e)])}const _=t(r,[["render",s]]),d=JSON.parse('{"path":"/wiki/media/","title":"Media","lang":"zh-CN","frontmatter":{"title":"Media"},"git":{},"filePathRelative":null}');export{_ as comp,d as data};
