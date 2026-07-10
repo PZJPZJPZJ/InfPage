@@ -16,7 +16,8 @@ routeMeta:
 
 ### 扩展插件
 #### Claude Code
-- [Claude Code 插件](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code)
+- [Claude Code - 官方文档](https://code.claude.com/docs/en/overview)
+- [Claude Code - VSCode扩展](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code)
 
 ```json title="VSCode > setting.json"
 // 跳过登录提示
@@ -36,7 +37,8 @@ routeMeta:
 ```
 
 #### Codex
-- [Codex](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt)
+- [Codex - 客户端下载](https://openai.com/codex/)
+- [Codex - VSCode扩展](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt)
 
 ```yaml title="%USERPROFILE%\.codex\config.toml"
 model_provider = "OpenAI"
@@ -90,6 +92,12 @@ requires_openai_auth = true
 		]
 	}
 ]
+```
+
+### OpenCode
+- [OpenCode - 官方文档](https://opencode.ai/docs/zh-cn)
+```bash title="Node.js安装"
+npm install -g opencode-ai
 ```
 
 ## Code Server
