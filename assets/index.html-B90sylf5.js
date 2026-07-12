@@ -1,0 +1,1 @@
+import{_ as e,c as o,e as n,r as a,o as r}from"./app-DA4P0UIJ.js";const c={};function s(l,i){const t=a("CustomCatalog");return r(),o("div",null,[n(t)])}const _=e(c,[["render",s]]),m=JSON.parse('{"path":"/note/android/","title":"Android","lang":"zh-CN","frontmatter":{"title":"Android"},"git":{},"filePathRelative":null}');export{_ as comp,m as data};
