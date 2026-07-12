@@ -5,51 +5,275 @@ routeMeta:
   itemIcon: www.miwifi.com
 ---
 # 小米路由器工具
-## 密码计算器
-先访问[路由器后台](http://miwifi.com/)，在首页`SN`处复制序列号(如`12345/A1B2C3D4E`)。
-<div class="container">
+<div class="miwifi-card">
+  <div class="miwifi-field">
+    <label class="miwifi-label">SSH/Telnet密码计算</label>
     <input
-        class="inputBox"
-        type="text"
-        placeholder="输入小米路由器SN"
-        v-model="snString"
-        @input="pwdString = calculate(snString)"
+      class="miwifi-input"
+      type="text"
+      placeholder="输入小米路由器SN，如 12345/A1B2C3D4E"
+      v-model="snString"
     />
-    <div class="txtBox">SSH/Telnet密码:</div>
-    <div class="resultBox">{{ pwdString }}</div>
+  </div>
+  <div class="miwifi-output">
+    <div class="miwifi-output-label">SSH/Telnet密码</div>
+    <div :class="['miwifi-result', { 'miwifi-result--empty': !snString }]">{{ pwdString }}</div>
+  </div>
+  <div class="miwifi-actions">
+    <button
+      class="vp-custom-btn vp-custom-btn--secondary"
+      :disabled="!canCopyPwd"
+      @click="copyPwd"
+    >
+      {{ pwdCopied ? '已复制' : '复制密码' }}
+    </button>
+  </div>
 </div>
 
-## 固件下载器
-先访问[官网下载页](https://www.miwifi.com/miwifi_download.html)，找到对应型号固件下载按钮，在下载链接的文件名中找到它的型号代号(如miwifi_rc01_firmware_5a1e1_1.1.56.bin中的`RC01`)。
-<div class="container">
-    <input
-        class="inputBox"
-        type="text"
-        placeholder="输入路由器型号"
-        v-model="routerCode"
-    />
-    <select class="inputBox" v-model="firmwareType">
-      <option value="STA">稳定版 (STA)</option>
-      <option value="DEV">开发版 (DEV)</option>
-    </select>
-    <div class="txtBox">API 链接:</div>
-    <div v-if="routerCode" class="resultBox" style="font-size: 1.2rem; word-break: break-all;">
-      <a :href="`https://api.miwifi.com/upgrade/log/list?typeList=${routerCode}${firmwareType}`" target="_blank">https://api.miwifi.com/upgrade/log/list?typeList={{ routerCode }}{{ firmwareType }}</a>
-    </div>
-    <div v-else class="resultBox">--------</div>
-    <div v-if="routerCode">
-      点击上述链接访问数据，找到对应版本的 <code>url</code> 字段即可下载固件。
-    </div>
+<div class="miwifi-card">
+  <div class="miwifi-field">
+    <label class="miwifi-label">固件下载器</label>
+  </div>
+  <div class="miwifi-options">
+    <label class="miwifi-opt-item">
+      <span>型号</span>
+      <select class="miwifi-select" v-model="routerCode" :disabled="!routerList.length">
+        <option value="">{{ routerSelectPlaceholder }}</option>
+        <option
+          v-for="router in routerList"
+          :key="router.model"
+          :value="router.model"
+        >
+          {{ router.title }} ({{ router.model }})
+        </option>
+      </select>
+    </label>
+    <label class="miwifi-opt-item">
+      <span>版本</span>
+      <select class="miwifi-select" v-model="firmwareType">
+        <option value="STA">稳定版</option>
+        <option value="DEV">开发版</option>
+      </select>
+    </label>
+  </div>
+  <div v-if="firmwareStatus" class="miwifi-status">{{ firmwareStatus }}</div>
+  <div v-if="firmwareList.length" class="firmware-list">
+    <article
+      v-for="item in firmwareList"
+      :key="`${item.realType}-${item.version}-${item.time}`"
+      class="firmware-item"
+    >
+      <div class="firmware-head">
+        <div>
+          <div class="firmware-title">{{ item.title || item.type }}</div>
+          <div class="firmware-meta">
+            <span>{{ item.version || '未知版本' }}</span>
+            <span>{{ formatDate(item.time) }}</span>
+          </div>
+        </div>
+        <a
+          v-if="item.url"
+          class="vp-custom-btn vp-custom-btn--secondary firmware-download"
+          :href="normalizeUrl(item.url)"
+          target="_blank"
+        >
+          下载固件
+        </a>
+      </div>
+      <div v-if="parseContents(item.contents).length" class="firmware-content">
+        <template v-for="(block, index) in parseContents(item.contents)" :key="index">
+          <div v-if="block.type === 'title'" class="firmware-subtitle">{{ block.text }}</div>
+          <p v-else-if="block.type === 'paragraph'" class="firmware-paragraph">{{ block.text }}</p>
+          <ol v-else class="firmware-changes">
+            <li v-for="(text, idx) in block.items" :key="idx">{{ text }}</li>
+          </ol>
+        </template>
+      </div>
+    </article>
+  </div>
 </div>
 
 <script setup>
-import { ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
 const snString = ref("");
-const pwdString = ref("--------");
+const pwdCopied = ref(false);
 
 const routerCode = ref("");
+const routerList = ref([]);
 const firmwareType = ref("STA");
+const firmwareList = ref([]);
+const firmwareLoading = ref(false);
+const firmwareError = ref("");
+const miwifiDataUrl = "https://www.miwifi.com/statics/json/index.json";
+
+const pwdString = computed(() => {
+  const sn = snString.value.trim();
+  return sn ? calculate(sn) : "--------";
+});
+const canCopyPwd = computed(() => Boolean(snString.value.trim() && pwdString.value !== "--------"));
+const normalizedRouterCode = computed(() => routerCode.value.trim().toUpperCase());
+const firmwareApiUrl = computed(() => {
+  return `https://api.miwifi.com/upgrade/log/list?typeList=${normalizedRouterCode.value}${firmwareType.value}`;
+});
+const routerSelectPlaceholder = computed(() => {
+  if (!routerList.value.length) return "正在加载";
+  return "选择路由器型号";
+});
+const firmwareStatus = computed(() => {
+  if (firmwareLoading.value) return "正在获取固件列表...";
+  if (firmwareError.value) return firmwareError.value;
+  if (normalizedRouterCode.value && !firmwareList.value.length) return "暂无固件列表";
+  return "";
+});
+
+async function copyText(text, onDone) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+  }
+
+  onDone.value = true;
+  setTimeout(() => {
+    onDone.value = false;
+  }, 1500);
+}
+
+function copyPwd() {
+  if (!canCopyPwd.value) return;
+  copyText(pwdString.value, pwdCopied);
+}
+
+onMounted(() => {
+  loadRouterList();
+});
+
+watch([normalizedRouterCode, firmwareType], () => {
+  firmwareList.value = [];
+  firmwareError.value = "";
+  if (normalizedRouterCode.value) {
+    loadFirmwareList();
+  }
+});
+
+function loadRouterList() {
+  if (typeof window === "undefined") return;
+
+  if (Array.isArray(window.downloadList)) {
+    setRouterList(window.downloadList);
+    return;
+  }
+
+  const script = document.createElement("script");
+  script.src = miwifiDataUrl;
+  script.async = true;
+  script.onload = () => {
+    if (Array.isArray(window.downloadList)) {
+      setRouterList(window.downloadList);
+    } else {
+      firmwareError.value = "官方型号列表暂不可用";
+    }
+  };
+  script.onerror = () => {
+    firmwareError.value = "官方型号列表加载失败";
+  };
+
+  document.head.appendChild(script);
+}
+
+function setRouterList(downloadList) {
+  const modelMap = new Map();
+
+  for (const item of downloadList) {
+    const model = String(item?.model ?? "").trim().toUpperCase();
+    const title = String(item?.title ?? item?.name ?? "").trim();
+    if (!model || !title || modelMap.has(model)) continue;
+
+    modelMap.set(model, {
+      model,
+      title: title.replace(/\s+/g, " "),
+    });
+  }
+
+  routerList.value = Array.from(modelMap.values());
+}
+
+function loadFirmwareList() {
+  if (typeof window === "undefined" || !normalizedRouterCode.value) return;
+
+  const callbackName = `miwifiFirmware_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+  const script = document.createElement("script");
+
+  firmwareLoading.value = true;
+  firmwareError.value = "";
+  window[callbackName] = (result) => {
+    const list = result?.data?.list;
+    firmwareList.value = Array.isArray(list) ? list : [];
+    firmwareLoading.value = false;
+    if (!firmwareList.value.length) {
+      firmwareError.value = "暂无固件列表";
+    }
+    cleanup();
+  };
+
+  script.src = `${firmwareApiUrl.value}&callback=${callbackName}`;
+  script.async = true;
+  script.onerror = () => {
+    firmwareLoading.value = false;
+    firmwareError.value = "固件列表加载失败";
+    cleanup();
+  };
+
+  function cleanup() {
+    delete window[callbackName];
+    script.remove();
+  }
+
+  document.head.appendChild(script);
+}
+
+function normalizeUrl(url) {
+  if (!url) return "";
+  return url.startsWith("http:") ? `https:${url.slice(5)}` : url;
+}
+
+function formatDate(time) {
+  if (!time) return "未知日期";
+  const date = new Date(time);
+  if (Number.isNaN(date.getTime())) return "未知日期";
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+function parseContents(html) {
+  if (typeof window === "undefined" || !html) return [];
+
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const blocks = [];
+
+  for (const node of doc.body.children) {
+    const text = node.textContent?.trim();
+    if (!text) continue;
+
+    if (node.tagName === "OL" || node.tagName === "UL") {
+      const items = Array.from(node.querySelectorAll("li"))
+        .map((item) => item.textContent?.trim())
+        .filter(Boolean);
+      if (items.length) blocks.push({ type: "list", items });
+    } else if (node.classList.contains("logtlt")) {
+      blocks.push({ type: "title", text });
+    } else {
+      blocks.push({ type: "paragraph", text });
+    }
+  }
+
+  return blocks;
+}
 
 function calculate(sn) {
   const r1d_salt = "A2E371B0-B34B-48A5-8C40-A7133F3B5D88";
@@ -193,24 +417,242 @@ function calculate(sn) {
 }
 </script>
 
-<style scoped>
-.container {
+<style lang="scss" scoped>
+.miwifi-card {
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 14px;
+  padding: 1.4rem 1.5rem 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
 }
-.inputBox {
-  padding: 0.75rem;
+
+.miwifi-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.miwifi-label {
+  color: var(--vp-c-text-2);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.miwifi-input {
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 8px;
+  color: var(--vp-c-text-1);
+  font-size: 0.9rem;
+  outline: none;
+  padding: 0.65rem 0.8rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    border-color: var(--vp-c-brand);
+    box-shadow: 0 0 0 3px rgba(var(--vp-c-brand-rgb, 66,133,244), 0.12);
+  }
+}
+
+.miwifi-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.miwifi-opt-item {
+  align-items: center;
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 8px;
+  color: var(--vp-c-text-2);
+  cursor: pointer;
+  display: flex;
+  flex: 1;
+  font-size: 0.82rem;
+  gap: 0.4rem;
+  min-width: 220px;
+  padding: 0.35rem 0.6rem;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: var(--vp-c-text-3);
+  }
+
+  &:focus-within {
+    border-color: var(--vp-c-brand);
+  }
+}
+
+.miwifi-select {
+  background: transparent;
+  border: none;
+  color: var(--vp-c-text-1);
+  cursor: pointer;
+  flex: 1;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-left: auto;
+  min-width: 0;
+  outline: none;
+}
+
+.miwifi-output {
+  background: var(--vp-c-bg);
   border: 1px solid var(--vp-c-border);
   border-radius: 10px;
-  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.65rem 0.85rem;
 }
-.txtBox {
-  font-size: 1rem;
-  font-weight: normal;
+
+.miwifi-output-label {
+  color: var(--vp-c-text-3);
+  font-size: 0.75rem;
+  font-weight: 500;
 }
-.resultBox {
-  font-size: 1.5rem;
-  font-weight: bold;
+
+.miwifi-result {
+  color: var(--vp-c-brand);
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.miwifi-result--empty {
+  color: var(--vp-c-text-3);
+}
+
+.miwifi-status {
+  color: var(--vp-c-text-2);
+  font-size: 0.82rem;
+}
+
+.miwifi-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.vp-custom-btn {
+  align-items: center;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.85rem;
+  font-weight: 600;
+  justify-content: center;
+  padding: 0.55rem 1.4rem;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  user-select: none;
+  white-space: nowrap;
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  &:disabled,
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  &--secondary {
+    background: transparent;
+    border: 1.5px solid var(--vp-c-border);
+    color: var(--vp-c-accent);
+
+    &:hover {
+      background: var(--vp-c-accent-soft);
+      border-color: var(--vp-c-accent-bg);
+    }
+  }
+}
+
+.firmware-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.firmware-item {
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 10px;
+  padding: 0.85rem;
+}
+
+.firmware-head {
+  align-items: flex-start;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+
+.firmware-title {
+  color: var(--vp-c-text-1);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.firmware-meta {
+  color: var(--vp-c-text-3);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  gap: 0.6rem;
+  margin-top: 0.2rem;
+}
+
+.firmware-download {
+  flex-shrink: 0;
+  padding-inline: 0.85rem;
+}
+
+.firmware-content {
+  border-top: 1px solid var(--vp-c-divider);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+}
+
+.firmware-subtitle {
+  color: var(--vp-c-text-2);
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-top: 0.2rem;
+}
+
+.firmware-paragraph {
+  color: var(--vp-c-text-2);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.firmware-changes {
+  color: var(--vp-c-text-2);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  .firmware-head {
+    flex-direction: column;
+  }
 }
 </style>

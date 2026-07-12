@@ -4,6 +4,7 @@ routeMeta:
   itemDesc: 实时看盘工具
   itemIcon: xueqiu.com
 ---
+# 实时看盘工具
 <div class="stock-watcher">
   <div v-if="!watchlist.length" class="sw-card sw-empty-state">
     <div class="sw-empty-title">还没有自选股</div>
