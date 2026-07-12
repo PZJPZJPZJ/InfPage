@@ -2,6 +2,7 @@
 .git
 .idea
 .vscode
+.agents
 
 # local env files
 node_modules
