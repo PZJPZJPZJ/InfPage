@@ -1,1 +1,0 @@
-import{_ as t,c as o,e as n,r as a,o as s}from"./app-MLW302FS.js";const c={};function r(l,_){const e=a("CustomCatalog");return s(),o("div",null,[n(e)])}const i=t(c,[["render",r]]),d=JSON.parse('{"path":"/note/nodejs/","title":"Nodejs","lang":"zh-CN","frontmatter":{"title":"Nodejs"},"git":{},"filePathRelative":null}');export{i as comp,d as data};
