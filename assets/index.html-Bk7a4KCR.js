@@ -1,0 +1,1 @@
+import{_ as e,c as o,e as n,r as a,o as s}from"./app-MLW302FS.js";const r={};function c(l,_){const t=a("CustomCatalog");return s(),o("div",null,[n(t)])}const i=e(r,[["render",c]]),p=JSON.parse('{"path":"/tool/sensor/","title":"Sensor","lang":"zh-CN","frontmatter":{"title":"Sensor"},"git":{},"filePathRelative":null}');export{i as comp,p as data};
