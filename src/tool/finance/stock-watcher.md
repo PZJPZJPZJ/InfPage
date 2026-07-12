@@ -6,13 +6,7 @@ routeMeta:
 ---
 # 实时看盘工具
 <div class="stock-watcher">
-  <div v-if="!watchlist.length" class="sw-card sw-empty-state">
-    <div class="sw-empty-title">还没有自选股</div>
-    <div class="sw-empty-text">
-      输入 6 位股票或 ETF 代码，或带市场前缀的代码，例如 `600000`、`510300`、`159915`、`sz300750`，即可开始看盘。
-    </div>
-  </div>
-  <div v-else class="sw-list">
+  <div v-if="watchlist.length" class="sw-list">
     <div
       v-for="row in watchRows"
       :key="row.item.symbol"
@@ -32,7 +26,8 @@ routeMeta:
               <span class="sw-stock-name">{{ row.quote?.name || "--" }}</span>
               <span class="sw-stock-code">{{ row.item.symbol }}</span>
               <span :class="['sw-stock-code', isQuoteExpired(row.quote) ? 'is-expired' : '']">
-                {{ formatQuoteBadge(row.quote) }}
+                <span class="sw-time-full">{{ formatQuoteBadge(row.quote) }}</span>
+                <span class="sw-time-only">{{ formatQuoteBadgeTime(row.quote) }}</span>
               </span>
             </div>
           </div>
@@ -70,10 +65,12 @@ routeMeta:
             <div class="sw-info-row"><span class="sw-info-label">昨收</span><span class="sw-info-value">{{ formatPrice(row.quote, "preClose") }}</span></div>
             <div class="sw-info-row"><span class="sw-info-label">最高</span><span class="sw-info-value">{{ formatPrice(row.quote, "high") }}</span></div>
             <div class="sw-info-row"><span class="sw-info-label">最低</span><span class="sw-info-value">{{ formatPrice(row.quote, "low") }}</span></div>
-            <div class="sw-info-row"><span class="sw-info-label">成交量</span><span class="sw-info-value">{{ formatVolume(row.quote?.volume) }}</span></div>
+            <div v-if="hasEtfMetrics(row.quote)" class="sw-info-row"><span class="sw-info-label">实时参考净值</span><span class="sw-info-value">{{ formatPrice(row.quote, "referenceNav") }}</span></div>
+            <div v-if="hasEtfMetrics(row.quote)" class="sw-info-row"><span class="sw-info-label">溢价率</span><span class="sw-info-value">{{ formatPercent(row.quote?.premiumRate) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">成交量（手）</span><span class="sw-info-value">{{ formatHandQuantity(row.quote?.volume) }}</span></div>
             <div class="sw-info-row"><span class="sw-info-label">成交额</span><span class="sw-info-value">{{ formatAmountWan(row.quote?.amountWan) }}</span></div>
-            <div class="sw-info-row"><span class="sw-info-label">外盘</span><span class="sw-info-value">{{ formatVolume(row.quote?.outerVolume) }}</span></div>
-            <div class="sw-info-row"><span class="sw-info-label">内盘</span><span class="sw-info-value">{{ formatVolume(row.quote?.innerVolume) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">外盘（手）</span><span class="sw-info-value">{{ formatHandQuantity(row.quote?.outerVolume) }}</span></div>
+            <div class="sw-info-row"><span class="sw-info-label">内盘（手）</span><span class="sw-info-value">{{ formatHandQuantity(row.quote?.innerVolume) }}</span></div>
             <div class="sw-info-row"><span class="sw-info-label">换手率</span><span class="sw-info-value">{{ formatRatio(row.quote?.turnoverRate, '%') }}</span></div>
             <div class="sw-info-row"><span class="sw-info-label">量比</span><span class="sw-info-value">{{ formatVolumeRatio(row.quote?.volumeRatio) }}</span></div>
             <div class="sw-info-row"><span class="sw-info-label">涨停价</span><span class="sw-info-value">{{ formatPrice(row.quote, "limitUp") }}</span></div>
@@ -84,13 +81,13 @@ routeMeta:
           <div class="sw-depth-card sw-depth-card-ask">
             <div class="sw-depth-title-row">
               <span class="sw-depth-title sw-depth-title-ask">卖盘五档</span>
-              <span class="sw-pressure-text sw-pressure-sell">卖压 {{ formatDepthPressureSummary(row.quote, "ask") }}</span>
+              <span class="sw-pressure-text sw-pressure-sell">卖压（手） {{ formatDepthPressureSummary(row.quote, "ask") }}</span>
             </div>
             <div class="sw-depth-table">
               <div class="sw-depth-head">
                 <span>档位</span>
                 <span>价格</span>
-                <span>数量</span>
+                <span>数量（手）</span>
               </div>
               <div
                 v-for="level in askLevels(row.quote)"
@@ -99,20 +96,20 @@ routeMeta:
               >
                 <span>{{ level.label }}</span>
                 <span>{{ formatPrice(row.quote, level.priceField) }}</span>
-                <span>{{ formatVolume(level.volume) }}</span>
+                <span>{{ formatHandQuantity(level.volume) }}</span>
               </div>
             </div>
           </div>
           <div class="sw-depth-card sw-depth-card-bid">
             <div class="sw-depth-title-row">
               <span class="sw-depth-title sw-depth-title-bid">买盘五档</span>
-              <span class="sw-pressure-text sw-pressure-buy">买压 {{ formatDepthPressureSummary(row.quote, "bid") }}</span>
+              <span class="sw-pressure-text sw-pressure-buy">买压（手） {{ formatDepthPressureSummary(row.quote, "bid") }}</span>
             </div>
             <div class="sw-depth-table">
               <div class="sw-depth-head">
                 <span>档位</span>
                 <span>价格</span>
-                <span>数量</span>
+                <span>数量（手）</span>
               </div>
               <div
                 v-for="level in bidLevels(row.quote)"
@@ -121,7 +118,7 @@ routeMeta:
               >
                 <span>{{ level.label }}</span>
                 <span>{{ formatPrice(row.quote, level.priceField) }}</span>
-                <span>{{ formatVolume(level.volume) }}</span>
+                <span>{{ formatHandQuantity(level.volume) }}</span>
               </div>
             </div>
           </div>
@@ -145,22 +142,6 @@ routeMeta:
         </div>
         <span v-if="inputError" class="sw-inline-error">{{ inputError }}</span>
       </label>
-      <label class="sw-field sw-interval-field">
-        <span class="sw-field-label">刷新频率(秒)</span>
-        <div class="sw-input-wrap">
-          <input
-            v-model="refreshIntervalInput"
-            class="sw-input sw-input-short"
-            type="number"
-            min="3"
-            max="300"
-            step="1"
-            @change="commitRefreshInterval"
-            @blur="commitRefreshInterval"
-            @keyup.enter="commitRefreshInterval"
-          />
-        </div>
-      </label>
       <label class="sw-field sw-source-field">
         <span class="sw-field-label">数据源</span>
         <select v-model="providerId" class="sw-select" @change="handleProviderChange">
@@ -168,6 +149,32 @@ routeMeta:
             {{ option.label }}
           </option>
         </select>
+      </label>
+    </div>
+    <div class="sw-toolbar-options">
+      <label class="sw-switch-field">
+        <span class="sw-switch-copy">
+          <span class="sw-field-label">仅开市刷新</span>
+        </span>
+        <input
+          v-model="refreshOnlyWhenMarketOpen"
+          class="sw-switch-input"
+          type="checkbox"
+          @change="handleMarketRefreshToggle"
+        />
+        <span class="sw-switch-track" aria-hidden="true"></span>
+      </label>
+      <label class="sw-switch-field">
+        <span class="sw-switch-copy">
+          <span class="sw-field-label">自适应单位</span>
+        </span>
+        <input
+          v-model="adaptiveUnits"
+          class="sw-switch-input"
+          type="checkbox"
+          @change="saveState"
+        />
+        <span class="sw-switch-track" aria-hidden="true"></span>
       </label>
     </div>
     <div class="sw-toolbar-actions">
@@ -193,9 +200,6 @@ routeMeta:
       <button class="sw-btn sw-btn-secondary" type="button" @click="toggleEditMode">
         {{ editMode ? "完成编辑" : "编辑模式" }}
       </button>
-      <button class="sw-btn sw-btn-secondary" type="button" @click="toggleDigitGrouping">
-        {{ digitGrouping === 3 ? "数字分组: 3位" : "数字分组: 4位" }}
-      </button>
       <input
         ref="fileInputRef"
         class="sw-hidden-input"
@@ -214,10 +218,41 @@ routeMeta:
 import { computed, onMounted, onUnmounted, ref } from "vue";
 
 const STORAGE_KEY = "infpage.stockWatcher.v1";
-const DEFAULT_REFRESH_INTERVAL_SEC = 5;
-const MIN_REFRESH_INTERVAL_SEC = 3;
-const MAX_REFRESH_INTERVAL_SEC = 300;
+const DEFAULT_REFRESH_INTERVAL_SEC = 3;
+const DEFAULT_REFRESH_ONLY_WHEN_MARKET_OPEN = true;
+const DEFAULT_ADAPTIVE_UNITS = true;
 const REQUEST_TIMEOUT_MS = 10000;
+const TENCENT_ETF_PREMIUM_RATE_INDEX = 77;
+const TENCENT_ETF_REFERENCE_NAV_INDEX = 78;
+const EASTMONEY_REFERENCE_NAV_FIELD = "f131";
+const EASTMONEY_QUOTE_FIELDS = [
+  "f57","f58","f43","f169","f170","f46","f44","f45","f60","f47","f48","f86",
+  "f19","f20","f17","f18","f15","f16","f13","f14","f11","f12",
+  "f31","f32","f33","f34","f35","f36","f37","f38","f39","f40",
+  EASTMONEY_REFERENCE_NAV_FIELD
+].join(",");
+const MARKET_SESSIONS = {
+  cn: {
+    timeZone: "Asia/Shanghai",
+    sessions: [
+      [9 * 60 + 30, 11 * 60 + 30],
+      [13 * 60, 15 * 60],
+    ],
+  },
+  hk: {
+    timeZone: "Asia/Hong_Kong",
+    sessions: [
+      [9 * 60 + 30, 12 * 60],
+      [13 * 60, 16 * 60],
+    ],
+  },
+  us: {
+    timeZone: "America/New_York",
+    sessions: [
+      [9 * 60 + 30, 16 * 60],
+    ],
+  },
+};
 
 const isBrowser = typeof window !== "undefined";
 
@@ -228,9 +263,9 @@ const isRefreshing = ref(false);
 const lastRefreshAt = ref(null);
 const watchlist = ref([]);
 const refreshIntervalSec = ref(DEFAULT_REFRESH_INTERVAL_SEC);
-const refreshIntervalInput = ref(String(DEFAULT_REFRESH_INTERVAL_SEC));
+const refreshOnlyWhenMarketOpen = ref(DEFAULT_REFRESH_ONLY_WHEN_MARKET_OPEN);
 const providerId = ref("tencent");
-const digitGrouping = ref(3);
+const adaptiveUnits = ref(DEFAULT_ADAPTIVE_UNITS);
 const editMode = ref(false);
 const quotesBySymbol = ref({});
 const expandedState = ref({});
@@ -276,16 +311,16 @@ function createDefaultState() {
   return {
     version: 1,
     provider: "tencent",
-    digitGrouping: 3,
+    adaptiveUnits: DEFAULT_ADAPTIVE_UNITS,
     refreshIntervalSec: DEFAULT_REFRESH_INTERVAL_SEC,
+    refreshOnlyWhenMarketOpen: DEFAULT_REFRESH_ONLY_WHEN_MARKET_OPEN,
+    quotesBySymbol: {},
     watchlist: [],
   };
 }
 
 function sanitizeRefreshInterval(value) {
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed)) return DEFAULT_REFRESH_INTERVAL_SEC;
-  return Math.min(MAX_REFRESH_INTERVAL_SEC, Math.max(MIN_REFRESH_INTERVAL_SEC, Math.round(parsed)));
+  return DEFAULT_REFRESH_INTERVAL_SEC;
 }
 
 function toNumber(value) {
@@ -351,6 +386,11 @@ function normalizeInputCode(input) {
 
 function toProviderSymbol(codeOrSymbol) {
   return normalizeInputCode(codeOrSymbol).symbol;
+}
+
+function isEtfSymbol(symbol, name = "") {
+  const { code } = normalizeInputCode(symbol);
+  return /ETF/i.test(name) || /^(15|51|56|58)\d{4}$/.test(code);
 }
 
 function toNeteaseCode(codeOrSymbol) {
@@ -446,6 +486,8 @@ function createEmptyQuote(symbol, code) {
     volumeRatio: null,
     limitUp: null,
     limitDown: null,
+    referenceNav: null,
+    premiumRate: null,
     time: null,
     bid1: null,
     bid1Volume: null,
@@ -480,6 +522,13 @@ function convertAmountWan(value, divisor = 10000) {
   return parsed / divisor;
 }
 
+function calculatePremiumRate(price, referenceNav) {
+  const parsedPrice = toNumber(price);
+  const parsedReferenceNav = toNumber(referenceNav);
+  if (parsedPrice === null || parsedReferenceNav === null || parsedReferenceNav === 0) return null;
+  return ((parsedPrice - parsedReferenceNav) / parsedReferenceNav) * 100;
+}
+
 function parseTencentQuote(symbol, rawText) {
   if (typeof rawText !== "string" || !rawText.trim()) {
     return null;
@@ -489,10 +538,14 @@ function parseTencentQuote(symbol, rawText) {
   if (raw.length < 10) {
     return null;
   }
+  const name = raw[1] || null;
+  const referenceNav = isEtfSymbol(symbol, name)
+    ? toNumber(raw[TENCENT_ETF_REFERENCE_NAV_INDEX])
+    : null;
 
   return {
     symbol,
-    name: raw[1] || null,
+    name,
     code: raw[2] || symbol.replace(/^(sh|sz|bj)/, ""),
     price: toNumber(raw[3]),
     preClose: toNumber(raw[4]),
@@ -530,8 +583,13 @@ function parseTencentQuote(symbol, rawText) {
     volumeRatio: toNumber(raw[49]),
     limitUp: toNumber(raw[47]),
     limitDown: toNumber(raw[48]),
+    referenceNav,
+    premiumRate: referenceNav === null
+      ? null
+      : (toNumber(raw[TENCENT_ETF_PREMIUM_RATE_INDEX]) ?? calculatePremiumRate(raw[3], referenceNav)),
     priceDecimals: buildPriceDecimals([
       ["price", raw[3]],
+      ["referenceNav", raw[TENCENT_ETF_REFERENCE_NAV_INDEX]],
       ["preClose", raw[4]],
       ["open", raw[5]],
       ["bid1", raw[9]],
@@ -685,10 +743,14 @@ function parseEastmoneyQuote(symbol, data) {
   if (!data || typeof data !== "object") {
     return null;
   }
+  const name = data.f58 ?? null;
+  const referenceNav = isEtfSymbol(symbol, name)
+    ? toNumber(data[EASTMONEY_REFERENCE_NAV_FIELD])
+    : null;
 
   return {
     symbol,
-    name: data.f58 ?? null,
+    name,
     code: data.f57 ?? symbol.replace(/^(sh|sz|bj)/, ""),
     price: toNumber(data.f43),
     preClose: toNumber(data.f60),
@@ -719,10 +781,13 @@ function parseEastmoneyQuote(symbol, data) {
     ask4Volume: toNumber(data.f38),
     ask5: toNumber(data.f39),
     ask5Volume: toNumber(data.f40),
+    referenceNav,
+    premiumRate: calculatePremiumRate(data.f43, referenceNav),
     updatedAt: data.f86 ? formatUnixTimestamp(data.f86) : null,
     time: data.f86 ? formatUnixTimeOnly(data.f86) : null,
     priceDecimals: buildPriceDecimals([
       ["price", data.f43],
+      ["referenceNav", data[EASTMONEY_REFERENCE_NAV_FIELD]],
       ["preClose", data.f60],
       ["open", data.f46],
       ["high", data.f44],
@@ -786,6 +851,8 @@ function toQuoteModel(parsed) {
     volumeRatio: parsed.volumeRatio ?? null,
     limitUp: parsed.limitUp ?? null,
     limitDown: parsed.limitDown ?? null,
+    referenceNav: parsed.referenceNav ?? null,
+    premiumRate: parsed.premiumRate ?? calculatePremiumRate(parsed.price, parsed.referenceNav),
     time: timeInfo.time,
     bid1: parsed.bid1,
     bid1Volume: parsed.bid1Volume,
@@ -1004,16 +1071,11 @@ function loadEastmoneyQuotes(symbols) {
   if (!uniqueSymbols.length) {
     return Promise.resolve({});
   }
-  const fields = [
-    "f57","f58","f43","f169","f170","f46","f44","f45","f60","f47","f48","f86",
-    "f19","f20","f17","f18","f15","f16","f13","f14","f11","f12",
-    "f31","f32","f33","f34","f35","f36","f37","f38","f39","f40"
-  ].join(",");
 
   return Promise.allSettled(
     uniqueSymbols.map(async (symbol) => {
       const secid = toEastmoneySecid(symbol);
-      const url = `https://push2.eastmoney.com/api/qt/stock/get?invt=2&fltt=2&secid=${secid}&fields=${fields}&_=${Date.now()}`;
+      const url = `https://push2.eastmoney.com/api/qt/stock/get?invt=2&fltt=2&secid=${secid}&fields=${EASTMONEY_QUOTE_FIELDS}&_=${Date.now()}`;
       const response = await fetch(url, {
         method: "GET",
         mode: "cors",
@@ -1135,8 +1197,10 @@ function saveState() {
   const state = {
     version: 1,
     provider: providerId.value,
-    digitGrouping: digitGrouping.value,
+    adaptiveUnits: adaptiveUnits.value,
     refreshIntervalSec: sanitizeRefreshInterval(refreshIntervalSec.value),
+    refreshOnlyWhenMarketOpen: refreshOnlyWhenMarketOpen.value,
+    quotesBySymbol: quotesBySymbol.value,
     watchlist: watchlist.value.map((item) => ({
       symbol: item.symbol,
       code: item.code,
@@ -1161,7 +1225,9 @@ function sanitizeImportedState(candidate) {
   const provider = typeof candidate.provider === "string" && providers[candidate.provider]
     ? candidate.provider
     : fallback.provider;
-  const grouping = candidate.digitGrouping === 4 ? 4 : 3;
+  const shouldUseAdaptiveUnits = typeof candidate.adaptiveUnits === "boolean"
+    ? candidate.adaptiveUnits
+    : candidate.digitGrouping !== 3;
   const sanitizedWatchlist = [];
   const seen = new Set();
   const rawWatchlist = Array.isArray(candidate.watchlist) ? candidate.watchlist : [];
@@ -1184,10 +1250,25 @@ function sanitizeImportedState(candidate) {
   return {
     version: 1,
     provider,
-    digitGrouping: grouping,
+    adaptiveUnits: shouldUseAdaptiveUnits,
     refreshIntervalSec: sanitizeRefreshInterval(candidate.refreshIntervalSec),
+    refreshOnlyWhenMarketOpen: typeof candidate.refreshOnlyWhenMarketOpen === "boolean"
+      ? candidate.refreshOnlyWhenMarketOpen
+      : fallback.refreshOnlyWhenMarketOpen,
+    quotesBySymbol: sanitizeCachedQuotes(candidate.quotesBySymbol, sanitizedWatchlist),
     watchlist: sanitizedWatchlist,
   };
+}
+
+function sanitizeCachedQuotes(candidate, sanitizedWatchlist) {
+  if (!candidate || typeof candidate !== "object") return {};
+
+  const symbols = new Set(sanitizedWatchlist.map((item) => item.symbol));
+  return Object.fromEntries(
+    Object.entries(candidate).filter(([symbol, quote]) => {
+      return symbols.has(symbol) && quote && typeof quote === "object";
+    })
+  );
 }
 
 function loadState() {
@@ -1206,10 +1287,11 @@ function loadState() {
 
 function applyState(state) {
   providerId.value = state.provider;
-  digitGrouping.value = state.digitGrouping === 4 ? 4 : 3;
+  adaptiveUnits.value = state.adaptiveUnits !== false;
   watchlist.value = state.watchlist;
   refreshIntervalSec.value = sanitizeRefreshInterval(state.refreshIntervalSec);
-  refreshIntervalInput.value = String(refreshIntervalSec.value);
+  refreshOnlyWhenMarketOpen.value = state.refreshOnlyWhenMarketOpen;
+  quotesBySymbol.value = state.quotesBySymbol;
 }
 
 function isValidQuoteModel(quote) {
@@ -1240,8 +1322,63 @@ function restartRefreshTimer() {
   }, refreshIntervalSec.value * 1000);
 }
 
-async function refreshQuotes() {
+function getMarketKey(symbol) {
+  const lower = String(symbol || "").toLowerCase();
+  if (/^hk\d{4,5}$/.test(lower) || /^\d{5}$/.test(lower)) return "hk";
+  if (
+    /^us[a-z.]+$/.test(lower) ||
+    /^gb_[a-z.]+$/.test(lower) ||
+    /^(nyse|nasdaq|amex)[._-]?[a-z.]+$/.test(lower) ||
+    /^[a-z]{1,5}([.-][a-z])?$/.test(lower)
+  ) {
+    return "us";
+  }
+  return "cn";
+}
+
+function getZonedDateParts(date, timeZone) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+    hour12: false,
+  }).formatToParts(date);
+  const valueOf = (type) => parts.find((part) => part.type === type)?.value;
+
+  return {
+    weekday: valueOf("weekday"),
+    hour: Number(valueOf("hour")),
+    minute: Number(valueOf("minute")),
+  };
+}
+
+function isMarketOpen(symbol, now = new Date()) {
+  const market = MARKET_SESSIONS[getMarketKey(symbol)] || MARKET_SESSIONS.cn;
+  const zoned = getZonedDateParts(now, market.timeZone);
+
+  if (zoned.weekday === "Sat" || zoned.weekday === "Sun") return false;
+
+  const minutes = zoned.hour * 60 + zoned.minute;
+  return market.sessions.some(([start, end]) => minutes >= start && minutes <= end);
+}
+
+function shouldSkipAutoRefresh() {
+  return (
+    refreshOnlyWhenMarketOpen.value &&
+    watchlist.value.length > 0 &&
+    !watchlist.value.some((item) => isMarketOpen(item.symbol))
+  );
+}
+
+async function refreshQuotes(options = {}) {
   if (!watchlist.value.length) {
+    requestError.value = "";
+    return;
+  }
+
+  if (!options.force && shouldSkipAutoRefresh()) {
     requestError.value = "";
     return;
   }
@@ -1270,6 +1407,7 @@ async function refreshQuotes() {
 
     quotesBySymbol.value = nextQuotes;
     lastRefreshAt.value = new Date().toISOString();
+    saveState();
   } catch (error) {
     requestError.value = error instanceof Error ? error.message : "行情刷新失败";
 
@@ -1433,16 +1571,16 @@ function handleProviderChange() {
 }
 
 function handleManualRefresh() {
-  void refreshQuotes();
+  void refreshQuotes({ force: true });
+}
+
+function handleMarketRefreshToggle() {
+  saveState();
+  restartRefreshTimer();
 }
 
 function toggleEditMode() {
   editMode.value = !editMode.value;
-}
-
-function toggleDigitGrouping() {
-  digitGrouping.value = digitGrouping.value === 3 ? 4 : 3;
-  saveState();
 }
 
 function triggerImport() {
@@ -1473,8 +1611,9 @@ function exportConfig() {
   const payload = {
     version: 1,
     provider: providerId.value,
-    digitGrouping: digitGrouping.value,
+    adaptiveUnits: adaptiveUnits.value,
     refreshIntervalSec: sanitizeRefreshInterval(refreshIntervalSec.value),
+    refreshOnlyWhenMarketOpen: refreshOnlyWhenMarketOpen.value,
     watchlist: watchlist.value.map((item) => ({
       symbol: item.symbol,
       code: item.code,
@@ -1531,6 +1670,10 @@ function priceClass(quote) {
   return change > 0 ? "is-up" : "is-down";
 }
 
+function hasEtfMetrics(quote) {
+  return toNumber(quote?.referenceNav) !== null || toNumber(quote?.premiumRate) !== null;
+}
+
 function getQuoteValue(target, field) {
   if (!field) return target;
   return target?.[field];
@@ -1564,13 +1707,22 @@ function formatPercent(value) {
 function formatVolume(value) {
   const parsed = toNumber(value);
   if (parsed === null) return "--";
-  return `${formatGroupedNumber(parsed)} 手`;
+  if (!adaptiveUnits.value) return `${formatGroupedNumber(parsed)} 手`;
+  return formatAdaptiveVolume(parsed);
+}
+
+function formatHandQuantity(value) {
+  const parsed = toNumber(value);
+  if (parsed === null) return "--";
+  if (!adaptiveUnits.value) return formatGroupedNumber(parsed);
+  return formatAdaptiveVolumeNumber(parsed);
 }
 
 function formatAmountWan(value) {
   const parsed = toNumber(value);
   if (parsed === null) return "--";
-  return `${formatGroupedNumber(parsed)} 万`;
+  if (!adaptiveUnits.value) return `${formatGroupedNumber(parsed)} 万`;
+  return formatAdaptiveAmountWan(parsed);
 }
 
 function formatRatio(value, suffix = "") {
@@ -1646,18 +1798,44 @@ function formatGroupedNumber(value) {
   const parsed = toNumber(value);
   if (parsed === null) return "--";
 
-  const grouping = digitGrouping.value === 4 ? 4 : 3;
   const [integerPart, decimalPart = ""] = String(parsed).split(".");
   const sign = integerPart.startsWith("-") ? "-" : "";
   const digits = sign ? integerPart.slice(1) : integerPart;
-  const pattern = new RegExp(`\\B(?=(\\d{${grouping}})+(?!\\d))`, "g");
-  const formattedInteger = digits.replace(pattern, ",");
+  const formattedInteger = digits.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
   if (!decimalPart) {
     return `${sign}${formattedInteger}`;
   }
 
   return `${sign}${formattedInteger}.${decimalPart}`;
+}
+
+function formatCompactNumber(value, decimals = 2) {
+  const parsed = toNumber(value);
+  if (parsed === null) return "--";
+  return parsed.toFixed(decimals).replace(/\.?0+$/, "");
+}
+
+function formatAdaptiveVolume(value) {
+  const parsed = toNumber(value);
+  if (parsed === null) return "--";
+  return `${formatAdaptiveVolumeNumber(parsed)}手`;
+}
+
+function formatAdaptiveVolumeNumber(value) {
+  const parsed = toNumber(value);
+  if (parsed === null) return "--";
+  const absolute = Math.abs(parsed);
+  if (absolute >= 100000000) return `${formatCompactNumber(parsed / 100000000)}亿`;
+  if (absolute >= 10000) return `${formatCompactNumber(parsed / 10000)}万`;
+  return formatGroupedNumber(parsed);
+}
+
+function formatAdaptiveAmountWan(value) {
+  const parsed = toNumber(value);
+  if (parsed === null) return "--";
+  if (Math.abs(parsed) >= 10000) return `${formatCompactNumber(parsed / 10000)}亿`;
+  return `${formatCompactNumber(parsed)}万`;
 }
 
 function parseUpdatedAt(value) {
@@ -1683,8 +1861,14 @@ function isQuoteExpired(quote) {
 }
 
 function formatQuoteBadge(quote) {
-  if (isQuoteExpired(quote)) return "数据过期";
-  return quote?.time || "--";
+  return quote?.updatedAt || quote?.time || "--";
+}
+
+function formatQuoteBadgeTime(quote) {
+  const value = formatQuoteBadge(quote);
+  if (value === "--") return value;
+  const timeMatch = String(value).match(/(\d{1,2}:\d{2}(?::\d{2})?)$/);
+  return timeMatch ? timeMatch[1] : value;
 }
 
 function formatLocalDateTime(value) {
@@ -1710,7 +1894,7 @@ function hasDepthPressure(quote) {
 
 function formatDepthPressure(quote, side) {
   if (!hasDepthPressure(quote)) return "--";
-  return formatVolume(sumDepthVolumes(quote, side));
+  return formatHandQuantity(sumDepthVolumes(quote, side));
 }
 
 function formatDepthPressureShare(quote, side) {
@@ -1785,18 +1969,9 @@ onUnmounted(() => {
 }
 
 .sw-card {
-  background:
-    radial-gradient(circle at top right, rgba(148, 163, 184, 0.06), transparent 32%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(247, 248, 250, 0.96));
-  border: 1px solid rgba(148, 163, 184, 0.22);
-  border-radius: 18px;
-}
-
-[data-theme="dark"] .sw-card {
-  background:
-    radial-gradient(circle at top right, rgba(148, 163, 184, 0.08), transparent 28%),
-    linear-gradient(180deg, rgba(19, 24, 34, 0.96), rgba(13, 17, 23, 0.98));
-  border-color: rgba(148, 163, 184, 0.16);
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 14px;
 }
 
 .sw-toolbar {
@@ -1808,14 +1983,21 @@ onUnmounted(() => {
 
 .sw-toolbar-main {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 240px);
+  gap: 0.9rem;
+  width: 100%;
+}
+
+.sw-toolbar-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.9rem;
   width: 100%;
 }
 
 .sw-toolbar-actions {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.65rem;
   width: 100%;
 }
@@ -1837,6 +2019,72 @@ onUnmounted(() => {
   color: var(--vp-c-text-2);
 }
 
+.sw-switch-field {
+  align-items: center;
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 0.5rem 0.65rem;
+}
+
+.sw-switch-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.sw-switch-desc {
+  color: var(--vp-c-text-3);
+  font-size: 0.74rem;
+  line-height: 1.3;
+}
+
+.sw-switch-input {
+  height: 1px;
+  opacity: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.sw-switch-track {
+  background: var(--vp-c-bg-mute);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 999px;
+  flex: 0 0 auto;
+  height: 24px;
+  position: relative;
+  transition: background-color 0.2s, border-color 0.2s;
+  width: 44px;
+}
+
+.sw-switch-track::after {
+  background: var(--vp-c-bg);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  content: "";
+  height: 18px;
+  left: 2px;
+  position: absolute;
+  top: 2px;
+  transition: transform 0.2s;
+  width: 18px;
+}
+
+.sw-switch-input:checked + .sw-switch-track {
+  background: var(--vp-c-accent-bg);
+  border-color: var(--vp-c-accent-bg);
+}
+
+.sw-switch-input:checked + .sw-switch-track::after {
+  transform: translateX(20px);
+}
+
 .sw-input-wrap {
   display: flex;
   align-items: center;
@@ -1847,17 +2095,19 @@ onUnmounted(() => {
 .sw-input {
   flex: 1;
   min-width: 0;
-  padding: 0.82rem 0.95rem;
-  border-radius: 12px;
+  padding: 0.65rem 0.8rem;
+  border-radius: 8px;
   border: 1px solid var(--vp-c-border);
-  background: rgba(255, 255, 255, 0.86);
+  background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
-  font-size: 0.95rem;
-  transition: border-color 0.18s ease, background-color 0.18s ease;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-[data-theme="dark"] .sw-input {
-  background: rgba(30, 41, 59, 0.72);
+.sw-input:focus {
+  border-color: var(--vp-c-brand);
+  box-shadow: 0 0 0 3px rgba(var(--vp-c-brand-rgb, 66,133,244), 0.12);
 }
 
 .sw-input-short {
@@ -1876,10 +2126,10 @@ onUnmounted(() => {
 
 .sw-btn {
   border: none;
-  border-radius: 12px;
-  padding: 0.78rem 1rem;
-  font-size: 0.9rem;
-  font-weight: 700;
+  border-radius: 10px;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
   transition: transform 0.16s ease, opacity 0.16s ease, background-color 0.16s ease;
   white-space: nowrap;
@@ -1895,14 +2145,19 @@ onUnmounted(() => {
 }
 
 .sw-btn-primary {
-  background: linear-gradient(135deg, #cf2338, #f97316);
+  background: var(--vp-c-accent-bg);
   color: #fff;
 }
 
 .sw-btn-secondary {
-  background: rgba(148, 163, 184, 0.12);
-  color: var(--vp-c-text-1);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: transparent;
+  color: var(--vp-c-accent);
+  border: 1.5px solid var(--vp-c-border);
+}
+
+.sw-btn-secondary:hover:not(:disabled) {
+  background: var(--vp-c-accent-soft);
+  border-color: var(--vp-c-accent-bg);
 }
 
 .sw-btn-ghost {
@@ -1928,20 +2183,18 @@ onUnmounted(() => {
 
 .sw-select {
   min-width: 150px;
-  padding: 0.78rem 0.9rem;
-  border-radius: 12px;
+  padding: 0.65rem 0.8rem;
+  border-radius: 8px;
   border: 1px solid var(--vp-c-border);
-  background: rgba(255, 255, 255, 0.86);
+  background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
-  font-size: 0.92rem;
-}
-
-[data-theme="dark"] .sw-select {
-  background: rgba(30, 41, 59, 0.72);
+  font-size: 0.9rem;
 }
 
 .sw-select:focus {
-  outline: auto;
+  border-color: var(--vp-c-brand);
+  box-shadow: 0 0 0 3px rgba(var(--vp-c-brand-rgb, 66,133,244), 0.12);
+  outline: none;
 }
 
 .sw-hidden-input {
@@ -1953,22 +2206,6 @@ onUnmounted(() => {
   color: #cf2338;
   font-size: 0.88rem;
   font-weight: 600;
-}
-
-.sw-empty-state {
-  padding: 1.35rem 1.2rem;
-}
-
-.sw-empty-title {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--vp-c-text-1);
-}
-
-.sw-empty-text {
-  margin-top: 0.45rem;
-  line-height: 1.7;
-  color: var(--vp-c-text-2);
 }
 
 .sw-list {
@@ -2041,6 +2278,10 @@ onUnmounted(() => {
 .sw-stock-code.is-expired {
   color: #cf2338;
   background: rgba(207, 35, 56, 0.1);
+}
+
+.sw-time-only {
+  display: none;
 }
 
 .sw-stock-price {
@@ -2232,7 +2473,12 @@ onUnmounted(() => {
 
 @media (max-width: 980px) {
   .sw-toolbar-main {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr) minmax(150px, 210px);
+    gap: 0.55rem;
+  }
+
+  .sw-toolbar-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.55rem;
   }
 
@@ -2277,9 +2523,14 @@ onUnmounted(() => {
     gap: 0.4rem;
   }
 
+  .sw-toolbar-options {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
   .sw-toolbar-actions {
     width: 100%;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .sw-toolbar-actions .sw-btn {
@@ -2320,6 +2571,14 @@ onUnmounted(() => {
   .sw-stock-code {
     font-size: 0.7rem;
     padding: 0.12rem 0.35rem;
+  }
+
+  .sw-time-full {
+    display: none;
+  }
+
+  .sw-time-only {
+    display: inline;
   }
 
   .sw-stock-price {
