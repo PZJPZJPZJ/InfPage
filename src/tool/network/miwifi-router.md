@@ -32,7 +32,7 @@ routeMeta:
 
 <div class="miwifi-card">
   <div class="miwifi-field">
-    <label class="miwifi-label">固件下载器</label>
+    <label class="miwifi-label">历史固件下载器</label>
   </div>
   <div class="miwifi-options">
     <label class="miwifi-opt-item">
