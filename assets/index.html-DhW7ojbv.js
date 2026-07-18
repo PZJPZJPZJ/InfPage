@@ -1,0 +1,1 @@
+import{_ as o,c as e,e as a,r as n,o as l}from"./app-9satzCKu.js";const c={};function r(s,_){const t=n("CustomCatalog");return l(),e("div",null,[a(t)])}const i=o(c,[["render",r]]),p=JSON.parse('{"path":"/tool/","title":"Tool","lang":"zh-CN","frontmatter":{"title":"Tool"},"git":{},"filePathRelative":null}');export{i as comp,p as data};
