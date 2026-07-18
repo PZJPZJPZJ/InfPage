@@ -269,19 +269,19 @@ proxy-groups:
   - name: 国际代理
     type: select
     include-all: true
-    exclude-filter: "(?i)订阅|官网|网站" # 可修改屏蔽节点
+    exclude-filter: "(?i)订阅|官网|网站"
     proxies: [故障转移,DIRECT]
 
   - name: 人工智能
     type: select
     include-all: true
-    exclude-filter: "(?i)订阅|官网|网站" # 可修改屏蔽节点
+    exclude-filter: "(?i)订阅|官网|网站"
     proxies: [美国,DIRECT]
 
   - name: 国内代理
     type: select
     include-all: true
-    exclude-filter: "(?i)订阅|官网|网站" # 可修改屏蔽节点
+    exclude-filter: "(?i)订阅|官网|网站"
     proxies: [DIRECT,故障转移]
 
   - name: 故障转移
@@ -333,29 +333,45 @@ proxy-groups:
     tolerance: 100
 
 rules:
-  - GEOIP,private,DIRECT,no-resolve
+  # Private
   - GEOSITE,private,DIRECT
-  - GEOSITE,category-ai-chat-!cn,人工智能
-  - GEOSITE,github,国际代理
-  - GEOSITE,google,国际代理
+  # AI
+  - GEOSITE,category-ai-!cn,人工智能
+  # Microsoft
+  - DOMAIN-SUFFIX,rewards.bing.com,DIRECT
+  - DOMAIN-SUFFIX,rewardsplatform.microsoft.com,DIRECT
+  - GEOSITE,bing@cn,国内代理
   - GEOSITE,bing,国际代理
-  - GEOSITE,cloudflare,国际代理
-  - GEOSITE,twitter,国际代理
-  - GEOSITE,telegram,国际代理
-  - GEOSITE,youtube,国际代理
-  - GEOSITE,netflix,国际代理
-  - GEOSITE,spotify,国际代理
+  - GEOSITE,microsoft@cn,国内代理
+  - GEOSITE,microsoft,国际代理
+  # Steam
   - DOMAIN-SUFFIX,steamserver.net,DIRECT
   - GEOSITE,steam@cn,国内代理
   - GEOSITE,steam,国际代理
+  # Google
+  - GEOSITE,google,国际代理
+  - GEOSITE,youtube,国际代理
+  # Cloudflare
+  - GEOSITE,cloudflare,国际代理
+  # GitHub
+  - GEOSITE,github,国际代理
+  # Media
+  - GEOSITE,twitter,国际代理
+  - GEOSITE,telegram,国际代理
+  - GEOSITE,netflix,国际代理
+  - GEOSITE,spotify,国际代理
+  # Domestic
   - GEOSITE,bilibili,国内代理
   - GEOSITE,CN,国内代理
+  # GeoIP
+  - GEOIP,private,DIRECT,no-resolve
   - GEOIP,google,国际代理
   - GEOIP,cloudflare,国际代理
   - GEOIP,twitter,国际代理
   - GEOIP,telegram,国际代理
   - GEOIP,netflix,国际代理
   - GEOIP,CN,国内代理
+  # Others
   - MATCH,国际代理
 ```
 
@@ -375,15 +391,39 @@ proxy-providers:
       udp: true # true:强制启用节点UDP
       skip-cert-verify: false # true:强制跳过证书验证
 ```
-```yaml title="飞牛反代穿透"
+```yaml title="飞牛穿透服务端"
 listeners:
-  - name: fn-vmess-in
+  - name: fn-connect-vmess
     type: vmess
     port: 3000
     listen: 127.0.0.1 # 监听本地即可
-    ws-path: "/chromium/x" # 可修改/chromium/后的子路径
+    ws-path: /chromium/x # 可修改/chromium/后的子路径
     users:
-      - username: fnconnect
+      - username: fnconnect # 任意设置不影响连接
         uuid: ab853535-8d71-4561-a893-b82ae0a5db0c # 可修改任意UUID
         alterId: 0
+```
+```yaml title="飞牛穿透客户端"
+proxies:
+  - name: fnConnect
+    type: vmess
+    server: example.5ddd.com # 飞牛账户域名
+    port: 443
+    uuid: ab853535-8d71-4561-a893-b82ae0a5db0c # 同服务端设置
+    alterId: 0
+    cipher: auto
+    udp: true
+    tls: true
+    network: ws
+    packet-encoding: xudp
+    client-fingerprint: chrome
+    ws-opts:
+      path: /chromium/x # 同服务端设置
+      headers:
+        Cookie: mode=relay;
+    health-check:
+      enable: true
+      url: https://cp.cloudflare.com/generate_204
+      interval: 60
+      lazy: false
 ```
