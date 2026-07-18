@@ -108,7 +108,7 @@ networks:
         - subnet: 192.168.0.0/24 # 局域网子网
           gateway: 192.168.0.1 # 局域网关
 ```
-### Windows(本地运行模式)
+### 本地运行(Windows)
 #### 直接启动
 1. 右键以管理员权限运行`mihomo.exe`
 2. 修改`%USERPROFILE%\.config\mihomo\config.yaml`默认配置
