@@ -159,10 +159,9 @@ networks:
 
 ## 配置教程
 ### 规则仓库
-- [BlackMatrix详细规则](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash)
-- [SSTap游戏规则](https://github.com/FQrabbit/SSTap-Rule/releases)
 - [GeoSite解析](https://github.com/v2fly/domain-list-community/tree/master/data)
 - [GeoIP解析](https://github.com/Loyalsoldier/geoip/tree/release/text)
+- [BlackMatrix详细规则](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash)
 
 ### 配置文件
 #### 配置教程
