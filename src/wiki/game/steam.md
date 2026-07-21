@@ -13,7 +13,7 @@ routeMeta:
 
 ## SteamOS系统
 - [SteamOS官方指南](https://help.steampowered.com/zh-cn/faqs/view/65B4-2AA3-5F37-4227)
-- [SteamOS下载](https://steamdeck-images.steamos.cloud/recovery/steamdeck-repair-20250521.10-3.7.7.img.bz2)
+- [SteamOS下载](https://steamdeck-images.steamos.cloud/recovery/steamdeck-repair-latest.img.bz2)
 
 ## Steam Link串流工具
 - [SteamLink Android](https://www.apkmirror.com/apk/valve-corporation/steam-link-beta/)
