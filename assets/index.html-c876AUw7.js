@@ -1,0 +1,1 @@
+import{_ as e,c as o,e as a,r as c,o as n}from"./app-CJ5vP4BH.js";const r={};function s(l,i){const t=c("CustomCatalog");return n(),o("div",null,[a(t)])}const m=e(r,[["render",s]]),p=JSON.parse('{"path":"/wiki/security/","title":"Security","lang":"zh-CN","frontmatter":{"title":"Security"},"git":{},"filePathRelative":null}');export{m as comp,p as data};
