@@ -1,8 +1,8 @@
 ---
 routeMeta:
   itemTitle: AI API Proxy
-  itemDesc: AI中转站本地部署
-  itemIcon: https://cdn.jsdelivr.net/gh/Wei-Shaw/sub2api@main/frontend/public/logo.png
+  itemDesc: 大模型中转站
+  itemIcon: chatgpt.com
 ---
 # AI中转站本地部署
 ## CLIProxyAPI
