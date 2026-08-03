@@ -1,1 +1,0 @@
-import{_ as t,c as o,e as n,r as a,o as l}from"./app-Ccakyoe0.js";const c={};function r(s,m){const e=a("CustomCatalog");return l(),o("div",null,[n(e)])}const p=t(c,[["render",r]]),_=JSON.parse('{"path":"/wiki/development/","title":"Development","lang":"zh-CN","frontmatter":{"title":"Development"},"git":{},"filePathRelative":null}');export{p as comp,_ as data};
