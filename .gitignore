@@ -3,6 +3,7 @@
 .idea
 .vscode
 .agents
+.claude
 
 # local env files
 node_modules

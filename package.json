@@ -1,7 +1,7 @@
 {
-  "name": "vuepress",
+  "name": "infpage",
   "version": "1.0.0",
-  "description": "VuePress",
+  "description": "Powered by VuePress",
   "license": "MIT",
   "type": "module",
   "scripts": {
