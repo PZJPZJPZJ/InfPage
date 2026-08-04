@@ -5,46 +5,48 @@ routeMeta:
   itemIcon: board.zash.run.place
 ---
 # Clash:代理工具
-## 图形客户端
-### [Clash Verge Rev](https://github.com/clash-verge-rev/clash-verge-rev)
-- [Windows x64](https://gh-proxy.com/github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.3.1/Clash.Verge_2.3.1_x64-setup.exe)
-- [Windows arm64](https://gh-proxy.com/github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.3.1/Clash.Verge_2.3.1_arm64-setup.exe)
-- [macOS x64](https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.2.2/Clash.Verge_2.2.2_x64.dmg)
-- [macOS arm64](https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.2.2/Clash.Verge_2.2.2_aarch64.dmg)
-- [Linux x64](https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.2.2/Clash.Verge_2.2.2_amd64.deb)
-- [Linux arm64](https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.2.2/Clash.Verge_2.2.2_arm64.deb)
+## 客户端
+### Clash Verge Rev
+- [Clash Verge Rev-Github](https://github.com/clash-verge-rev/clash-verge-rev)
+  - [Windows x64](https://gh-proxy.com/github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.3.1/Clash.Verge_2.3.1_x64-setup.exe)
+  - [Windows arm64](https://gh-proxy.com/github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.3.1/Clash.Verge_2.3.1_arm64-setup.exe)
+  - [macOS x64](https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.2.2/Clash.Verge_2.2.2_x64.dmg)
+  - [macOS arm64](https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.2.2/Clash.Verge_2.2.2_aarch64.dmg)
+  - [Linux x64](https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.2.2/Clash.Verge_2.2.2_amd64.deb)
+  - [Linux arm64](https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.2.2/Clash.Verge_2.2.2_arm64.deb)
 
-### [FlClash](https://github.com/chen08209/FlClash)
-- [Android ARMv8](https://gh-proxy.com/github.com/chen08209/FlClash/releases/download/v0.8.80/FlClash-0.8.80-android-arm64-v8a.apk)
-- [Android ARMv7](https://gh-proxy.com/github.com/chen08209/FlClash/releases/download/v0.8.80/FlClash-0.8.80-android-armeabi-v7a.apk)
-- [Android x64](https://github.com/chen08209/FlClash/releases/download/v0.8.80/FlClash-0.8.80-android-armeabi-v7a.apk)
+### FlClash
+- [FlClash-Github](https://github.com/chen08209/FlClash)
+  - [Android ARMv8](https://gh-proxy.com/github.com/chen08209/FlClash/releases/download/v0.8.80/FlClash-0.8.80-android-arm64-v8a.apk)
+  - [Android ARMv7](https://gh-proxy.com/github.com/chen08209/FlClash/releases/download/v0.8.80/FlClash-0.8.80-android-armeabi-v7a.apk)
+  - [Android x64](https://github.com/chen08209/FlClash/releases/download/v0.8.80/FlClash-0.8.80-android-armeabi-v7a.apk)
 
-### [Hiddify](https://github.com/hiddify/hiddify-app)
-- [Android Universal](https://github.com/hiddify/hiddify-next/releases/latest/download/Hiddify-Android-universal.apk)
-- [iOS Universal](https://apps.apple.com/us/app/hiddify-proxy-vpn/id6596777532)
+### Hiddify
+- [Hiddify-Github](https://github.com/hiddify/hiddify-app)
+  - [Android Universal](https://github.com/hiddify/hiddify-next/releases/latest/download/Hiddify-Android-universal.apk)
+  - [iOS Universal](https://apps.apple.com/us/app/hiddify-proxy-vpn/id6596777532)
 
-### iOS客户端
+### Mihomo
+- [Mihomo-Github](https://github.com/MetaCubeX/mihomo)
+  - [Mihomo-x64-网盘](https://pzjpzjpzj.lanzoum.com/iukrO36s6wcd)
+
+### Sing Box
+- [Sing Box](https://github.com/SagerNet/sing-box)
+
+### iOS软件
 - [Shadowrocket](https://apps.apple.com/us/app/shadowrocket/id932747118)
 - [QuantumultX](https://apps.apple.com/us/app/quantumult-x/id1443988620)
 - [Stash](https://apps.apple.com/us/app/stash-rule-based-proxy/id1596063349)
 - [Surge](https://apps.apple.com/us/app/surge-5/id1442620678)
+- [Clash Mi](https://apps.apple.com/us/app/clash-mi/id6744321968)
 
 ### OpenWRT插件
 - [ShellCrash](https://github.com/juewuy/ShellCrash)
 - [OpenClash](https://github.com/vernesong/OpenClash)
 - [PassWall](https://github.com/xiaorouji/openwrt-passwall)
 
-## 核心客户端
-### 核心下载
-- [Mihomo](https://github.com/MetaCubeX/mihomo)
-  - [Windows x64镜像下载](https://gh-proxy.com/github.com/MetaCubeX/mihomo/releases/download/v1.19.13/mihomo-windows-amd64-v2-v1.19.13.zip)
-  - [Windows x64网盘下载](https://pzjpzjpzj.lanzoum.com/iukrO36s6wcd)
-- [Sing Box](https://github.com/SagerNet/sing-box)
-- [Clash Premium](https://hub.docker.com/r/dreamacro/clash-premium)
-### 在线面板
-- [ZashBoard](https://board.zash.run.place/)
-- [MetaCubeXD](https://metacubex.github.io/metacubexd/)
-### 容器部署
+## 核心部署
+### Docker容器部署
 ```yaml title="DockerCompose(桥接模式)"
 services:
   mihomo:
@@ -108,7 +110,7 @@ networks:
         - subnet: 192.168.0.0/24 # 局域网子网
           gateway: 192.168.0.1 # 局域网关
 ```
-### 本地运行(Windows)
+### Windows本地运行
 #### 直接启动
 1. 右键以管理员权限运行`mihomo.exe`
 2. 修改`%USERPROFILE%\.config\mihomo\config.yaml`默认配置
@@ -140,7 +142,16 @@ networks:
 5. 进入任务管理器的服务选项卡找到`Mihomo`右键开始
 6. 运行`nssm remove`命令，在弹出窗输入`Mihomo`可卸载服务
 
+## 在线面板
+- [ZashBoard](https://board.zash.run.place/)
+- [MetaCubeXD](https://metacubex.github.io/metacubexd/)
+
 ## 订阅转换
+### 在线工具
+- [SubConverters-订阅转换](https://subconverters.com/)
+- [ACL4SSR-订阅转换](https://acl4ssr-sub.github.io/)
+- [HappLinkDecryptor-HAPP订阅解密](https://leeeet.dev/happ-decryptor/)
+
 ### SubConverter
 1. 下载[SubConverter](https://github.com/tindy2013/subconverter)
     - 推荐使用[SubConverter MetaCubeX](https://github.com/MetaCubeX/subconverter)改版
@@ -148,14 +159,15 @@ networks:
 3. 订阅地址输入本地URL<http://127.0.0.1:25500/sub?target=%TARGET%&url=%URL%>
     - `%TARGET%`替换为`auto`(自动)/`clash`(Clash)/`quanx`(QuantumultX)
     - `%URL%`使用[URLEncode](https://www.urlencoder.org/)编码原订阅地址后替换
-> 无法部署可使用[SubConverters](https://subconverters.com/)或[ACL4SSR](https://acl4ssr-sub.github.io/)进行在线转换
 
 ### SubStore
 1. 下载[SubStore](https://github.com/sub-store-org/Sub-Store/releases/latest/download/sub-store.bundle.js)
-2. 下载[Node.js](https://nodejs.org/dist/v18.20.7/node-v18.20.7-win-x64.zip)解压并配置环境变量
-3. 进入SubStore目录使用`node sub-store.bundle.js`运行
-4. 访问<http://localhost:3000>管理订阅
-5. 新增订阅转换保存并复制对应客户端订阅地址
+2. 下载`Node.js`使用`node sub-store.bundle.js`命令运行
+3. 访问<http://localhost:3000>管理订阅
+
+### HappLinkDecryptor
+1. 下载[HappLinkDecryptor](https://github.com/LeeeeT/happ-decryptor)
+2. 使用`Node.js`进行部署
 
 ## 配置教程
 ### 规则仓库
@@ -236,21 +248,19 @@ dns:
   fake-ip-filter-mode: rule
   fake-ip-filter:
     - GEOSITE,private,real-ip
+    - GEOSITE,category-ntp,real-ip
     - GEOSITE,CN,real-ip
     - MATCH,fake-ip
   nameserver:
-    - "https://223.5.5.5/dns-query"
-    - "https://120.53.53.53/dns-query"
+    - https://223.5.5.5/dns-query
+    - https://120.53.53.53/dns-query
   proxy-server-nameserver:
-    - "https://dns.alidns.com/dns-query"
-    - "https://doh.pub/dns-query"
+    - https://223.5.5.5/dns-query
+    - https://120.53.53.53/dns-query
   nameserver-policy:
-    "geosite:cn,private":
-      - "https://dns.alidns.com/dns-query"
-      - "https://doh.pub/dns-query"
-    "geosite:geolocation-!cn":
-      - "https://dns.cloudflare.com/dns-query"
-      - "https://dns.google/dns-query"
+    geosite:geolocation-!cn:
+      - https://1.1.1.1/dns-query
+      - https://8.8.8.8/dns-query
   respect-rules: true
 
 proxy-providers:
@@ -425,4 +435,29 @@ proxies:
       url: https://cp.cloudflare.com/generate_204
       interval: 60
       lazy: false
+```
+```yaml title="优先国外DNS解析（防泄露）"
+dns:
+  enable: true
+  ipv6: true
+  listen: 0.0.0.0:53
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-range6: fdfe:dcba:9876::1/64
+  fake-ip-filter-mode: rule
+  fake-ip-filter:
+    - GEOSITE,private,real-ip
+    - GEOSITE,category-ntp,real-ip
+    - GEOSITE,CN,real-ip
+    - MATCH,fake-ip
+  nameserver:
+    - https://1.1.1.1/dns-query
+    - https://8.8.8.8/dns-query
+  proxy-server-nameserver:
+    - https://223.5.5.5/dns-query
+    - https://120.53.53.53/dns-query
+  direct-nameserver:
+    - https://223.5.5.5/dns-query
+    - https://120.53.53.53/dns-query
+  respect-rules: true
 ```
