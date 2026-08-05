@@ -1,1 +1,0 @@
-import{_ as e,c as n,e as o,r as a,o as c}from"./app-Cxk_3DJD.js";const l={};function r(s,i){const t=a("CustomCatalog");return c(),n("div",null,[o(t)])}const m=e(l,[["render",r]]),p=JSON.parse('{"path":"/tool/finance/","title":"Finance","lang":"zh-CN","frontmatter":{"title":"Finance"},"git":{},"filePathRelative":null}');export{m as comp,p as data};
