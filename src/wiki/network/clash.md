@@ -285,7 +285,7 @@ proxy-groups:
     type: select
     include-all: true
     exclude-filter: "(?i)订阅|官网|网站"
-    proxies: [美国,DIRECT]
+    proxies: [美国节点,DIRECT]
 
   - name: 国内代理
     type: select
@@ -295,46 +295,46 @@ proxy-groups:
 
   - name: 故障转移
     type: fallback
-    proxies: [香港,台湾,新加坡,美国,日本,韩国,DIRECT]
+    proxies: [香港节点,台湾节点,新加坡节点,美国节点,日本节点,韩国节点,DIRECT]
     url: https://cp.cloudflare.com/generate_204
     interval: 60
 
-  - name: 香港
+  - name: 香港节点
     type: url-test
     include-all: true
     filter: "(?i)香港"
     exclude-filter: "(?i)专线"
     tolerance: 100
 
-  - name: 台湾
+  - name: 台湾节点
     type: url-test
     include-all: true
     filter: "(?i)台湾"
     exclude-filter: "(?i)专线"
     tolerance: 100
 
-  - name: 新加坡
+  - name: 新加坡节点
     type: url-test
     include-all: true
     filter: "(?i)新加坡"
     exclude-filter: "(?i)专线"
     tolerance: 100
 
-  - name: 美国
+  - name: 美国节点
     type: url-test
     include-all: true
     filter: "(?i)美国"
     exclude-filter: "(?i)专线"
     tolerance: 100
 
-  - name: 日本
+  - name: 日本节点
     type: url-test
     include-all: true
     filter: "(?i)日本"
     exclude-filter: "(?i)专线"
     tolerance: 100
 
-  - name: 韩国
+  - name: 韩国节点
     type: url-test
     include-all: true
     filter: "(?i)韩国"
@@ -371,7 +371,7 @@ rules:
   - GEOSITE,spotify,国际代理
   # Domestic
   - GEOSITE,bilibili,国内代理
-  - GEOSITE,CN,国内代理
+  - GEOSITE,cn,国内代理
   # GeoIP
   - GEOIP,private,DIRECT,no-resolve
   - GEOIP,google,国际代理
@@ -379,7 +379,7 @@ rules:
   - GEOIP,twitter,国际代理
   - GEOIP,telegram,国际代理
   - GEOIP,netflix,国际代理
-  - GEOIP,CN,国内代理
+  - GEOIP,cn,国内代理
   # Others
   - MATCH,国际代理
 ```
