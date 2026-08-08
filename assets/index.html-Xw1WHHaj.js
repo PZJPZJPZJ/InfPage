@@ -1,1 +1,0 @@
-import{_ as t,c as a,e as o,r as n,o as c}from"./app-DihIiRsw.js";const r={};function s(l,m){const e=n("CustomCatalog");return c(),a("div",null,[o(e)])}const _=t(r,[["render",s]]),p=JSON.parse('{"path":"/wiki/game/","title":"Game","lang":"zh-CN","frontmatter":{"title":"Game"},"git":{},"filePathRelative":null}');export{_ as comp,p as data};
