@@ -2,7 +2,7 @@
   "name": "infpage",
   "version": "1.0.0",
   "description": "Powered by VuePress",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "type": "module",
   "scripts": {
     "docs:build": "vuepress build src",

@@ -38,29 +38,43 @@ routeMeta:
   <div class="linkgen-context-grid">
     <section class="vp-custom-glass-card linkgen-settings-card" aria-labelledby="linkgen-proxy-title">
       <div>
-        <p class="linkgen-card-label">代理设置</p>
-        <p id="linkgen-proxy-title" class="linkgen-section-title">下载与克隆代理</p>
-        <p>仅作用于识别出的 Release、Archive 和 .git 地址。</p>
+        <p class="linkgen-card-label">链接服务</p>
+        <p id="linkgen-proxy-title" class="linkgen-section-title">代理与文件 CDN</p>
+        <p>下载代理用于 Release、Archive 和 .git，文件 CDN 用于仓库文件。</p>
       </div>
-      <label class="linkgen-select-label" for="linkgen-proxy">代理服务</label>
-      <select id="linkgen-proxy" v-model="selectedProxy" class="vp-custom-control linkgen-select" :disabled="loading" @change="refreshProxyLinks">
-        <option v-for="service in proxyServices" :key="service.id" :value="service.id">{{ service.name }}</option>
-      </select>
+      <div class="linkgen-settings-fields">
+        <div class="linkgen-setting-field">
+          <label class="linkgen-select-label" for="linkgen-proxy">下载代理</label>
+          <select id="linkgen-proxy" v-model="selectedProxy" class="vp-custom-control linkgen-select" :disabled="loading" @change="refreshProxyLinks">
+            <option v-for="service in proxyServices" :key="service.id" :value="service.id">{{ service.name }}</option>
+          </select>
+        </div>
+        <div class="linkgen-setting-field">
+          <label class="linkgen-select-label" for="linkgen-cdn">文件 CDN</label>
+          <select id="linkgen-cdn" v-model="selectedCdn" class="vp-custom-control linkgen-select" @change="refreshCdnLinks">
+            <option v-for="service in cdnServices" :key="service.id" :value="service.id">{{ service.name }}</option>
+          </select>
+        </div>
+      </div>
     </section>
-    <section class="vp-custom-glass-card linkgen-detection-card" aria-labelledby="linkgen-detection-title" aria-live="polite">
+    <section
+      class="vp-custom-glass-card linkgen-detection-card"
+      :class="{ 'linkgen-detection-card-error': detected?.status === 'error' }"
+      aria-labelledby="linkgen-detection-title"
+      aria-live="polite"
+    >
       <div>
         <p class="linkgen-card-label">链接判断</p>
         <p id="linkgen-detection-title" class="linkgen-section-title">识别结果</p>
       </div>
       <div v-if="detected" class="linkgen-detected">
-        <span class="linkgen-detected-code" aria-hidden="true">{{ detected.code }}</span>
         <div>
           <strong>{{ detected.title }}</strong>
           <p>{{ detected.detail }}</p>
+          <p v-if="detected.message" class="linkgen-detected-message">{{ detected.message }}</p>
         </div>
       </div>
       <div v-else class="linkgen-detected linkgen-detected-empty">
-        <span class="linkgen-detected-code" aria-hidden="true">?</span>
         <div>
           <strong>等待链接</strong>
           <p>提交后会先显示判断类型，再生成相应结果。</p>
@@ -74,7 +88,7 @@ routeMeta:
     :class="`vp-custom-status-${noticeType}`"
     :role="noticeType === 'error' ? 'alert' : 'status'"
   >{{ notice }}</p>
-  <section class="vp-custom-glass-card linkgen-results" aria-live="polite" :aria-busy="loading">
+  <section v-if="loading || links.length" class="vp-custom-glass-card linkgen-results" aria-live="polite" :aria-busy="loading">
     <div class="linkgen-results-head">
       <div>
         <p class="linkgen-card-label">{{ resultLabel }}</p>
@@ -103,12 +117,6 @@ routeMeta:
         </div>
       </article>
     </div>
-    <div v-else class="linkgen-empty">
-      <div>
-        <strong class="linkgen-empty-title">{{ loading ? '正在读取 Release 信息' : detected ? '没有可生成的链接' : '等待判断链接' }}</strong>
-        <p>{{ loading ? '正在请求 GitHub 官方 API，请稍候。' : detected ? '请查看上方提示，或换一个受支持的 GitHub 地址。' : '结果会严格按照提交链接的类型显示在这里。' }}</p>
-      </div>
-    </div>
   </section>
 </section>
 
@@ -127,10 +135,16 @@ const resultLabel = ref('生成结果')
 const resultTitle = ref('等待输入链接')
 const resultMeta = ref('')
 const selectedProxy = ref('gh-proxy')
+const selectedCdn = ref('jsdelivr')
 const proxyServices = [
   { id: 'gh-proxy', name: 'gh-proxy.com', base: 'https://gh-proxy.com/' },
   { id: 'ghproxy', name: 'ghproxy.net', base: 'https://ghproxy.net/' },
   { id: 'ghfast', name: 'ghfast.top', base: 'https://ghfast.top/' },
+]
+const cdnServices = [
+  { id: 'jsdelivr', name: 'jsDelivr', base: 'https://cdn.jsdelivr.net/gh/', format: 'at', description: '适合公开仓库中的图片、脚本和小型静态文件。' },
+  { id: 'statically', name: 'Statically', base: 'https://cdn.statically.io/gh/', format: 'at', description: '通过 Statically 分发公开仓库静态文件。' },
+  { id: 'githack', name: 'GitHack', base: 'https://raw.githack.com/', format: 'path', description: '适合开发预览，并提供正确的静态文件类型。' },
 ]
 let copiedTimer
 let requestController
@@ -166,8 +180,19 @@ const normalizeInput = (value) => {
 const stripGitSuffix = (repo) => repo.replace(/\.git$/i, '')
 const encodeSegments = (segments) => segments.map((segment) => encodeURIComponent(segment)).join('/')
 const getProxyService = () => proxyServices.find((service) => service.id === selectedProxy.value) || proxyServices[0]
+const getCdnService = () => cdnServices.find((service) => service.id === selectedCdn.value) || cdnServices[0]
 const makeProxyUrl = (targetUrl) => `${getProxyService().base}${targetUrl}`
 const makeLink = (id, badge, name, description, url, extra = {}) => ({ id, badge, name, description, url, ...extra })
+
+const makeCdnUrl = (address) => {
+  const service = getCdnService()
+  const owner = encodeURIComponent(address.owner)
+  const repo = encodeURIComponent(address.repo)
+  const ref = encodeURIComponent(address.ref)
+  const filePath = encodeSegments(address.fileParts)
+  if (service.format === 'at') return `${service.base}${owner}/${repo}@${ref}/${filePath}`
+  return `${service.base}${owner}/${repo}/${ref}/${filePath}`
+}
 
 const makeProxyLink = (id, name, targetUrl, description) => {
   const service = getProxyService()
@@ -251,7 +276,12 @@ const setDetected = (address) => {
     'git-clone': () => ({ code: '克', title: 'Git 克隆地址', detail: `${repoName}.git` }),
     unsupported: () => ({ code: '!', title: '暂不支持的 GitHub 页面', detail: `${repoName} · ${address.path}` }),
   }
-  detected.value = presentations[address.kind]?.() || null
+  const presentation = presentations[address.kind]?.()
+  detected.value = presentation ? { ...presentation, status: address.kind === 'unsupported' ? 'error' : 'success' } : null
+}
+
+const setDetectionError = (detail) => {
+  detected.value = { code: '!', title: '识别失败', detail, status: 'error' }
 }
 
 const formatBytes = (bytes) => {
@@ -270,19 +300,19 @@ const formatBytes = (bytes) => {
 const setFileLinks = (address) => {
   const owner = encodeURIComponent(address.owner)
   const repo = encodeURIComponent(address.repo)
-  const filePath = encodeSegments(address.fileParts)
   const rawPath = encodeSegments([...address.rawRef.split('/'), ...address.fileParts])
-  const cdnUrl = `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${encodeURIComponent(address.ref)}/${filePath}`
   const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${rawPath}`
   const fileName = address.fileParts.at(-1)
+  const cdnService = getCdnService()
   links.value = [
-    makeLink('cdn', 'CDN', 'jsDelivr CDN 链接', '适合公开仓库中的图片、脚本和小型静态文件。', cdnUrl),
+    makeLink('cdn', 'CDN', `${cdnService.name} CDN 链接`, cdnService.description, makeCdnUrl(address), { cdnAddress: address }),
     makeLink('raw', 'RAW', 'GitHub Raw 链接', '直接读取该文件的原始内容。', rawUrl),
   ]
   resultLabel.value = '文件转换结果'
   resultTitle.value = fileName
   resultMeta.value = `${address.owner}/${address.repo} @ ${address.ref}`
-  showNotice('已根据文件链接生成 CDN 与 Raw 地址。', 'success')
+  detected.value = detected.value ? { ...detected.value, message: '已根据文件链接生成 CDN 与 Raw 地址。' } : detected.value
+  notice.value = ''
 }
 
 const setDirectLinks = (address) => {
@@ -340,6 +370,7 @@ const fetchReleaseAssets = async (address) => {
   } catch (error) {
     if (error.name === 'AbortError') return
     links.value = []
+    if (detected.value) detected.value = { ...detected.value, status: 'error' }
     resultLabel.value = '读取失败'
     resultTitle.value = '无法生成 Release 下载链接'
     resultMeta.value = ''
@@ -361,7 +392,9 @@ const analyzeLink = async () => {
   notice.value = ''
   detected.value = null
   if (!value) {
-    showNotice('请先输入需要判断的 GitHub 链接。', 'error')
+    const message = '请先输入需要判断的 GitHub 链接。'
+    setDetectionError(message)
+    showNotice(message, 'error')
     return
   }
   try {
@@ -383,7 +416,9 @@ const analyzeLink = async () => {
     await fetchReleaseAssets(address)
   } catch (error) {
     resetResult()
-    showNotice(error.message || '链接格式不正确，请检查后重试。', 'error')
+    const message = error.message || '链接格式不正确，请检查后重试。'
+    setDetectionError(message)
+    showNotice(message, 'error')
   }
 }
 
@@ -400,6 +435,19 @@ const refreshProxyLinks = () => {
     }
   })
   if (updated) showNotice(`已切换为 ${service.name}，结果已重新生成。`, 'success')
+}
+
+const refreshCdnLinks = () => {
+  const service = getCdnService()
+  links.value = links.value.map((link) => {
+    if (!link.cdnAddress) return link
+    return {
+      ...link,
+      name: `${service.name} CDN 链接`,
+      description: service.description,
+      url: makeCdnUrl(link.cdnAddress),
+    }
+  })
 }
 
 const handleSourceInput = () => {
@@ -598,8 +646,18 @@ onUnmounted(() => {
   margin-top: 5px;
 }
 
+.linkgen-settings-fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.linkgen-setting-field {
+  display: grid;
+  gap: 6px;
+}
+
 .linkgen-select-label {
-  margin-bottom: -5px;
   color: var(--vp-custom-text-2);
   font-size: 0.78rem;
 }
@@ -612,23 +670,18 @@ onUnmounted(() => {
 .linkgen-detected {
   display: flex;
   align-items: center;
-  gap: 12px;
   min-height: 52px;
 }
 
-.linkgen-detected-code {
-  display: grid;
-  width: 42px;
-  height: 42px;
-  flex: 0 0 auto;
-  place-items: center;
-  border: 1px solid color-mix(in srgb, var(--vp-custom-accent) 28%, var(--vp-custom-glass-border));
-  border-radius: 12px;
-  color: var(--vp-custom-accent);
-  background: color-mix(in srgb, var(--vp-custom-accent) 9%, var(--vp-custom-glass-strong));
-  box-shadow: inset 0 1px 0 var(--vp-custom-highlight);
-  font-size: 0.82rem;
-  font-weight: 800;
+.linkgen-detection-card-error {
+  border-color: color-mix(in srgb, var(--vp-c-red-bg) 42%, var(--vp-custom-glass-border));
+  background: color-mix(in srgb, var(--vp-c-red-soft) 72%, var(--vp-custom-glass-bg));
+  box-shadow: inset 0 1px 0 var(--vp-custom-highlight), 0 8px 24px color-mix(in srgb, var(--vp-c-red-bg) 10%, transparent);
+}
+
+.linkgen-detection-card-error .linkgen-card-label,
+.linkgen-detection-card-error .linkgen-section-title {
+  color: var(--vp-c-red-text);
 }
 
 .linkgen-detected strong {
@@ -637,16 +690,19 @@ onUnmounted(() => {
   font-size: 0.9rem;
 }
 
+.linkgen-detected .linkgen-detected-message {
+  margin-top: 4px;
+  color: var(--vp-c-green-text);
+  font-weight: 600;
+}
+
 .linkgen-detected-empty {
+  min-height: 0;
   opacity: 0.74;
 }
 
 .linkgen-notice {
   font-size: 0.87rem;
-}
-
-.linkgen-results {
-  min-height: 220px;
 }
 
 .linkgen-results-head,
@@ -765,25 +821,6 @@ onUnmounted(() => {
 .linkgen-open:focus-visible {
   outline: 2px solid var(--vp-custom-accent);
   outline-offset: 2px;
-}
-
-.linkgen-empty {
-  display: flex;
-  min-height: 145px;
-  align-items: center;
-  gap: 13px;
-}
-
-.linkgen-empty-title {
-  display: block;
-  font-size: 0.96rem;
-}
-
-.linkgen-empty p {
-  max-width: 480px;
-  margin: 6px 0 0;
-  color: var(--vp-custom-text-2);
-  font-size: 0.84rem;
 }
 
 @media (max-width: 720px) {
