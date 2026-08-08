@@ -71,7 +71,12 @@ routeMeta:
         <div>
           <strong>{{ detected.title }}</strong>
           <p>{{ detected.detail }}</p>
-          <p v-if="detected.message" class="linkgen-detected-message">{{ detected.message }}</p>
+          <p
+            v-if="notice"
+            class="linkgen-detected-notice"
+            :class="`linkgen-detected-notice-${noticeType}`"
+            :role="noticeType === 'error' ? 'alert' : 'status'"
+          >{{ notice }}</p>
         </div>
       </div>
       <div v-else class="linkgen-detected linkgen-detected-empty">
@@ -82,12 +87,6 @@ routeMeta:
       </div>
     </section>
   </div>
-  <p
-    v-if="notice"
-    class="vp-custom-status linkgen-notice"
-    :class="`vp-custom-status-${noticeType}`"
-    :role="noticeType === 'error' ? 'alert' : 'status'"
-  >{{ notice }}</p>
   <section v-if="loading || links.length" class="vp-custom-glass-card linkgen-results" aria-live="polite" :aria-busy="loading">
     <div class="linkgen-results-head">
       <div>
@@ -311,8 +310,7 @@ const setFileLinks = (address) => {
   resultLabel.value = '文件转换结果'
   resultTitle.value = fileName
   resultMeta.value = `${address.owner}/${address.repo} @ ${address.ref}`
-  detected.value = detected.value ? { ...detected.value, message: '已根据文件链接生成 CDN 与 Raw 地址。' } : detected.value
-  notice.value = ''
+  showNotice('已根据文件链接生成 CDN 与 Raw 地址。', 'success')
 }
 
 const setDirectLinks = (address) => {
@@ -690,19 +688,26 @@ onUnmounted(() => {
   font-size: 0.9rem;
 }
 
-.linkgen-detected .linkgen-detected-message {
+.linkgen-detected .linkgen-detected-notice {
   margin-top: 4px;
-  color: var(--vp-c-green-text);
   font-weight: 600;
+}
+
+.linkgen-detected .linkgen-detected-notice-success {
+  color: var(--vp-c-green-text);
+}
+
+.linkgen-detected .linkgen-detected-notice-error {
+  color: var(--vp-c-red-text);
+}
+
+.linkgen-detected .linkgen-detected-notice-info {
+  color: var(--vp-custom-text-2);
 }
 
 .linkgen-detected-empty {
   min-height: 0;
   opacity: 0.74;
-}
-
-.linkgen-notice {
-  font-size: 0.87rem;
 }
 
 .linkgen-results-head,
