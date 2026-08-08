@@ -23,7 +23,7 @@ routeMeta:
         spellcheck="false"
         placeholder="https://github.com/owner/repo"
         aria-describedby="linkgen-input-help"
-        :aria-invalid="noticeType === 'error' && !detected ? 'true' : 'false'"
+        :aria-invalid="detected?.status === 'error' ? 'true' : 'false'"
         @input="handleSourceInput"
       >
       <button class="vp-custom-button vp-custom-button-primary linkgen-analyze" type="submit" :disabled="loading">
@@ -281,6 +281,8 @@ const setDetected = (address) => {
 
 const setDetectionError = (detail) => {
   detected.value = { code: '!', title: '识别失败', detail, status: 'error' }
+  notice.value = ''
+  noticeType.value = 'error'
 }
 
 const formatBytes = (bytes) => {
@@ -392,7 +394,6 @@ const analyzeLink = async () => {
   if (!value) {
     const message = '请先输入需要判断的 GitHub 链接。'
     setDetectionError(message)
-    showNotice(message, 'error')
     return
   }
   try {
@@ -416,7 +417,6 @@ const analyzeLink = async () => {
     resetResult()
     const message = error.message || '链接格式不正确，请检查后重试。'
     setDetectionError(message)
-    showNotice(message, 'error')
   }
 }
 
