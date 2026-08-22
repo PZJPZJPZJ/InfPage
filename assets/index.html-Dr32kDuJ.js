@@ -1,1 +1,0 @@
-import{_ as t,c as o,e as r,r as a,o as n}from"./app-96FICTDI.js";const c={};function s(l,i){const e=a("CustomCatalog");return n(),o("div",null,[r(e)])}const m=t(c,[["render",s]]),p=JSON.parse('{"path":"/wiki/server/","title":"Server","lang":"zh-CN","frontmatter":{"title":"Server"},"git":{},"filePathRelative":null}');export{m as comp,p as data};
