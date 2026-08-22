@@ -1,0 +1,1 @@
+import{_ as e,c as o,e as a,r as n,o as r}from"./app-BuJFpzbI.js";const c={};function l(s,_){const t=n("CustomCatalog");return r(),o("div",null,[a(t)])}const i=e(c,[["render",l]]),p=JSON.parse('{"path":"/tool/network/","title":"Network","lang":"zh-CN","frontmatter":{"title":"Network"},"git":{},"filePathRelative":null}');export{i as comp,p as data};
