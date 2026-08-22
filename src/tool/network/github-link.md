@@ -522,7 +522,6 @@ onUnmounted(() => {
 <style scoped>
 .linkgen-app {
   display: grid;
-  max-width: 900px;
   gap: 16px;
   margin-top: 22px;
   padding: clamp(12px, 2.5vw, 22px);
@@ -542,14 +541,12 @@ onUnmounted(() => {
   color: var(--vp-custom-accent);
   font-size: 0.72rem;
   font-weight: 750;
-  letter-spacing: 0.08em;
 }
 
 .linkgen-hero-title,
 .linkgen-section-title,
 .linkgen-result-title {
   margin: 0;
-  letter-spacing: -0.025em;
 }
 
 .linkgen-hero-title {

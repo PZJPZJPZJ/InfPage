@@ -1,11 +1,12 @@
 :root {
-    --code-c-bg: #FAFAFA;
-    --vp-sidebar-c-bg: rgba(255, 255, 255, 0.8);
+  --content-width: 1920px;
+  --code-c-bg: #FAFAFA;
+  --vp-sidebar-c-bg: rgba(255, 255, 255, 0.8);
 }
 
 [data-theme='dark'] {
-    --code-c-bg: #1E1E1E;
-    --vp-sidebar-c-bg: rgba(27, 27, 31, 0.8);
+  --code-c-bg: #1E1E1E;
+  --vp-sidebar-c-bg: rgba(27, 27, 31, 0.8);
 }
 
 .vp-hero-image {
@@ -167,6 +168,7 @@
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+
   .vp-custom-glass-card,
   .vp-custom-status {
     background: var(--vp-c-bg-alt);
@@ -180,6 +182,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .vp-custom-control,
   .vp-custom-button {
     transition: none;

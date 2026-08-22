@@ -5,98 +5,144 @@ routeMeta:
   itemIcon: www.miwifi.com
 ---
 # 小米路由器工具
-<div class="miwifi-card">
-  <div class="miwifi-field">
-    <label class="miwifi-label">SSH/Telnet密码计算</label>
-    <input
-      class="miwifi-input"
-      type="text"
-      placeholder="输入小米路由器SN，如 12345/A1B2C3D4E"
-      v-model="snString"
-    />
-  </div>
-  <div class="miwifi-output">
-    <div class="miwifi-output-label">SSH/Telnet密码</div>
-    <div :class="['miwifi-result', { 'miwifi-result--empty': !snString }]">{{ pwdString }}</div>
-  </div>
-  <div class="miwifi-actions">
-    <button
-      class="vp-custom-btn vp-custom-btn--secondary"
-      :disabled="!canCopyPwd"
-      @click="copyPwd"
-    >
-      {{ pwdCopied ? '已复制' : '复制密码' }}
-    </button>
-  </div>
-</div>
-
-<div class="miwifi-card">
-  <div class="miwifi-field">
-    <label class="miwifi-label">历史固件下载器</label>
-  </div>
-  <div class="miwifi-options">
-    <label class="miwifi-opt-item">
-      <span>型号</span>
-      <select class="miwifi-select" v-model="routerCode" :disabled="!routerList.length">
-        <option value="">{{ routerSelectPlaceholder }}</option>
-        <option
-          v-for="router in routerList"
-          :key="router.model"
-          :value="router.model"
-        >
-          {{ router.title }} ({{ router.model }})
-        </option>
-      </select>
-    </label>
-    <label class="miwifi-opt-item">
-      <span>版本</span>
-      <select class="miwifi-select" v-model="firmwareType">
-        <option
-          v-for="type in FIRMWARE_TYPE_OPTIONS"
-          :key="type.value"
-          :value="type.value"
-        >
-          {{ type.label }}
-        </option>
-      </select>
-    </label>
-  </div>
-  <div v-if="firmwareStatus" class="miwifi-status">{{ firmwareStatus }}</div>
-  <div v-if="firmwareList.length" class="firmware-list">
-    <article
-      v-for="item in firmwareList"
-      :key="`${item.realType}-${item.version}-${item.time}`"
-      class="firmware-item"
-    >
-      <div class="firmware-head">
+<section class="vp-custom-surface miwifi-app" aria-label="小米路由器工具">
+  <header class="vp-custom-glass-card miwifi-hero">
+    <div>
+      <p class="miwifi-eyebrow">MIWIFI TOOLKIT</p>
+      <p class="miwifi-hero-title">路由器维护</p>
+      <p class="miwifi-hero-desc">根据设备序列号计算管理密码，或从官方接口查询对应型号的历史固件。</p>
+    </div>
+    <div class="miwifi-hero-tags" aria-label="工具能力">
+      <span>本地计算</span>
+      <span>官方固件</span>
+    </div>
+  </header>
+  <div class="miwifi-layout">
+    <section class="vp-custom-glass-card miwifi-card miwifi-password-card" aria-labelledby="miwifi-password-title">
+      <div class="miwifi-card-head">
         <div>
-          <div class="firmware-title">{{ item.title || item.type }}</div>
-          <div class="firmware-meta">
-            <span>{{ item.version || UNKNOWN_VERSION_TEXT }}</span>
-            <span>{{ formatDate(item.time) }}</span>
-          </div>
+          <p class="miwifi-kicker">设备访问</p>
+          <p id="miwifi-password-title" class="miwifi-section-title">SSH / Telnet 密码</p>
+          <p class="miwifi-section-desc">输入机身标签上的 SN，密码会在浏览器中即时计算。</p>
         </div>
-        <a
-          v-if="item.url"
-          class="vp-custom-btn vp-custom-btn--secondary firmware-download"
-          :href="normalizeUrl(item.url)"
-          target="_blank"
+      </div>
+      <form class="miwifi-password-form" @submit.prevent="copyPwd">
+        <label class="miwifi-label" for="miwifi-sn">路由器序列号</label>
+        <input
+          id="miwifi-sn"
+          v-model="snString"
+          class="vp-custom-control miwifi-input"
+          type="text"
+          autocomplete="off"
+          autocapitalize="characters"
+          spellcheck="false"
+          placeholder="例如 12345/A1B2C3D4E"
+          aria-describedby="miwifi-sn-help"
         >
-          下载固件
-        </a>
+        <p id="miwifi-sn-help" class="miwifi-field-help">序列号仅用于本地计算，不会发送到服务器。</p>
+        <div class="vp-custom-glass-muted miwifi-output" aria-live="polite">
+          <div class="miwifi-output-copy">
+            <span class="miwifi-output-label">计算结果</span>
+            <strong :class="['miwifi-result', { 'miwifi-result--empty': !snString.trim() }]">{{ pwdString }}</strong>
+          </div>
+          <button
+            class="vp-custom-button vp-custom-button-primary miwifi-copy"
+            type="submit"
+            :disabled="!canCopyPwd"
+          >
+            {{ pwdCopied ? '已复制' : '复制密码' }}
+          </button>
+        </div>
+      </form>
+    </section>
+    <section class="vp-custom-glass-card miwifi-card miwifi-firmware-card" aria-labelledby="miwifi-firmware-title">
+      <div class="miwifi-card-head miwifi-firmware-headline">
+        <div>
+          <p class="miwifi-kicker">系统恢复</p>
+          <p id="miwifi-firmware-title" class="miwifi-section-title">历史固件下载</p>
+          <p class="miwifi-section-desc">选择设备型号与固件通道，查看版本记录和更新内容。</p>
+        </div>
       </div>
-      <div v-if="parseContents(item.contents).length" class="firmware-content">
-        <template v-for="(block, index) in parseContents(item.contents)" :key="index">
-          <div v-if="block.type === 'title'" class="firmware-subtitle">{{ block.text }}</div>
-          <p v-else-if="block.type === 'paragraph'" class="firmware-paragraph">{{ block.text }}</p>
-          <ol v-else class="firmware-changes">
-            <li v-for="(text, idx) in block.items" :key="idx">{{ text }}</li>
-          </ol>
-        </template>
+      <div class="miwifi-options">
+        <label class="miwifi-option" for="miwifi-router-model">
+          <span>设备型号</span>
+          <select
+            id="miwifi-router-model"
+            v-model="routerCode"
+            class="vp-custom-control miwifi-select"
+            :disabled="!routerList.length"
+          >
+            <option value="">{{ routerSelectPlaceholder }}</option>
+            <option v-for="router in routerList" :key="router.model" :value="router.model">
+              {{ router.title }} ({{ router.model }})
+            </option>
+          </select>
+        </label>
+        <label class="miwifi-option" for="miwifi-firmware-type">
+          <span>固件通道</span>
+          <select id="miwifi-firmware-type" v-model="firmwareType" class="vp-custom-control miwifi-select">
+            <option v-for="type in FIRMWARE_TYPE_OPTIONS" :key="type.value" :value="type.value">
+              {{ type.label }}
+            </option>
+          </select>
+        </label>
       </div>
-    </article>
+      <div
+        v-if="firmwareStatus"
+        class="vp-custom-status miwifi-status"
+        :class="{ 'vp-custom-status-error': firmwareError && firmwareError !== STATUS_TEXT.emptyFirmware }"
+        :role="firmwareError && firmwareError !== STATUS_TEXT.emptyFirmware ? 'alert' : 'status'"
+        aria-live="polite"
+      >
+        <span v-if="firmwareLoading" class="miwifi-spinner" aria-hidden="true"></span>
+        <span>{{ firmwareStatus }}</span>
+      </div>
+      <div v-else-if="!routerCode" class="miwifi-empty">
+        <div class="miwifi-router-glyph" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <strong>先选择你的路由器</strong>
+        <p>固件版本、发布日期与更新日志会显示在这里。</p>
+      </div>
+      <div v-if="firmwareList.length" class="firmware-list" aria-live="polite">
+        <article
+          v-for="item in firmwareList"
+          :key="`${item.realType}-${item.version}-${item.time}`"
+          class="vp-custom-glass-muted firmware-item"
+        >
+          <div class="firmware-head">
+            <div class="firmware-summary">
+              <span class="firmware-version">{{ item.version || UNKNOWN_VERSION_TEXT }}</span>
+              <p class="firmware-title">{{ item.title || item.type }}</p>
+              <p class="firmware-meta">
+                <span>{{ formatDate(item.time) }}</span>
+                <span>{{ firmwareType === 'DEV' ? '开发版' : '稳定版' }}</span>
+              </p>
+            </div>
+            <a
+              v-if="item.url"
+              class="vp-custom-button vp-custom-button-secondary firmware-download"
+              :href="normalizeUrl(item.url)"
+              target="_blank"
+              rel="noopener noreferrer"
+            >下载固件</a>
+          </div>
+          <div v-if="parseContents(item.contents).length" class="firmware-content">
+            <template v-for="(block, index) in parseContents(item.contents)" :key="index">
+              <p v-if="block.type === 'title'" class="firmware-subtitle">{{ block.text }}</p>
+              <p v-else-if="block.type === 'paragraph'" class="firmware-paragraph">{{ block.text }}</p>
+              <ol v-else class="firmware-changes">
+                <li v-for="(text, idx) in block.items" :key="idx">{{ text }}</li>
+              </ol>
+            </template>
+          </div>
+        </article>
+      </div>
+    </section>
   </div>
-</div>
+</section>
 
 <script setup>
 import { computed, onMounted, ref, watch } from "vue";
@@ -378,241 +424,435 @@ function calculate(sn) {
 </script>
 
 <style lang="scss" scoped>
+.miwifi-app {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 2px 0 28px;
+}
+
+.miwifi-hero {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: clamp(18px, 2.5vw, 28px);
+}
+
+.miwifi-eyebrow,
+.miwifi-hero-title,
+.miwifi-hero-desc,
+.miwifi-kicker,
+.miwifi-section-title,
+.miwifi-section-desc,
+.miwifi-field-help,
+.miwifi-empty p,
+.firmware-title,
+.firmware-meta,
+.firmware-subtitle,
+.firmware-paragraph {
+  margin: 0;
+}
+
+.miwifi-eyebrow {
+  color: var(--vp-custom-accent);
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.miwifi-hero-title {
+  color: var(--vp-custom-text-1);
+  font-size: clamp(1.45rem, 3vw, 2.15rem);
+  font-weight: 760;
+  line-height: 1.2;
+  margin-top: 6px;
+}
+
+.miwifi-hero-desc {
+  color: var(--vp-custom-text-2);
+  font-size: 0.93rem;
+  line-height: 1.7;
+  margin-top: 8px;
+  max-width: 660px;
+}
+
+.miwifi-hero-tags {
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.miwifi-hero-tags span {
+  border: 1px solid var(--vp-custom-glass-border);
+  border-radius: 999px;
+  color: var(--vp-custom-text-2);
+  font-size: 0.76rem;
+  font-weight: 650;
+  padding: 6px 10px;
+  background: var(--vp-custom-glass-muted);
+  box-shadow: inset 0 1px 0 var(--vp-custom-highlight);
+}
+
+.miwifi-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
 .miwifi-card {
-  background: var(--vp-c-bg-soft);
-  border: 1px solid var(--vp-c-border);
-  border-radius: 14px;
-  padding: 1.4rem 1.5rem 1.25rem;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
+  gap: 22px;
+  min-width: 0;
+  padding: clamp(18px, 2.5vw, 28px);
+  width: 100%;
 }
 
-.miwifi-field {
+.miwifi-card-head {
+  align-items: flex-start;
+  display: flex;
+}
+
+.miwifi-kicker {
+  color: var(--vp-custom-text-3);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.miwifi-section-title {
+  color: var(--vp-custom-text-1);
+  font-size: 1.12rem;
+  font-weight: 750;
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+.miwifi-section-desc {
+  color: var(--vp-custom-text-2);
+  font-size: 0.83rem;
+  line-height: 1.65;
+  margin-top: 5px;
+}
+
+.miwifi-password-form {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
 }
 
-.miwifi-label {
-  color: var(--vp-c-text-2);
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+.miwifi-label,
+.miwifi-option > span {
+  color: var(--vp-custom-text-2);
+  font-size: 0.78rem;
+  font-weight: 680;
+  margin-bottom: 7px;
+}
+
+.miwifi-input,
+.miwifi-select {
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .miwifi-input {
-  background: var(--vp-c-bg);
-  border: 1px solid var(--vp-c-border);
-  border-radius: 8px;
-  color: var(--vp-c-text-1);
-  font-size: 0.9rem;
-  outline: none;
-  padding: 0.65rem 0.8rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-
-  &:focus {
-    border-color: var(--vp-c-brand);
-    box-shadow: 0 0 0 3px rgba(var(--vp-c-brand-rgb, 66,133,244), 0.12);
-  }
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.88rem;
+  padding: 0 13px;
+  text-transform: uppercase;
 }
 
-.miwifi-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.miwifi-opt-item {
-  align-items: center;
-  background: var(--vp-c-bg);
-  border: 1px solid var(--vp-c-border);
-  border-radius: 8px;
-  color: var(--vp-c-text-2);
-  cursor: pointer;
-  display: flex;
-  flex: 1;
-  font-size: 0.82rem;
-  gap: 0.4rem;
-  min-width: 220px;
-  padding: 0.35rem 0.6rem;
-  transition: border-color 0.2s;
-
-  &:hover {
-    border-color: var(--vp-c-text-3);
-  }
-
-  &:focus-within {
-    border-color: var(--vp-c-brand);
-  }
-}
-
-.miwifi-select {
-  background: transparent;
-  border: none;
-  color: var(--vp-c-text-1);
-  cursor: pointer;
-  flex: 1;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-left: auto;
-  min-width: 0;
-  outline: none;
+.miwifi-field-help {
+  color: var(--vp-custom-text-3);
+  font-size: 0.74rem;
+  line-height: 1.55;
+  margin-top: 7px;
 }
 
 .miwifi-output {
-  background: var(--vp-c-bg);
-  border: 1px solid var(--vp-c-border);
-  border-radius: 10px;
+  align-items: center;
+  border: 1px solid var(--vp-custom-glass-border);
+  border-radius: 13px;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding: 14px;
+}
+
+.miwifi-output-copy {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.65rem 0.85rem;
+  min-width: 0;
 }
 
 .miwifi-output-label {
-  color: var(--vp-c-text-3);
-  font-size: 0.75rem;
-  font-weight: 500;
+  color: var(--vp-custom-text-3);
+  font-size: 0.72rem;
+  font-weight: 650;
 }
 
 .miwifi-result {
-  color: var(--vp-c-brand);
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  font-weight: 700;
+  color: var(--vp-custom-accent);
+  font-family: var(--vp-font-family-mono);
+  font-size: clamp(1.25rem, 3vw, 1.7rem);
+  font-weight: 760;
   line-height: 1.3;
   overflow-wrap: anywhere;
 }
 
 .miwifi-result--empty {
-  color: var(--vp-c-text-3);
+  color: var(--vp-custom-text-3);
+}
+
+.miwifi-copy {
+  flex: 0 0 auto;
+  min-width: 96px;
+}
+
+.miwifi-options {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(220px, 1.6fr) minmax(130px, 0.7fr);
+}
+
+.miwifi-option {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.miwifi-select {
+  cursor: pointer;
+  font-size: 0.84rem;
+  font-weight: 620;
+  padding: 0 36px 0 12px;
 }
 
 .miwifi-status {
-  color: var(--vp-c-text-2);
-  font-size: 0.82rem;
-}
-
-.miwifi-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.vp-custom-btn {
   align-items: center;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  display: inline-flex;
-  font-size: 0.85rem;
-  font-weight: 600;
+  display: flex;
+  font-size: 0.82rem;
+  gap: 9px;
+}
+
+.miwifi-spinner {
+  border: 2px solid color-mix(in srgb, var(--vp-custom-accent) 22%, transparent);
+  border-radius: 50%;
+  border-top-color: var(--vp-custom-accent);
+  flex: 0 0 16px;
+  height: 16px;
+  width: 16px;
+  animation: miwifi-spin 700ms linear infinite;
+}
+
+.miwifi-empty {
+  align-items: center;
+  border: 1px dashed color-mix(in srgb, var(--vp-custom-text-3) 35%, transparent);
+  border-radius: 13px;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  padding: 0.55rem 1.4rem;
-  text-decoration: none;
-  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-  user-select: none;
-  white-space: nowrap;
+  min-height: 166px;
+  padding: 20px;
+  text-align: center;
+  background: color-mix(in srgb, var(--vp-custom-glass-muted) 60%, transparent);
+}
 
-  &:active {
-    transform: scale(0.96);
-  }
+.miwifi-empty strong {
+  color: var(--vp-custom-text-2);
+  font-size: 0.88rem;
+  margin-top: 14px;
+}
 
-  &:disabled,
-  &--disabled {
-    cursor: not-allowed;
-    opacity: 0.45;
-    pointer-events: none;
-  }
+.miwifi-empty p {
+  color: var(--vp-custom-text-3);
+  font-size: 0.76rem;
+  line-height: 1.6;
+  margin-top: 4px;
+}
 
-  &--secondary {
-    background: transparent;
-    border: 1.5px solid var(--vp-c-border);
-    color: var(--vp-c-accent);
+.miwifi-router-glyph {
+  align-items: flex-end;
+  border: 1px solid var(--vp-custom-glass-border);
+  border-radius: 9px;
+  display: flex;
+  gap: 5px;
+  height: 30px;
+  justify-content: flex-end;
+  padding: 0 9px 7px;
+  position: relative;
+  width: 54px;
+  background: var(--vp-custom-glass-strong);
+  box-shadow: inset 0 1px 0 var(--vp-custom-highlight);
+}
 
-    &:hover {
-      background: var(--vp-c-accent-soft);
-      border-color: var(--vp-c-accent-bg);
-    }
-  }
+.miwifi-router-glyph::before,
+.miwifi-router-glyph::after {
+  background: var(--vp-custom-text-3);
+  border-radius: 2px;
+  content: '';
+  height: 17px;
+  position: absolute;
+  top: -10px;
+  width: 2px;
+}
+
+.miwifi-router-glyph::before {
+  left: 8px;
+}
+
+.miwifi-router-glyph::after {
+  right: 8px;
+}
+
+.miwifi-router-glyph span {
+  background: var(--vp-custom-accent);
+  border-radius: 50%;
+  height: 4px;
+  width: 4px;
 }
 
 .firmware-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 12px;
 }
 
 .firmware-item {
-  background: var(--vp-c-bg);
-  border: 1px solid var(--vp-c-border);
-  border-radius: 10px;
-  padding: 0.85rem;
+  border: 1px solid var(--vp-custom-glass-border);
+  border-radius: 13px;
+  padding: 15px;
 }
 
 .firmware-head {
   align-items: flex-start;
   display: flex;
-  gap: 0.75rem;
+  gap: 14px;
   justify-content: space-between;
 }
 
-.firmware-title {
-  color: var(--vp-c-text-1);
-  font-size: 0.95rem;
+.firmware-summary {
+  min-width: 0;
+}
+
+.firmware-version {
+  border: 1px solid color-mix(in srgb, var(--vp-custom-accent) 26%, var(--vp-custom-glass-border));
+  border-radius: 6px;
+  color: var(--vp-custom-accent);
+  display: inline-flex;
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.73rem;
   font-weight: 700;
-  line-height: 1.35;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  padding: 4px 7px;
+  background: color-mix(in srgb, var(--vp-custom-accent) 7%, transparent);
+}
+
+.firmware-title {
+  color: var(--vp-custom-text-1);
+  font-size: 0.94rem;
+  font-weight: 720;
+  line-height: 1.45;
+  margin-top: 8px;
 }
 
 .firmware-meta {
-  color: var(--vp-c-text-3);
+  color: var(--vp-custom-text-3);
   display: flex;
   flex-wrap: wrap;
-  font-size: 0.78rem;
-  gap: 0.6rem;
-  margin-top: 0.2rem;
+  font-size: 0.74rem;
+  gap: 13px;
+  margin-top: 4px;
+}
+
+.firmware-meta span + span::before {
+  content: '·';
+  margin-right: 13px;
 }
 
 .firmware-download {
-  flex-shrink: 0;
-  padding-inline: 0.85rem;
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  justify-content: center;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
 .firmware-content {
-  border-top: 1px solid var(--vp-c-divider);
+  border-top: 1px solid var(--vp-custom-glass-border);
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 13px;
 }
 
 .firmware-subtitle {
-  color: var(--vp-c-text-2);
-  font-size: 0.85rem;
+  color: var(--vp-custom-text-1);
+  font-size: 0.82rem;
   font-weight: 700;
-  margin-top: 0.2rem;
+  margin-top: 3px;
 }
 
-.firmware-paragraph {
-  color: var(--vp-c-text-2);
-  font-size: 0.85rem;
+.firmware-paragraph,
+.firmware-changes {
+  color: var(--vp-custom-text-2);
+  font-size: 0.8rem;
   line-height: 1.7;
-  margin: 0;
 }
 
 .firmware-changes {
-  color: var(--vp-c-text-2);
-  font-size: 0.85rem;
-  line-height: 1.7;
   margin: 0;
   padding-left: 1.25rem;
 }
 
-@media (max-width: 640px) {
+@keyframes miwifi-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 720px) {
+  .miwifi-app {
+    gap: 18px;
+  }
+
+  .miwifi-hero {
+    gap: 14px;
+  }
+
+  .miwifi-card {
+    gap: 19px;
+  }
+
+  .miwifi-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .miwifi-hero-tags {
+    flex-wrap: wrap;
+  }
+
+  .miwifi-output,
   .firmware-head {
+    align-items: stretch;
     flex-direction: column;
+  }
+
+  .miwifi-copy,
+  .firmware-download {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .miwifi-spinner {
+    animation-duration: 1.5s;
   }
 }
 </style>
