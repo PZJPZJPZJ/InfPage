@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: LX Music
   itemDesc: 洛雪音乐播放器壳子
-  itemIcon: blackmagicdesign.com
+  itemIcon: www.lxmusic.cn
 ---
 # LX Music
 ## LX Sync Server
