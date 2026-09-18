@@ -1,0 +1,1 @@
+import{_ as e,c as o,e as a,r as n,o as c}from"./app-XwYC74Md.js";const l={};function r(s,p){const t=n("CustomCatalog");return c(),o("div",null,[a(t)])}const m=e(l,[["render",r]]),i=JSON.parse('{"path":"/note/laptop/","title":"Laptop","lang":"zh-CN","frontmatter":{"title":"Laptop"},"git":{},"filePathRelative":null}');export{m as comp,i as data};
