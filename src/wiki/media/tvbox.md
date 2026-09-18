@@ -4,7 +4,7 @@ routeMeta:
   itemDesc: 安卓视频播放器壳子
   itemIcon: https://cdn.jsdelivr.net/gh/takagen99/Box@main/app/src/main/res/drawable/app_icon.png
 ---
-# TVBox
+# 视频播放器壳子
 ## 配置教程
 1. 通过USB或ADB安装[TVBox空壳](#空壳下载)
 2. 打开空壳APP进入设置
