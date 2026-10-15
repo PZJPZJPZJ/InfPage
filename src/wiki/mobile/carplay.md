@@ -11,4 +11,5 @@ routeMeta:
   - [DiPlay下载](https://github.com/shihabal3amri/DiPlay/releases/download/v0.2.17/DiPlay-0.2.17.apk)
 
 ## 安卓ICCOA
+- [MiAuto-GitHub](https://github.com/PiggyBackBayonet/MiAuto)
 - [ICCOA车机端-云盘](https://www.123865.com/s/lRi5Vv-XSPw3?pwd=IVFp)
