@@ -12,7 +12,7 @@ export default defineUserConfig({
   lang: 'zh-CN',
   title: 'InfPage',
   description: 'InfinityPage',
-  base: '/InfPage/',  // 部署URL前缀
+  base: '/',  // 部署URL路径
   dest: 'docs/',  // 编译输出目录
   head: [
     ['link', { rel: 'icon', href: 'https://infinityicon.infinitynewtab.com/assets/logo-pro.png' }, null],
