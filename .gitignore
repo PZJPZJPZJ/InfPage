@@ -5,12 +5,14 @@
 .agents
 .claude
 
-# local env files
+# Dependencies and lockfiles
 node_modules
+package-lock.json
 
-# Binaries and temps
+# Cache and temporary files
 .cache
 .temp
 
-# Deploy Docs
+# Deploy files
 docs
+dist
