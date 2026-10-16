@@ -5,7 +5,6 @@
 [![VuePress](https://img.shields.io/badge/VuePress-2.x-3eaf7c?style=flat-square&logo=vue.js&logoColor=white)](https://v2.vuepress.vuejs.org/zh/)
 [![Vue](https://img.shields.io/badge/Vue-3.x-4fc08d?style=flat-square&logo=vuedotjs&logoColor=white)](https://vuejs.org/)
 [![Vite](https://img.shields.io/badge/Vite-bundler-646cff?style=flat-square&logo=vite&logoColor=white)](https://vite.dev/)
-[![在线站点](https://img.shields.io/badge/site-InfPage-2563eb?style=flat-square)](https://pzjpzjpzj.github.io/InfPage/)
 [![最近提交](https://img.shields.io/github/last-commit/PZJPZJPZJ/InfPage?style=flat-square&label=last%20commit)](https://github.com/PZJPZJPZJ/InfPage/commits/main)
 
 ## InfPage 能帮到你什么
