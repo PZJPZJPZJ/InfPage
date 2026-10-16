@@ -7,7 +7,6 @@
 
 # Dependencies and lockfiles
 node_modules
-package-lock.json
 
 # Cache and temporary files
 .cache
