@@ -27,11 +27,21 @@ routeMeta:
 ```json title="%USERPROFILE%\.claude\settings.json"
 {
   "env": {
-    "ANTHROPIC_BASE_URL": "https://www.example.com", /* 修改为请求地址 */
-    "ANTHROPIC_AUTH_TOKEN": "sk-example", /* 修改为请求密钥 */
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "deepseek-v4-flash", /* 修改为自定义模型名称 */
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "deepseek-v4-flash[1m]", /* 修改为自定义模型名称 */
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "deepseek-v4-pro[1m]" /* 修改为自定义模型名称 */
+    "ANTHROPIC_BASE_URL": "https://www.example.com",
+    "ANTHROPIC_AUTH_TOKEN": "sk-example"
+    // "ANTHROPIC_MODEL": "deepseek-v4-flash",
+    // "ANTHROPIC_DEFAULT_HAIKU_MODEL": "deepseek-v4-flash",
+    // "ANTHROPIC_DEFAULT_SONNET_MODEL": "deepseek-v4-flash",
+    // "ANTHROPIC_DEFAULT_OPUS_MODEL": "deepseek-v4-pro"
+  },
+  "modelPicker": {
+    "replaceBuiltInOptions": true,
+    "options": [
+      {
+        "model": "gpt-6-luna",
+        "label": "GPT 6 Luna"
+      }
+    ]
   }
 }
 ```
