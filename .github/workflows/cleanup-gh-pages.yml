@@ -1,0 +1,139 @@
+name: Cleanup old GitHub Pages
+
+# 手动执行一次。只清理旧 Pages 部署，不处理 Cloudflare 工作流。
+# 添加仓库 Secret WORK_TOKEN：管理员账号的 classic PAT，勾选 repo 和 workflow。
+# Fine-grained PAT 需要本仓库 Actions、Contents、Pages、Deployments、Administration 的写权限。
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: cleanup-old-github-pages
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check cleanup token
+        env:
+          WORK_TOKEN: ${{ secrets.WORK_TOKEN }}
+        run: |
+          if [ -z "$WORK_TOKEN" ]; then
+            echo "::error::请先添加仓库 Actions Secret WORK_TOKEN，权限要求见本文件顶部。"
+            exit 1
+          fi
+
+      - name: Remove old Pages workflows and records
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.WORK_TOKEN }}
+          retries: 3
+          script: |
+            const repo = context.repo;
+            const oldWorkflowPath = '.github/workflows/deploy-docs.yml';
+            const environment = 'github-pages';
+            const branch = 'gh-pages';
+            const { data: repository } = await github.rest.repos.get(repo);
+            if (!repository.permissions?.admin) {
+              throw new Error('WORK_TOKEN 必须属于当前仓库的管理员账号。');
+            }
+            // 精确匹配旧工作流，包括 YAML 已删除但运行记录仍存在的情况。
+            const isOldPagesRun = run => Number(run.id) !== Number(context.runId) && (
+              run.path === oldWorkflowPath ||
+              run.path === 'dynamic/pages/pages-build-deployment' ||
+              ['pages build and deployment', 'pages-build-deployment'].includes(run.name)
+            );
+            const optional = async operation => {
+              try { return await operation(); }
+              catch (error) {
+                if (error.status === 404) return null;
+                throw error;
+              }
+            };
+            const getRuns = () => github.paginate(
+              github.rest.actions.listWorkflowRunsForRepo, { ...repo, per_page: 100 }
+            );
+            const getDeployments = () => github.paginate(
+              github.rest.repos.listDeployments,
+              { ...repo, environment, per_page: 100 }
+            );
+            const getOldFile = () => optional(() => github.rest.repos.getContent({
+              ...repo, path: oldWorkflowPath, ref: repository.default_branch
+            }));
+            const getPages = () => optional(() => github.rest.repos.getPages(repo));
+            const getBranch = () => optional(() => github.rest.repos.getBranch({ ...repo, branch }));
+            const getEnvironment = () => optional(() => github.rest.repos.getEnvironment({
+              ...repo, environment_name: environment
+            }));
+            const runs = (await getRuns()).filter(isOldPagesRun);
+            const deployments = (await getDeployments()).filter(item => item.environment === environment);
+            const pages = await getPages();
+            const oldFile = await getOldFile();
+            const oldBranch = await getBranch();
+            const oldEnvironment = await getEnvironment();
+            core.info(`目标：${repo.owner}/${repo.repo}；运行记录 ${runs.length} 条，部署记录 ${deployments.length} 条。`);
+            if (pages) {
+              await github.rest.repos.deletePagesSite(repo);
+              core.info('已关闭 GitHub Pages 站点。');
+            }
+            if (oldFile) {
+              if (Array.isArray(oldFile.data) || oldFile.data.type !== 'file') {
+                throw new Error('旧工作流路径不是普通文件，已停止。');
+              }
+              await github.rest.repos.deleteFile({
+                ...repo, path: oldWorkflowPath, sha: oldFile.data.sha,
+                branch: repository.default_branch,
+                message: 'chore: remove retired GitHub Pages workflow'
+              });
+              core.info('已从默认分支删除旧部署 YAML 文件。');
+            }
+            for (const run of runs) {
+              if (run.status !== 'completed') {
+                try {
+                  await github.rest.actions.cancelWorkflowRun({ ...repo, run_id: run.id });
+                } catch (error) {
+                  if (error.status !== 409) throw error;
+                }
+                let completed = false;
+                for (let attempt = 0; attempt < 12; attempt++) {
+                  const { data: current } = await github.rest.actions.getWorkflowRun({
+                    ...repo, run_id: run.id
+                  });
+                  if (current.status === 'completed') { completed = true; break; }
+                  await new Promise(resolve => setTimeout(resolve, 5000));
+                }
+                if (!completed) throw new Error(`运行 ${run.id} 尚未取消完成，请稍后重新执行。`);
+              }
+              await github.rest.actions.deleteWorkflowRun({ ...repo, run_id: run.id });
+              core.info(`已删除旧 Pages 运行记录 ${run.id}。`);
+            }
+            for (const deployment of deployments) {
+              await github.rest.repos.createDeploymentStatus({
+                ...repo, deployment_id: deployment.id, state: 'inactive', auto_inactive: false
+              });
+              await github.rest.repos.deleteDeployment({ ...repo, deployment_id: deployment.id });
+              core.info(`已删除 Pages 部署记录 ${deployment.id}。`);
+            }
+            if (oldEnvironment) {
+              await github.rest.repos.deleteAnEnvironment({ ...repo, environment_name: environment });
+              core.info('已删除 github-pages 环境。');
+            }
+            if (oldBranch) {
+              await github.rest.git.deleteRef({ ...repo, ref: `heads/${branch}` });
+              core.info('已删除远程 gh-pages 分支。');
+            }
+            const remainingRuns = (await getRuns()).filter(isOldPagesRun);
+            const remainingDeployments = (await getDeployments()).filter(item => item.environment === environment);
+            if (await getPages() || await getOldFile() || await getBranch() || await getEnvironment() ||
+                remainingRuns.length || remainingDeployments.length) {
+              throw new Error('仍有旧 Pages 资源，请检查日志后重新执行。');
+            }
+            await core.summary
+              .addHeading('旧 GitHub Pages 清理完成')
+              .addRaw(`已删除 ${runs.length} 条运行记录、${deployments.length} 条部署记录，并确认旧站点、部署 YAML、环境和发布分支均不存在。`)
+              .addBreak()
+              .addRaw('保留源码提交历史、Cloudflare 资源及本清理工作流。本次清理运行结束后，可再删除清理 YAML 和它的运行记录。')
+              .write();
