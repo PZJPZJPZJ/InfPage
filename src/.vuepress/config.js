@@ -12,7 +12,7 @@ export default defineUserConfig({
   lang: 'zh-CN',
   title: 'InfPage',
   description: 'InfinityPage',
-  base: '/',  // 部署URL路径
+  base: '/InfPage/',  // 部署URL前缀
   dest: 'docs/',  // 编译输出目录
   head: [
     ['link', { rel: 'icon', href: 'https://infinityicon.infinitynewtab.com/assets/logo-pro.png' }, null],
@@ -60,9 +60,6 @@ export default defineUserConfig({
     }),
     markdownChartPlugin({
       mermaid: true, // 启用 Mermaid 图表支持
-    }),
-    googleTagManagerPlugin({
-      id: 'GTM-MWP63S78', // 谷歌跟踪代码管理器 ID
     }),
   ],
 })
