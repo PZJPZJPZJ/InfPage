@@ -2,10 +2,11 @@
 routeMeta:
   itemTitle: Unlock Music
   itemDesc: 音乐去除DRM保护
-  itemIcon: https://git.unlock-music.dev/um/web/raw/branch/main/public/favicon.ico
+  itemIcon: https://avatars.githubusercontent.com/u/62338146
 ---
 # Unlock Music:解锁音乐
 ## 下载地址
-- [Github](https://github.com/ipid/unlock-music)
+- [unlockmusic - Github](https://github.com/unlock-music)
+- [ipid - Github](https://github.com/ipid/unlock-music)
 - [官方Git](https://git.unlock-music.dev/um/web/releases)
 - [网盘下载](https://pzjpzjpzj.lanzoum.com/ivBXk2rpz99i)
