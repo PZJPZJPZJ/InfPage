@@ -75,5 +75,6 @@ routeMeta:
 - [CreativeCloudCleanerTool](https://swupmf.adobe.com/webfeed/CleanerTool/win/AdobeCreativeCloudCleanerTool.exe)
 
 ## 相关网站
-- [m0nkrus-社交媒体](https://vk.com/monkrus)
-- [m0nkrus-下载站](http://rutracker.ru/search.php?search_author=1&uid=1334502)
+- [m0nkrus - 社交媒体](https://vk.com/monkrus)
+- [m0nkrus - 下载站](http://rutracker.ru/search.php?search_author=1&uid=1334502)
+- [ArtCraft - 开源版Adobe](https://getartcraft.com/apps)
