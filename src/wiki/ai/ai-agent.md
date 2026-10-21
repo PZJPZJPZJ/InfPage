@@ -1,21 +1,19 @@
 ---
 routeMeta:
-  itemTitle: OpenClaw
-  itemDesc: AI智能体网关
+  itemTitle: AI Agent
+  itemDesc: AI智能体
   itemIcon: openclaw.ai
 ---
-# OpenClaw:AI智能体网关
-## 官网地址
+# AI智能体
+## 客户端Agent
+### OpenClaw
 - [OpenClaw-官网](https://openclaw.ai/)
 - [OpenClaw-Github](https://github.com/openclaw/openclaw)
 - [alpine/openclaw-DockerHub](https://hub.docker.com/r/alpine/openclaw)
 - [1panel/openclaw-DockerHub](https://hub.docker.com/r/1panel/openclaw)
 
-## 部署教程
-### 容器安装
-使用Docker部署容器
-
-```yaml title="DockerCompose"
+#### 部署教程
+```yaml title="Docker Compose部署"
 services:
   openclaw:
     container_name: openclaw
@@ -99,3 +97,7 @@ networks:
   }
 }
 ```
+
+## 技能Skill
+- [Oldcircle/geo-sleuth - 找到照片的拍摄地点并展示推理过程](https://github.com/Oldcircle/geo-sleuth)
+- [zhaoxuya520/reverse-skill - 逆向技能路由包](https://github.com/zhaoxuya520/reverse-skill)

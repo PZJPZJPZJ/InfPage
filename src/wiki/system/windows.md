@@ -123,8 +123,11 @@ routeMeta:
 - [ViVeTool系统功能开关工具](https://github.com/thebookisclosed/ViVe)
 - [IntelXTU英特尔调节工具](https://www.intel.cn/content/www/cn/zh/download/17881/intel-extreme-tuning-utility-intel-xtu.html)
 ### 外设调节
-- [G-Helper华硕开源工具](https://github.com/seerge/g-helper)
-- [RazerSynapse雷蛇雷云](https://cn.razerzone.com/synapse-4)
+- [GHelper-华硕开源工具](https://github.com/seerge/g-helper)
+- [RazerSynapse-雷蛇雷云](https://cn.razerzone.com/synapse-4)
+  - [RazerSynapse-网页版](https://synapse.razer.com/dashboard/)
+- [OpenMouse-开源鼠标驱动](https://openmouse.app/)
+  - [OpenMouse-网页版](https://control.openmouse.app/)
 
 ## 运行库安装
 ### [Visual C++](https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170)
