@@ -22,7 +22,6 @@ routeMeta:
   - [Takagen99源码](https://github.com/takagen99/Box)
 ## 点播源接口
 - [饭太硬](https://www.饭太硬.net/tv)
-- [饭太硬-备用](https://fty.xxooo.cf/tv)
 ## 直播源接口
 - [YangG](https://yang-1989.eu.org/)
 ## 相关软件

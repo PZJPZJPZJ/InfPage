@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: Space Sniffer
   itemDesc: 磁盘空间分析工具
-  itemIcon: github.com
+  itemIcon: https://www.uderzo.it/main_products/space_sniffer/media/spacesniffer_layered.jpg
 ---
 # SpaceSniffer:可视化磁盘空间检测工具
 ## 下载地址

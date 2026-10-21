@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: So-VITS-SVC
   itemDesc: 歌声合成与转换
-  itemIcon: github.com
+  itemIcon: https://avatars.githubusercontent.com/u/127122328
 ---
 # SoVITS:歌声转换训练模型
 ## 仓库地址

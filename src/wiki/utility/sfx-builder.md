@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: SFX Builder
   itemDesc: 自解压文件生成工具
-  itemIcon: github.com
+  itemIcon: https://a.fsdn.com/allura/p/s-zipsfxbuilder/icon
 ---
 # SFX Builder:自解压程序制作工具
 ## 下载地址
