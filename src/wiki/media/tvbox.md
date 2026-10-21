@@ -26,5 +26,6 @@ routeMeta:
 ## 直播源接口
 - [YangG](https://yang-1989.eu.org/)
 ## 相关软件
+  [Aerial-开源电视桌面](https://github.com/pengchujin/aerial-tv)
 - [EmotnUI-电视桌面](https://app.emotn.com/ui/)
 - [SmartTube-Youtube第三方客户端](https://github.com/yuliskov/SmartTube)
