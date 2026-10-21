@@ -18,12 +18,11 @@ routeMeta:
 #### Claude Code
 - [Claude Code - 官方文档](https://code.claude.com/docs/en/overview)
 - [Claude Code - VSCode扩展](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code)
-
+##### 配置自定义模型
 ```json title="VSCode > setting.json"
 // 跳过登录提示
 "claudeCode.disableLoginPrompt": true,
 ```
-
 ```json title="%USERPROFILE%\.claude\settings.json"
 {
   "env": {
@@ -47,9 +46,9 @@ routeMeta:
 ```
 
 #### Codex
-- [Codex - 客户端下载](https://openai.com/codex/)
-- [Codex - VSCode扩展](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt)
-
+- [Codex-客户端下载](https://openai.com/codex/)
+- [Codex-VSCode扩展](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt)
+##### 配置自定义模型
 ```yaml title="%USERPROFILE%\.codex\config.toml"
 model_provider = "OpenAI"
 model = "gpt-5.5" # 修改为自定义模型名称
@@ -72,15 +71,16 @@ requires_openai_auth = true
   "OPENAI_API_KEY": "sk-example" # 修改为请求密钥
 }
 ```
-
-- [PowerShell-新版安装](https://learn.microsoft.com/zh-cn/powershell/scripting/install/install-powershell-on-windows)
+##### 配置Powershell
+- [PowerShell-新版下载](https://learn.microsoft.com/zh-cn/powershell/scripting/install/install-powershell-on-windows)
 ```json title="VSCode > setting.json"
 // 配置新版 PowerShell 避免默认 PowerShell5 中文乱码
 "terminal.integrated.defaultProfile.windows": "PowerShell",
 ```
 
 #### Copilot
-- [Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat)
+- [Copilot-VSCode扩展](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat)
+##### 配置自定义模型
 ```json title="%USERPROFILE%\AppData\Roaming\Code\User\profiles\%PROFILE%\chatLanguageModels.json"
 [
 	{
@@ -102,6 +102,14 @@ requires_openai_auth = true
 		]
 	}
 ]
+```
+##### 配置中文Commit Message
+```json title="%USERPROFILE%\AppData\Roaming\Code\User\settings.json"
+    "github.copilot.chat.commitMessageGeneration.instructions": [
+        {
+            "text": "请始终使用中文来编写 commit message。并且严格遵循 Conventional Commits 规范，格式为：<type>(<scope>): <subject>。type 必须是：feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert 之一，根据暂存变更的主要意图，选择最恰当的一种类型；subject 简洁明了。"
+        }
+    ],
 ```
 
 ### OpenCode
