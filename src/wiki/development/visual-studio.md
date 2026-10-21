@@ -103,11 +103,11 @@ requires_openai_auth = true
 	}
 ]
 ```
-##### 配置中文Commit Message
+##### 配置中文Commit Message生成
 ```json title="%USERPROFILE%\AppData\Roaming\Code\User\settings.json"
     "github.copilot.chat.commitMessageGeneration.instructions": [
         {
-            "text": "请始终使用中文来编写 commit message。并且严格遵循 Conventional Commits 规范，格式为：<type>(<scope>): <subject>。type 必须是：feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert 之一，根据暂存变更的主要意图，选择最恰当的一种类型；subject 简洁明了。"
+            "text": "请始终使用中文来编写 Commit Message。并且严格遵循 Conventional Commits 规范，格式为 <type>(<scope>): <subject>。type 必须根据暂存变更的主要意图选择最恰当的一种类型，subject 简洁明了。"
         }
     ],
 ```
