@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: AI API Proxy
   itemDesc: 大模型中转站
-  itemIcon: chatgpt.com
+  itemIcon: https://avatars.githubusercontent.com/u/233033915
 ---
 # AI中转站本地部署
 ## CLIProxyAPI
