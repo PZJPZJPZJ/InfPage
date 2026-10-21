@@ -103,3 +103,27 @@ apk add docker-cli
 #Alpine安装常用命令
 apk add busybox-extras
 ```
+## Compose常用配置
+```yml title="复用其他容器的macvlan网络"
+services:
+  example:
+    image: example/example-image:latest
+    container_name: example
+    # 不同Compose复用网络
+    network_mode: container:mihomo
+    # 同Compose复用网络
+    # network_mode: service:mihomo
+    restart: unless-stopped
+```
+```yaml title="使用容器自动创建的bridge网络"
+services:
+  example:
+    image: example/example-image:latest
+    container_name: example
+    networks:
+      - internal
+    restart: unless-stopped
+networks:
+  internal:
+    external: true
+```
