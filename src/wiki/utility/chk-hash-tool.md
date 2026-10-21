@@ -2,7 +2,7 @@
 routeMeta:
   itemTitle: CHK Hash Tool
   itemDesc: 文件校验工具
-  itemIcon: github.com
+  itemIcon: compressme.net
 ---
 # CHK Hash Tool:文件校验工具
 ## 下载地址
