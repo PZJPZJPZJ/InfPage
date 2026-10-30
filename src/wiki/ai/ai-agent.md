@@ -5,7 +5,7 @@ routeMeta:
   itemIcon: openclaw.ai
 ---
 # AI智能体
-## 客户端Agent
+## Agent客户端
 ### OpenClaw
 - [OpenClaw-官网](https://openclaw.ai/)
 - [OpenClaw-Github](https://github.com/openclaw/openclaw)
@@ -97,7 +97,9 @@ networks:
   }
 }
 ```
+## MCP服务
+- [REA - 逆向分析二进制文件](https://github.com/morluto/rea)
 
-## 技能Skill
+## Skill技能
 - [Oldcircle/geo-sleuth - 找到照片的拍摄地点并展示推理过程](https://github.com/Oldcircle/geo-sleuth)
 - [zhaoxuya520/reverse-skill - 逆向技能路由包](https://github.com/zhaoxuya520/reverse-skill)

@@ -88,6 +88,9 @@ py macrecovery.py -b Mac-937A206F2EE63C01 -m 00000000000000000 download
   </dict>
 </dict>
 ```
+### Nvidia显卡驱动
+- [NullMoth NVIDIA Driver for macOS](https://github.com/nullmoth/nvidia-macos-driver)
 
 ## 其他教程
 - [OpenCore Install Guide](https://dortania.github.io/OpenCore-Install-Guide/)
+- [UniXNU - 通过 UEFI 在非 Apple ARM64 硬件上运行 iOS 与 macOS](https://github.com/UniXNU/UniXNU)
