@@ -51,13 +51,12 @@ routeMeta:
 ##### 配置自定义模型
 ```yaml title="%USERPROFILE%\.codex\config.toml"
 model_provider = "OpenAI"
-model = "gpt-5.5" # 修改为自定义模型名称
-model_reasoning_effort = "xhigh"
-disable_response_storage = true
+model = "gpt-6-luna" # 修改为自定义模型名称
+model_reasoning_effort = "high"
+model_context_window = 1000000
+model_auto_compact_token_limit = 272000
 network_access = "enabled"
 windows_wsl_setup_acknowledged = true
-model_context_window = 1000000
-model_auto_compact_token_limit = 900000
 
 [model_providers.OpenAI]
 name = "OpenAI"
@@ -107,7 +106,7 @@ requires_openai_auth = true
 ```json title="%USERPROFILE%\AppData\Roaming\Code\User\settings.json"
     "github.copilot.chat.commitMessageGeneration.instructions": [
         {
-            "text": "请始终使用中文来编写 Commit Message。并且严格遵循 Conventional Commits 规范，格式为 <type>(<scope>): <subject>。type 必须根据暂存变更的主要意图选择最恰当的一种类型，subject 简洁明了。"
+            "text": "请始终使用中文来编写 Commit Message。并且严格遵循 Conventional Commits 规范，格式为 <type>(<scope>): <subject>。"
         }
     ],
 ```
@@ -120,7 +119,7 @@ npm install -g opencode-ai
 
 ## Code Server
 - [code-server-Github](https://github.com/coder/code-server)
-```yaml title="Docker Compose"
+```yaml title="DockerCompose(codercom)"
 services:
   code-server:
     image: codercom/code-server:latest
@@ -133,6 +132,21 @@ services:
       - ./local:/home/coder/.local
       - ./config:/home/coder/.config
       - ./home:/home/coder/project
+    restart: unless-stopped
+```
+```yaml title="DockerCompose(linuxserver)"
+services:
+  code-server:
+    image: linuxserver/code-server
+    container_name: code-server
+    environment:
+      PASSWORD: your-login-password
+      SUDO_PASSWORD: your-sudo-password
+      EXTENSIONS_GALLERY: '{"serviceUrl":"https://marketplace.visualstudio.com/_apis/public/gallery","cacheUrl":"https://vscode.blob.core.windows.net/gallery/index","itemUrl":"https://marketplace.visualstudio.com/items","controlUrl":"","recommendationsUrl":""}'
+    volumes:
+      - ./config:/config
+    ports:
+      - "8443:8443"
     restart: unless-stopped
 ```
 ### 接入官方插件市场
@@ -151,9 +165,3 @@ services:
   "recommendationsUrl": ""
 },
 ```
-
-## Cursor
-- [Cursor-官网](https://www.cursor.com)
-
-## Google Antigravity
-- [Antigravity-官网](https://antigravity.google/)
